@@ -1,4 +1,4 @@
-Drop
+Drop (work in progress)
 ====
 
 Minimalistic, hybrid MVC / IoC microarchitecture framework for ActionScript and Apache Flex.
