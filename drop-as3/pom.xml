@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+		 
+    <modelVersion>4.0.0</modelVersion>
+
+	
+    <groupId>org.dropframework</groupId>
+    <artifactId>drop-as3</artifactId>
+    <packaging>swc</packaging>
+    <version>1.1</version>
+
+	
+    <properties>
+        <flex.sdk.version>4.6.b.23201</flex.sdk.version>
+        <flex.debug>true</flex.debug>
+    </properties>
+	
+
+    <dependencies>
+        <dependency>
+            <groupId>com.adobe.flex.framework</groupId>
+            <artifactId>flex-framework</artifactId>
+            <version>${flex.sdk.version}</version>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <sourceDirectory>src/main/flex</sourceDirectory>
+        <finalName>${artifactId}</finalName>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.sonatype.flexmojos</groupId>
+                <artifactId>flexmojos-maven-plugin</artifactId>
+                <version>3.8</version>
+                <extensions>true</extensions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.adobe.flex</groupId>
+                        <artifactId>compiler</artifactId>
+                        <version>${flex.sdk.version}</version>
+                        <type>pom</type>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.adobe.flex</groupId>
+                        <artifactId>license</artifactId>
+                        <version>${flex.sdk.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.adobe.flex</groupId>
+                        <artifactId>flex-fontkit</artifactId>
+                        <version>${flex.sdk.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+        </plugins>
+    </build>
+	
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central-plugins-repository</id>
+            <url>http://repo1.maven.org/maven2</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>flex-mojos-repository</id>
+            <url>http://repository.sonatype.org/content/groups/flexgroup/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+	
+    <repositories>
+        <repository>
+            <id>flex-mojos-repository</id>
+            <url>http://repository.sonatype.org/content/groups/flexgroup/</url>
+        </repository>
+    </repositories>
+
+	
+</project>
