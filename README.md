@@ -1,5 +1,4 @@
-Drop (work in progress)
-====
+# Drop
 
 Minimalistic, hybrid MVC / IoC microarchitecture framework for ActionScript and Apache Flex.
 
@@ -9,3 +8,12 @@ Hybrid framework nature features:
 * Inversion of Control microarchitecture based on ServiceLocator, called Context;
 * Model / View / Controller tiers coded in Services / Mediators / BusinessController classes respectively;
 * Strongly-typed notification & delegation model based on interfaces.
+
+
+
+## Architecture
+
+
+
+## Sample Project Structure
+
