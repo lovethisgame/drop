@@ -47,16 +47,6 @@
                         <version>${flex.sdk.version}</version>
                         <type>pom</type>
                     </dependency>
-                    <dependency>
-                        <groupId>com.adobe.flex</groupId>
-                        <artifactId>license</artifactId>
-                        <version>${flex.sdk.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.adobe.flex</groupId>
-                        <artifactId>flex-fontkit</artifactId>
-                        <version>${flex.sdk.version}</version>
-                    </dependency>
                 </dependencies>
             </plugin>
 
