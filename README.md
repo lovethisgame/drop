@@ -19,7 +19,7 @@ org.dropframework.*           → included framework sources
 appname                       → application root
  └ actors                       → root for internal communication interfaces (actors)
     └ singletones                 → actor interfaces with single implementation: I<...>
-    └ notifications           → actor interfaces with multiple implementation: IOn<...>
+    └ notifications               → actor interfaces with multiple implementation: IOn<...>
  └ commons                      → root for all shared generic classes
     └ components                  → shared generic components
     └ utils                       → shared generic utility classes
@@ -27,7 +27,7 @@ appname                       → application root
  └ model                        → root for model classes
     └ proxies                     → proxies, services, data access objects
     └ vos                         → value objects, entities, data transfer objects
- └ view                         → views and mediators
+ └ view                         → root for views and mediators
 ```
  
 ### The appname/actors/ directory
