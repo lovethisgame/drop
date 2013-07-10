@@ -30,7 +30,18 @@ appname                       → application root
  └ view                         → root for views and mediators
 ```
  
-### The appname/actors/ directory
+### The appname/actors directory
+
+The appname/actors directory contains a Context class which serves as a ServiceLocator for resolving Controllers within application, and the Controller interfaces. Controller interfaces are split into two groups:
+* singletones - interfaces that start with "I<...>" name prefix and define API for managers, commands, workers, services of which there is a single implementation within the system;
+* notifications - interfaces that start with "IOn<...>" name prefix and defined API for controllers that listen on specific events or actions happening within the system.
+
+Central idea of the Drop framework is Controllers do not communicate directly, but instead resolve each other via Context by specific interface defined in appname/actors package using Context.instanceOf, Context.arrayOf and Context.process methods.
+
+This approach decouples the system greatly allowing for simple Controller implementations modification. This way, appname/actors directory serves as a collection of interfaces formulating system mechanics.
+
+Generally it is adviced to use notification interfaces versus singletone ones where possible as they allow for better system maintainability and clarity.
+
 ```
 Example directory content:
  └ actors                           
