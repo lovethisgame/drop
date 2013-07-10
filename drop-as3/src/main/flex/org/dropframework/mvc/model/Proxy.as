@@ -21,8 +21,8 @@ package org.dropframework.mvc.model
 
 
     /**
-     * Simple extension of the ContextAwareActor class which requires the service (Endpoint, Mock-up, etc.) to be
-     * supplied as a constructor argument, thus providing model layer management capabilities. Service's type is a
+     * Simple extension of the ContextAwareActor class which requires the delegate (Endpoint, Mock-up, etc.) to be
+     * supplied as a constructor argument, thus providing model layer management capabilities. Delegate's type is a
      * generic object. This class is to be extended if a specific service's type required.
      *
      * Designed for extension by subclasses.
@@ -31,13 +31,13 @@ package org.dropframework.mvc.model
      * */
     public class Proxy extends ContextAwareActor
     {
-        private var _service : Object;
+        private var _delegate : Object;
 
 
         /** Proxy's data service abstraction. */
-        protected function get service () : Object
+        protected function get delegate () : Object
         {
-            return _service;
+            return _delegate;
         }
 
 
@@ -46,13 +46,13 @@ package org.dropframework.mvc.model
          * Creates new Proxy for a given model provider. Automatically registers itself in the context.
          *
          * @param context - context to be used by the controller.
-         * @param service - data source (service / mockup) to be used by the controller.
+         * @param delegate - data source (service / mockup) to be used by the controller.
          * */
         public function Proxy
-                (context : IContext, service : Object)
+                (context : IContext, delegate : Object)
         {
             super(context);
-            this._service = service;
+            this._delegate = delegate;
         }
     }
 }
