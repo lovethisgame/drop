@@ -111,9 +111,9 @@ package org.dropframework.core.contexts
         }
 
 
-        public function invoke (targetType : Class, callback : Function /* (c : targetType) */) : void
+        public function invoke (type : Class, callback : Function /* (c : type) */) : void
         {
-            for each (var c : Object in arrayOf(targetType))
+            for each (var c : Object in arrayOf(type))
             {
                 callback(c);
             }

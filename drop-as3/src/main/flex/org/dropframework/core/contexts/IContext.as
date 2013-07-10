@@ -67,10 +67,10 @@ package org.dropframework.core.contexts
          * passing instances one by one into the callback function as an argument. If no instances found of a given type
          * then callback won't be called.
          *
-         * @param targetType type to resolve actors by.
-         * @param callback a <code>function (actor : targetType) : *</code> called for every actor of a given type found
+         * @param type type to resolve actors by.
+         * @param callback a <code>function (actor : type) : *</code> called for every actor of a given type found
          * in the context.
          */
-        function invoke (targetType : Class, callback : Function /* (c : targetType) */) : void;
+        function invoke (type : Class, callback : Function /* (c : type) */) : void;
     }
 }
