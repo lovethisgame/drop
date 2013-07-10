@@ -1,14 +1,14 @@
 # Drop
 
 <img src="/docs/logo.png" align="right"></img>
-Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript and Apache Flex.
+> Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript and Apache Flex.
 
 Drop derives from PureMVC and aims to minimize implementation approach discordance, forcing to write less boilerplate, less bug-prone and more consistent code, also introducing typed notification model and strong notion of Separation of Concerns concept.
 
 Hybrid framework features:
-* Inversion of Control micro-architecture based on ServiceLocator, called Context;
-* Model / View / Controller tiers coded in Services / Mediators / BusinessController classes respectively;
-* Strongly-typed notification & delegation model based on interfaces.
+* Inversion of Control micro-architecture based on ServiceLocator, called `Context`;
+* Model / View / Controller tiers coded in `Services` / `Mediators` / `LogicController` classes respectively;
+* Strongly-typed notification & delegation model based on Actor Interfaces.
 
 
 ## Anatomy
@@ -32,11 +32,9 @@ appname                       → application root
  
 ### The appname/actors directory
 
-The appname/actors directory contains a Context class which serves as a ServiceLocator for resolving Controllers within application, and the Controller interfaces. Controller interfaces are split into two groups:
-* singletones - interfaces that start with "I<...>" name prefix and define API for managers, commands, workers, services of which there is a single implementation within the system;
-* notifications - interfaces that start with "IOn<...>" name prefix and defined API for controllers that listen on specific events or actions happening within the system.
+The `appname/actors` directory contains a Context class which serves as a ServiceLocator for resolving Controllers, and the Controller interfaces themselves. Controller interfaces are split into two groups:
+* **singletones** - interfaces that start with `I<...>` name prefix and define API for managers, commands, workers, services of which there is a single implementation within the system. Example:
 
-Singletone interface example:
 ```actionscript
 public interface ISignInController
 {
@@ -46,7 +44,8 @@ public interface ISignInController
 }
 ```
 
-Notification interface example:
+* **notifications** - interfaces that start with `IOn<...>` name prefix and defined API for controllers that listen on specific events or actions happening within the system. Example:
+
 ```actionscript
 public interface IOnAuthStatusChanged
 {
@@ -56,25 +55,15 @@ public interface IOnAuthStatusChanged
 }
 ```
 
-Central idea of the Drop framework is simple as that:
-- Controllers do not communicate directly.
+Central idea of the Drop framework is:
+> Controllers do not communicate directly.
 
-Instead they resolve each other via Context by specific interface defined in appname/actors package using Context.instanceOf, Context.arrayOf and Context.process methods. This approach decouples the system components greatly.
+Instead they resolve each other via Context by specific interface defined in `appname/actors` package using `Context.instanceOf`, `Context.arrayOf` and `Context.process` methods. This approach aims to decouple the system components for better maintainability.
 
-This way, appname/actors directory serves as a collection of interfaces specifying the internal system mechanics.
+This way, `appname/actors` directory serves as a collection of interfaces specifying the internal system mechanics.
 
-Tip: Generally it is adviced to use notification interfaces versus singletone ones where possible as they allow for better system maintainability and clarity.
+> **tip:** Generally it is adviced to use notification interfaces versus singletone ones if possible as those improve Controllers loose coupling.
 
-```
-Example directory content:
- └ actors                           
-    └ singletones                 
-       └ IScreensController.as
-    └ notifications 
-       └ IOnApplicationReady.as
-       └ IOnRecordChanged.as       	   
-    └ GlobalContext.as     
-```
  
 ### The appname/commons directory
 
