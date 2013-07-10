@@ -7,7 +7,7 @@ Drop derives from PureMVC and aims to minimize implementation approach discordan
 
 Hybrid framework features:
 * Inversion of Control micro-architecture based on ServiceLocator, called `Context`;
-* Model / View / Controller tiers coded in `Services` / `Mediators` / `LogicController` classes respectively;
+* Model / View / Controller tiers coded in `Services` / `Mediators` / `Controller` classes respectively;
 * Strongly-typed notification & delegation model based on Actor Interfaces.
 
 
@@ -32,11 +32,11 @@ appname                       → application root
  
 ### The appname/actors directory
 
-The `appname/actors` directory contains a Context class which serves as a ServiceLocator for resolving Controllers, and the Controller interfaces themselves. Controller interfaces are split into two groups:
-* **singletones** - interfaces that start with `I<...>` name prefix and define API for managers, commands, workers, services of which there is a single implementation within the system. Example:
-* **notifications** - interfaces that start with `IOn<...>` name prefix and defined API for controllers that listen on specific events or actions happening within the system. Example:
+The `appname/actors` directory contains a Context class which serves as a ServiceLocator for resolving Actors, and the Actor interfaces themselves. Actor interfaces are split into two groups:
+* **singletones** - interfaces that start with `I<...>` name prefix and define API for managers, commands, workers, services of which there is a single implementation within the system.
+* **notifications** - interfaces that start with `IOn<...>` name prefix and defined API for actors that listen for specific events or actions happening within the system.
 
-Example of Singletone and Notification interfaces
+Example of Singletone and Notification interfaces:
 ```actionscript
 public interface ISheepHerdController
 {
@@ -50,10 +50,10 @@ public interface IOnWeatherChanged
 }
 ```
 
-Central Drop framework idea is that **Controllers do not communicate directly**. Instead they resolve each other via Context by specific interface defined in `appname/actors` package using following `Context` methods:
-* `.instanceOf`;
-* `.arrayOf`;
-* `.process`.
+Central Drop framework idea is that **Actors do not communicate directly**. Instead they resolve each other via Context by specific Actor interface defined in `appname/actors` package and then invoke required methods. Following `Context` methods are used to resolve the Actors:
+* `.instanceOf (type : Class) : IConcernedActor` - find one Actor instance of the specified interface;
+* `.arrayOf (type : Class) : Array` - finds an array of Actors for specified interface;
+* `.invoke (type : Class, callback : Function) : void` - executes supplied callback function over every Actor of the specified interface.
 
 This approach aims to decouple the system components for better maintainability. This way, `appname/actors` directory serves as a collection of interfaces specifying the internal system mechanics.
 
