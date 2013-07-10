@@ -36,11 +36,34 @@ The appname/actors directory contains a Context class which serves as a ServiceL
 * singletones - interfaces that start with "I<...>" name prefix and define API for managers, commands, workers, services of which there is a single implementation within the system;
 * notifications - interfaces that start with "IOn<...>" name prefix and defined API for controllers that listen on specific events or actions happening within the system.
 
-Central idea of the Drop framework is Controllers do not communicate directly, but instead resolve each other via Context by specific interface defined in appname/actors package using Context.instanceOf, Context.arrayOf and Context.process methods.
+Singletone interface example:
+```actionscript
+public interface ISignInController
+{
+	function signIn (name : String, password : String) : AuthStatus;
+	
+	function signOut () : void;
+}
+```
 
-This approach decouples the system greatly allowing for simple Controller implementations modification. This way, appname/actors directory serves as a collection of interfaces formulating system mechanics.
+Notification interface example:
+```actionscript
+public interface IOnAuthStatusChanged
+{
+	function onSignedIn (status : AuthStatus) : void;
+	
+	function onSignedOut () : void;
+}
+```
 
-Generally it is adviced to use notification interfaces versus singletone ones where possible as they allow for better system maintainability and clarity.
+Central idea of the Drop framework is simple as that:
+- Controllers do not communicate directly.
+
+Instead they resolve each other via Context by specific interface defined in appname/actors package using Context.instanceOf, Context.arrayOf and Context.process methods. This approach decouples the system components greatly.
+
+This way, appname/actors directory serves as a collection of interfaces specifying the internal system mechanics.
+
+Tip: Generally it is adviced to use notification interfaces versus singletone ones where possible as they allow for better system maintainability and clarity.
 
 ```
 Example directory content:
@@ -53,7 +76,7 @@ Example directory content:
     └ GlobalContext.as     
 ```
  
-### The appname/commons/ directory
+### The appname/commons directory
 
 
 ### The appname/controller directory
@@ -63,7 +86,7 @@ Example directory content:
     └ ScreensController.as
 ```
  
-### The appname/modle directory
+### The appname/model directory
 ```
 Example directory content:
  └ model         
