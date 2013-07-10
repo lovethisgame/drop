@@ -1,5 +1,7 @@
 # Drop
 
+<img src="/docs/logo.png" align="left"></img>
+
 Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript and Apache Flex.
 
 Drop derives from PureMVC and aims to minimize implementation approach discordance, forcing to write less boilerplate, less bug-prone and more consistent code, also introducing typed notification model and strong notion of Separation of Concerns concept.
