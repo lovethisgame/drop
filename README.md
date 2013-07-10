@@ -1,7 +1,7 @@
 # Drop
 
 <img src="/docs/logo.png" align="right"></img>
-> Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript and Apache Flex.
+Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript and Apache Flex.
 
 Drop derives from PureMVC and aims to minimize implementation approach discordance, forcing to write less boilerplate, less bug-prone and more consistent code, also introducing typed notification model and strong notion of Separation of Concerns concept.
 
@@ -34,33 +34,28 @@ appname                       → application root
 
 The `appname/actors` directory contains a Context class which serves as a ServiceLocator for resolving Controllers, and the Controller interfaces themselves. Controller interfaces are split into two groups:
 * **singletones** - interfaces that start with `I<...>` name prefix and define API for managers, commands, workers, services of which there is a single implementation within the system. Example:
-
-```actionscript
-public interface ISignInController
-{
-	function signIn (name : String, password : String) : AuthStatus;
-	
-	function signOut () : void;
-}
-```
-
 * **notifications** - interfaces that start with `IOn<...>` name prefix and defined API for controllers that listen on specific events or actions happening within the system. Example:
 
+Example of Singletone and Notification interfaces
 ```actionscript
-public interface IOnAuthStatusChanged
+public interface ISheepHerdController
 {
-	function onSignedIn (status : AuthStatus) : void;
-	
-	function onSignedOut () : void;
+	function addSheep (sheep : Sheep) : String;	
+	function eatSheep (sheepId : String) : void;
+}
+
+public interface IOnWeatherChanged
+{
+	function onWeatherChanged (weather : Weather) : void;
 }
 ```
 
-Central idea of the Drop framework is:
-> Controllers do not communicate directly.
+Central Drop framework idea is that **Controllers do not communicate directly**. Instead they resolve each other via Context by specific interface defined in `appname/actors` package using following `Context` methods:
+* `.instanceOf`;
+* `.arrayOf`;
+* `.process`.
 
-Instead they resolve each other via Context by specific interface defined in `appname/actors` package using `Context.instanceOf`, `Context.arrayOf` and `Context.process` methods. This approach aims to decouple the system components for better maintainability.
-
-This way, `appname/actors` directory serves as a collection of interfaces specifying the internal system mechanics.
+This approach aims to decouple the system components for better maintainability. This way, `appname/actors` directory serves as a collection of interfaces specifying the internal system mechanics.
 
 > **tip:** Generally it is adviced to use notification interfaces versus singletone ones if possible as those improve Controllers loose coupling.
 
