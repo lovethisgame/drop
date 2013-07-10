@@ -17,3 +17,5 @@ drop-link-report.xml
 drop-ria-fe.swc
 drop-size-report.xml
 compiler.config.xml
+drop-as3-config-report.xml
+drop-as3-example-configs.xml
