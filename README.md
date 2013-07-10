@@ -17,8 +17,8 @@ Typical application / library written on drop framework has the following struct
 org.dropframework.*           → included framework sources
 appname                       → application root
  └ actors                       → root for internal communication interfaces (actors)
-    └ singletones                 → actor interfaces with single implementation, executors and managers: I<...>
-    └ notifications           → actor interfaces with multiple implementation, listeners: IOn<...>
+    └ singletones                 → actor interfaces with single implementation: I<...>
+    └ notifications           → actor interfaces with multiple implementation: IOn<...>
  └ commons                      → root for all shared generic classes
     └ components                  → shared generic components
     └ utils                       → shared generic utility classes
