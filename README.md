@@ -40,8 +40,8 @@ Example of Singletone and Notification interfaces:
 ```actionscript
 public interface ISheepHerdController
 {
-	function addSheep (sheep : Sheep) : String;	
-	function eatSheep (sheepId : String) : void;
+	function addSheep (sheep : Sheep) : void;	
+	function get sheepCount () : uint;
 }
 
 public interface IOnWeatherChanged
@@ -72,12 +72,44 @@ Framework does not bundle any 3rd party utilities and components library. For ut
 
 
 ### The appname/controller directory
+
+Controllers are Actors that contain business logic and / or orchestrate other Actors such as Services and Mediators. Examples include executable commands triggered directly or by notification, various managers, complex execution sequences or aspect controllers.
+
+Controllers decouple the complex business logic and facade that behind Actor interfaces, for example:
+```actionscript
+public class Shepherd
+	extends Controller
+	implements ISheepHerdController, IOnWeatherChanged
+{
+	private var _sheeps : Vector.<Sheep> = new Vector.<Sheep>();
+
+	public function addSheep (sheep : Sheep) : void
+	{
+		_sheeps.push(sheep);
+	}
+	
+	public function get sheepCount () : uint
+	{
+		return _sheeps.length;
+	}
+	
+	public function onWeatherChanged (weather : Weather) : void
+	{
+		if (weather.isSuddenStorm)
+		{
+			_sheeps = new Vector.<Sheep>();
+			process(IOnDisasterHappened, function (a : IOnDisasterHappened) : void
+				{ a.onDisasterHappened("Every Sheeps has died because of a Sudden Storm!"); });
+		}
+	}
+}
 ```
-Example directory content:
- └ controller                       
-    └ ScreensController.as
-```
- 
+
+Notice the way notification broadcasted to every Actor implementing the `IOnDisasterHappened` interface using the `process` method.
+
+> **tip:** Strictly, Controllers are not always required as Mediators and Services (see below) can and should contain application logic related to presentation and model layers. Use Controllers to decouple and manage the non-presentation and non-model related logic, control a system aspect or orchestrate other Actors via their interfaces.
+
+
 ### The appname/model directory
 ```
 Example directory content:
