@@ -13,7 +13,7 @@
 
         private function creationCompleteHandler (event : FlexEvent) : void
         {
-            // creating mediator for itself to initialize other controllers
+            // creating mediator for itself to initialize other actors
             new ExampleApplicationMediator(this);
         }
         ]]>

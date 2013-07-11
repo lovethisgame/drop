@@ -1,12 +1,12 @@
 package example.view.herd
 {
     import example.actors.GlobalContext;
-import example.actors.notifications.IOnWeatherChanged;
-import example.actors.singletones.ISheepHerdController;
-import example.actors.singletones.IWeatherService;
-import example.model.vos.Weather;
+    import example.actors.notifications.IOnWeatherChanged;
+    import example.actors.singletones.ISheepHerdController;
+    import example.actors.singletones.IWeatherService;
+    import example.model.vos.Weather;
 
-import org.dropframework.mvc.view.Mediator;
+    import org.dropframework.mvc.view.Mediator;
     import org.dropframework.mvc.view.ViewEvent;
 
     public class HerdPanelMediator

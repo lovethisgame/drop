@@ -3,8 +3,8 @@ package example.model.services
     import example.actors.GlobalContext;
     import example.actors.notifications.IOnNetworkError;
     import example.actors.singletones.IWeatherService;
-import example.commons.utils.AsyncConnector;
-import example.model.vos.Response;
+    import example.commons.utils.AsyncConnector;
+    import example.model.vos.Response;
     import example.model.vos.Weather;
 
     import org.dropframework.mvc.model.Service;
