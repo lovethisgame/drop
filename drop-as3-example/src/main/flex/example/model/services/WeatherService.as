@@ -3,7 +3,8 @@ package example.model.services
     import example.actors.GlobalContext;
     import example.actors.notifications.IOnNetworkError;
     import example.actors.singletones.IWeatherService;
-    import example.model.vos.Response;
+import example.commons.utils.AsyncConnector;
+import example.model.vos.Response;
     import example.model.vos.Weather;
 
     import org.dropframework.mvc.model.Service;
@@ -13,6 +14,8 @@ package example.model.services
         extends Service
         implements IWeatherService
     {
+        private static const storm : Weather = Weather.of(15.4, 28.1);
+
 
         public function WeatherService ()
         {
@@ -22,11 +25,13 @@ package example.model.services
 
         public function measureWeather (callback : Function /* (Weather) */) : void
         {
+            // offline stub
             if (!AsyncConnector.networkAvailable)
             {
-                callback(Weather.of(17.2, 3.2));
+                callback(storm);
                 return;
             }
+            // invoking remote endpoint method
             AsyncConnector.invoke("endpoint.weather", "measureWeather",
                     function (response : Response) : void
                     {

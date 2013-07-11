@@ -22,10 +22,10 @@ package org.dropframework.mvc.view
 
 
     /**
-     * Support class, represents a single ViewAdapter over the DisplayObject. User by Presenter to carry on view related
+     * Support class, represents a single ViewAdapter over the DisplayObject. User by Mediator to carry on view related
      * functionality. Default IViewAdapter implementation.
      *
-     * ViewAdapter created by a single Presenter at construction time and used to access the controlled DisplayObjects.
+     * ViewAdapter created by a single Mediator at construction time and used to access the controlled DisplayObjects.
      *
      * @author jdanilov
      * */

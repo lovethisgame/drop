@@ -21,7 +21,7 @@ package org.dropframework.core.actors
      *
      * Only IConcernedActor instances can be registered in the Drop Context (IContext interface).
      *
-     * Designed to be extended by custom system actor types, for instance Presenter, Model, Business, etc. defining
+     * Designed to be extended by custom system actor types, for instance Mediator, Model, Business, etc. defining
      * the areas of responsibility (Concerns) in the system.
      *
      * @author jdanilov

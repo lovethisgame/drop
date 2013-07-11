@@ -34,12 +34,12 @@ package org.dropframework.mvc.view
      *
      * @author jdanilov
      * */
-    public class Presenter extends ContextAwareActor
+    public class Mediator extends ContextAwareActor
     {
         private var _adapter : IViewAdapter;
 
 
-        /** Presenter's view adapter. Non null. */
+        /** Mediator's view adapter. Non null. */
         protected function get adapter () : IViewAdapter
         {
             return _adapter;
@@ -48,13 +48,13 @@ package org.dropframework.mvc.view
 
 
         /**
-         * Creates new Presenter for a given display object. Automatically registers itself in the context.
+         * Creates new Mediator for a given display object. Automatically registers itself in the context.
          *
          * @param context - context to be used by the controller.
          * @param displayObject - displayObject to be used by the controller.
          * @throws org.dropframework.core.commons.DropFrameworkError if displayObject is null.
          * */
-        public function Presenter
+        public function Mediator
                 (context : IContext, displayObject : DisplayObject)
         {
             super(context);

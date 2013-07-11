@@ -20,7 +20,7 @@ package org.dropframework.mvc.view
 
 
     /**
-     * Dynamic event, dispatched by View routed to Presenter via ViewEventsListener.
+     * Dynamic event, dispatched by View routed to Mediator via ViewEventsListener.
      *
      * Event has only one type - ACTION, and is always created with this type in place. To differentiate events an
      * actionName field is used instead. This field is always supplied via constructor or static factory methods.
@@ -154,7 +154,7 @@ package org.dropframework.mvc.view
         public static function uniqueName (actionName : String = null) : String
         {
             if (actionName == null)
-                return uniqueId++ + "UNKNOWN:";
+                return uniqueId++ + ":UNKNOWN";
 
             return uniqueId++ + ":" + actionName;
         }

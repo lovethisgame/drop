@@ -1,7 +1,7 @@
 package example.controller
 {
     import example.actors.GlobalContext;
-    import example.actors.notifications.IOnDisasterHappened;
+    import example.actors.notifications.IOnSheepCountChanged;
     import example.actors.notifications.IOnWeatherChanged;
     import example.actors.singletones.ISheepHerdController;
     import example.model.vos.Weather;
@@ -11,9 +11,10 @@ package example.controller
 
     public class Shepherd
         extends Controller
-        implements ISheepHerdController, IOnWeatherChanged
+        implements ISheepHerdController,
+                   IOnWeatherChanged
     {
-        private var sheepsCount : int = 0;
+        private var _sheepCount : int = 0;
 
 
         public function Shepherd ()
@@ -24,20 +25,22 @@ package example.controller
 
         public function addSheep () : void
         {
-            sheepsCount++;
+            _sheepCount++;
+            invoke(IOnSheepCountChanged, function (a : IOnSheepCountChanged) : void
+                    { a.onSheepCountChanged(); });
         }
 
         public function get sheepCount () : uint
         {
-            return sheepsCount;
+            return _sheepCount;
         }
 
         public function onWeatherChanged (weather : Weather) : void
         {
             if (weather.isStorm)
             {
-                sheepsCount = 0;
-                invoke(IOnDisasterHappened, function (a : IOnDisasterHappened) : void
+                _sheepCount = 0;
+                invoke(IOnSheepCountChanged, function (a : IOnSheepCountChanged) : void
                         { a.onDisasterHappened("Every Sheep has died because of a Sudden Storm!"); });
             }
         }

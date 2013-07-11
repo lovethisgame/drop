@@ -48,7 +48,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <debug>true</debug>
-                    <sourceFile>${basedir}/src/main/flex/example/ExampleApplication.mxml</sourceFile>
+                    <sourceFile>${basedir}/src/main/flex/example/view/ExampleApplication.mxml</sourceFile>
                     <compilerWarnings>
                         <warn-no-constructor>boolean</warn-no-constructor>
                     </compilerWarnings>

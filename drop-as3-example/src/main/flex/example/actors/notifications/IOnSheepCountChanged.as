@@ -1,7 +1,9 @@
 package example.actors.notifications
 {
-    public interface IOnDisasterHappened
+    public interface IOnSheepCountChanged
     {
+        function onSheepCountChanged() : void;
+
         function onDisasterHappened (description : String) : void;
     }
 }

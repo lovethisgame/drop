@@ -24,7 +24,7 @@ package org.dropframework.core.actors
      * Simple implementation of the IConcernedActor interface which requires the context to be supplied as a constructor
      * argument, thus providing context related capabilities within the controller.
      *
-     * Designed for extension by subclasses. Extended by MVC's classes: Model, Presenter and Controller.
+     * Designed for extension by subclasses. Extended by MVC's classes: Model, Mediator and Controller.
      *
      * @author jdanilov
      * */
