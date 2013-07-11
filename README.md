@@ -25,7 +25,7 @@ appname                       → application root
     └ utils                       → shared generic utility classes
  └ controller                   → root for business logic controllers
  └ model                        → root for model classes
-    └ proxies                     → proxies, services, data access objects
+    └ services                    → proxies, services, data access objects
     └ vos                         → value objects, entities, data transfer objects
  └ view                         → root for views and mediators
 ```
@@ -95,11 +95,11 @@ public class Shepherd
 	
 	public function onWeatherChanged (weather : Weather) : void
 	{
-		if (weather.isSuddenStorm)
+		if (weather.isStorm)
 		{
 			_sheeps = new Vector.<Sheep>();
 			process(IOnDisasterHappened, function (a : IOnDisasterHappened) : void
-				{ a.onDisasterHappened("Every Sheeps has died because of a Sudden Storm!"); });
+					{ a.onDisasterHappened("Every Sheeps has died because of a Sudden Storm!"); });
 		}
 	}
 }
@@ -111,15 +111,73 @@ Notice the way notification broadcasted to every Actor implementing the `IOnDisa
 
 
 ### The appname/model directory
+
+Model layer is at heart of every application as it defines Domain Objects and Domain API. Framework allows to follow various practices to define the Model, for instance applying a Domain Driven Development approach, but in core manages the two types of aspects:
+* **data access objects** - these are services, proxies, data stubs, remote endpoints etc. that provide a data feed for the application to present or means to control and modify the application data. Drop provides `Service` and `Proxy` Actor classes to represent those.
+* **data transfer objects** - these are value objects and entities that represent the Domain.
+
+Data access objects are stored in `appname/model/services` package, whereas data transfer objects are kept in `appname/model/vos`, i.e. Value Objects package.
+
+Example of a Service:
+
+```actionscript
+public class WeatherService
+	extends Service
+	implements IWeatherService
+{
+	public function measureWeather (callback : Function /* (Weather) */) : void
+	{
+		if (!AsyncConnector.networkAvailable)
+		{
+			callback(Weather.of(17.2, 3.2)); 
+			return;
+		}	
+		AsyncConnector.invoke("endpoint.weather", "measureWeather",
+			function (response : Response) : void
+			{
+				if (response.hasError())
+				{
+					process(IOnNetworkError, function (a : IOnNetworkError) : void
+							{ a.onNetworkError(response.error); });
+					callback(null);
+				}
+				else
+				{
+					callback(Weather(response.content));
+				}
+			});
+	}
+}
 ```
-Example directory content:
- └ model         
-    └ proxies
-       └ RecordsEndpoint.as
-    └ vos                             
-       └ Record.as
-```
+
+And a Value Object:
+
+```actionscript
+public class Weather
+{
+	public var temperature : Number /* in C */;
+	public var windspeed : Number /* in m/s */;
 	
+	public function get isStorm () : Boolean
+	{
+		return windspeed >= 24.5;
+	}
+	
+	public static function of (temperature : Number, windspeed : Number) : Weather
+	{
+		var result : Weather = new Weather();
+		result.temperature = temperature;
+		result.windspeed = windspeed;
+		return result;
+	}
+}
+```
+
+Rule of a thumb here is to do not handle any application business or presentation logic within the Model layer. Controllers and Mediators should be used instead.
+
+> **tip:** Services and Proxies may use direct response mechanics as shown in the example above (notice the callback is invoked once response received) or indirect Notification broadcasting via IOn interface, whichever preferred and consistent with an approach chosen by development team.
+
+
 ### The appname/view directory
 ```
 Example directory content:
