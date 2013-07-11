@@ -13,6 +13,7 @@ target/
 *.ipr
 *.iws
 *.iml
+.idea
 drop-link-report.xml
 drop-ria-fe.swc
 drop-size-report.xml
