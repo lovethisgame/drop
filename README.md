@@ -98,14 +98,14 @@ public class Shepherd
 		if (weather.isStorm)
 		{
 			_sheeps = new Vector.<Sheep>();
-			process(IOnDisasterHappened, function (a : IOnDisasterHappened) : void
+			invoke(IOnDisasterHappened, function (a : IOnDisasterHappened) : void
 					{ a.onDisasterHappened("Every Sheep has died because of a Sudden Storm!"); });
 		}
 	}
 }
 ```
 
-Notice the way notification broadcasted to every Actor implementing the `IOnDisasterHappened` interface using the `process` method.
+Notice the way notification broadcasted to every Actor implementing the `IOnDisasterHappened` interface using the `invoke` method.
 
 > **tip:** Strictly, Controllers are not always required as Mediators and Services (see below) can and should contain application logic related to presentation and model layers. Use Controllers to decouple and manage the non-presentation and non-model related logic, control a system aspect or orchestrate other Actors via their interfaces.
 
@@ -137,7 +137,7 @@ public class WeatherService
 			{
 				if (response.hasError())
 				{
-					process(IOnNetworkError, function (a : IOnNetworkError) : void
+					invoke(IOnNetworkError, function (a : IOnNetworkError) : void
 							{ a.onNetworkError(response.error); });
 					callback(null);
 				}
