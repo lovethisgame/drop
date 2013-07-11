@@ -99,7 +99,7 @@ public class Shepherd
 		{
 			_sheeps = new Vector.<Sheep>();
 			process(IOnDisasterHappened, function (a : IOnDisasterHappened) : void
-					{ a.onDisasterHappened("Every Sheeps has died because of a Sudden Storm!"); });
+					{ a.onDisasterHappened("Every Sheep has died because of a Sudden Storm!"); });
 		}
 	}
 }
