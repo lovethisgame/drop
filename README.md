@@ -57,10 +57,18 @@ Central Drop framework idea is that **Actors do not communicate directly**. Inst
 
 This approach aims to decouple the system components for better maintainability. This way, `appname/actors` directory serves as a collection of interfaces specifying the internal system mechanics.
 
-> **tip:** Generally it is adviced to use notification interfaces versus singletone ones if possible as those improve Controllers loose coupling.
+> **tip:** Generally it is adviced to rely on notification interfaces versus singletone ones where possible as they allow for improved loose coupling.
 
  
 ### The appname/commons directory
+
+The `appname/commons` directory contains all components, abstractions, utilities and support modules that are:
+* generic enough to be reused or means to be extended for the use;
+* do not handle any application business logic directrly.
+
+Directory content is rather custom, in case of Apache Flex application it is adviced to have a `components` sub package to contain all the shared and reusable components, and `utils` directory for various utilities.
+
+Framework does not bundle any 3rd party utilities and components library. For utilities, such as those working with Objects, Strings, ByteArrays, Logging system etc. there are few good free options available, such as as3commons library that can found here: http://www.as3commons.org.
 
 
 ### The appname/controller directory
