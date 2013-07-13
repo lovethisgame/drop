@@ -30,13 +30,13 @@ package example.view.message
 
         public function onDisasterHappened(description : String) : void
         {
-            messagePanel.statusLabel.text = description;
+            messagePanel.dataProvider = description;
         }
 
 
         private function refreshSheepCount() : void
         {
-            messagePanel.statusLabel.text = (sheepHerdController.sheepCount != 0) ?
+            messagePanel.dataProvider = (sheepHerdController.sheepCount != 0) ?
                     "Sheep herd has " + sheepHerdController.sheepCount + " sheeps" :
                     "Sheep herd is empty";
         }

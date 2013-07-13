@@ -4,6 +4,16 @@
          width="100%" height="100%"
          title="Status Message">
 
+    <fx:Script>
+        <![CDATA[
+        /* public method exposed to the mediator, allows for setting the message text */
+        public function set dataProvider (label : String) : void
+        {
+            statusLabel.text = label;
+        }
+        ]]>
+    </fx:Script>
+
     <s:Label id="statusLabel"
              verticalCenter="0" horizontalCenter="0"/>
 
