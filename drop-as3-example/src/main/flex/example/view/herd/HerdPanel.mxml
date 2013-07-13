@@ -8,19 +8,21 @@
         <![CDATA[
         import org.dropframework.mvc.view.ViewEvent;
 
+        /* public view event names listing dispatched by this view component */
         public static const A_ADD_SHEEP_CLICKED : String
                = ViewEvent.uniqueName("A_ADD_SHEEP_CLICKED");
         public static const A_CHANGE_WEATHER_CLICKED : String
                 = ViewEvent.uniqueName("A_CHANGE_WEATHER_CLICKED");
 
+        /* local event listeners that trigger dispatching the view events to mediator */
         private function addSheepButton_clickHandler(event:MouseEvent):void
         {
-            dispatchEvent(ViewEvent.of(A_ADD_SHEEP_CLICKED));
+            dispatchEvent(ViewEvent.of(A_ADD_SHEEP_CLICKED, event));
         }
 
         private function changeWeatherButton_clickHandler(event:MouseEvent):void
         {
-            dispatchEvent(ViewEvent.of(A_CHANGE_WEATHER_CLICKED));
+            dispatchEvent(ViewEvent.of(A_CHANGE_WEATHER_CLICKED, event));
         }
         ]]>
     </fx:Script>

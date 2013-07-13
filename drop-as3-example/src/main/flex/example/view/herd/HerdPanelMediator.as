@@ -16,6 +16,8 @@ package example.view.herd
         {
             super(GlobalContext.instance, view);
 
+            /* handles the add sheep button click from the view,
+               and delegates execution to sheep herd controller */
             adapter.onActions(
                     [HerdPanel.A_ADD_SHEEP_CLICKED],
                     function (event : ViewEvent) : void
@@ -23,6 +25,8 @@ package example.view.herd
                         sheepHerdController.addSheep();
                     });
 
+            /* handles the weather change button click from the view,
+               invokes remote measureWeather method and notifies actors on weather change */
             adapter.onActions(
                     [HerdPanel.A_CHANGE_WEATHER_CLICKED],
                     function (event : ViewEvent) : void
