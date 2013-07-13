@@ -3,6 +3,7 @@ package example.actors
     import org.dropframework.core.contexts.Context;
 
 
+    /* Core application context where all actors are registered */
     public class GlobalContext
         extends Context
     {

@@ -2,7 +2,7 @@ package example.commons.utils
 {
     import example.model.vos.Response;
 
-    // for simplicity reasons, this utility class is only a stub
+    /* for simplicity reasons, this utility class is only a stub */
     public class AsyncConnector
     {
         public static function get networkAvailable () : Boolean

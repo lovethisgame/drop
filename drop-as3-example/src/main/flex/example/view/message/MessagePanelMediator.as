@@ -1,16 +1,12 @@
 package example.view.message
 {
     import example.actors.GlobalContext;
-    import example.actors.notifications.IOnApplicationReady;
     import example.actors.notifications.IOnSheepCountChanged;
-    import example.actors.singletones.ISheepHerdController;
-
     import org.dropframework.mvc.view.Mediator;
 
     public class MessagePanelMediator
         extends Mediator
-        implements IOnApplicationReady,
-                   IOnSheepCountChanged
+        implements IOnSheepCountChanged
     {
         public function MessagePanelMediator(view : MessagePanel)
         {
@@ -18,34 +14,20 @@ package example.view.message
         }
 
 
-        public function onApplicationReady() : void
+        /* listen for the sheep count change to update the sheep count */
+        public function onSheepCountChanged(sheepCount : uint) : void
         {
-            refreshSheepCount();
-        }
-
-        public function onSheepCountChanged() : void
-        {
-            refreshSheepCount();
-        }
-
-        public function onDisasterHappened(description : String) : void
-        {
-            messagePanel.statusLabel.text = description;
-        }
-
-
-        private function refreshSheepCount() : void
-        {
-            messagePanel.statusLabel.text = (sheepHerdController.sheepCount != 0) ?
-                    "Sheep herd has " + sheepHerdController.sheepCount + " sheeps" :
+            messagePanel.dataProvider = (sheepCount != 0) ?
+                    "Sheep herd has " + sheepCount + " sheeps" :
                     "Sheep herd is empty";
         }
 
-
-        private function get sheepHerdController() : ISheepHerdController
+        /* listen for the disaster event to print that out */
+        public function onDisasterHappened(sheepCount : uint, description : String) : void
         {
-            return instanceOf(ISheepHerdController) as ISheepHerdController;
+            messagePanel.dataProvider = description;
         }
+
 
         private function get messagePanel() : MessagePanel
         {
