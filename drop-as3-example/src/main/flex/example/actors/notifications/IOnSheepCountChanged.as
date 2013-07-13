@@ -2,8 +2,7 @@ package example.actors.notifications
 {
     public interface IOnSheepCountChanged
     {
-        function onSheepCountChanged() : void;
-
-        function onDisasterHappened (description : String) : void;
+        function onSheepCountChanged (sheepCount : uint) : void;
+        function onDisasterHappened (sheepCount : uint, description : String) : void;
     }
 }

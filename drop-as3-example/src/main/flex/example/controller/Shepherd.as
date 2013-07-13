@@ -1,6 +1,7 @@
 package example.controller
 {
     import example.actors.GlobalContext;
+    import example.actors.notifications.IOnApplicationReady;
     import example.actors.notifications.IOnSheepCountChanged;
     import example.actors.notifications.IOnWeatherChanged;
     import example.actors.singletones.ISheepHerdController;
@@ -12,7 +13,8 @@ package example.controller
     public class Shepherd
         extends Controller
         implements ISheepHerdController,
-                   IOnWeatherChanged
+                   IOnWeatherChanged,
+                   IOnApplicationReady
     {
         private var _sheepCount : int = 0;
 
@@ -27,12 +29,13 @@ package example.controller
         {
             _sheepCount++;
             invoke(IOnSheepCountChanged, function (a : IOnSheepCountChanged) : void
-                    { a.onSheepCountChanged(); });
+                    { a.onSheepCountChanged(_sheepCount); });
         }
 
-        public function get sheepCount () : uint
+        public function onApplicationReady() : void
         {
-            return _sheepCount;
+            invoke(IOnSheepCountChanged, function (a : IOnSheepCountChanged) : void
+                    { a.onSheepCountChanged(_sheepCount); });
         }
 
         public function onWeatherChanged (weather : Weather) : void
@@ -41,7 +44,7 @@ package example.controller
             {
                 _sheepCount = 0;
                 invoke(IOnSheepCountChanged, function (a : IOnSheepCountChanged) : void
-                        { a.onDisasterHappened("Every Sheep has died because of a Sudden Storm!"); });
+                        { a.onDisasterHappened(_sheepCount, "Herd was killed by a Sudden Storm!"); });
             }
         }
     }
