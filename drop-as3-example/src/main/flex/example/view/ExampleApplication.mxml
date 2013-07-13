@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Base application file -->
 <s:Application xmlns:s="library://ns.adobe.com/flex/spark"
                xmlns:fx="http://ns.adobe.com/mxml/2009"
                xmlns:herd="example.view.herd.*"
@@ -10,10 +11,9 @@
         <![CDATA[
         import mx.events.FlexEvent;
 
-
+        /* creates main application mediator once the view is created */
         private function creationCompleteHandler (event : FlexEvent) : void
         {
-            // creating mediator for itself to initialize other actors
             new ExampleApplicationMediator(this);
         }
         ]]>

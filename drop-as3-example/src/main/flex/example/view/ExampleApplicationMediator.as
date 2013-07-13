@@ -9,6 +9,7 @@ package example.view
 
     import org.dropframework.mvc.view.Mediator;
 
+    /** Mediator for the main Application, best place to create model, controller and view actors. */
     public class ExampleApplicationMediator
         extends Mediator
     {
@@ -16,12 +17,17 @@ package example.view
         {
             super(GlobalContext.instance, view);
 
+            /* initializing model layer */
             new WeatherService();
+
+            /* initializing controller layer */
             new Shepherd();
 
+            /* initializing mediators for included components */
             new HerdPanelMediator(view.herdPanel);
             new MessagePanelMediator(view.messagePanel);
 
+            /* once actors initialized, sending the ready notification */
             invoke(IOnApplicationReady, function (a : IOnApplicationReady) : void
                     { a.onApplicationReady(); });
         }
