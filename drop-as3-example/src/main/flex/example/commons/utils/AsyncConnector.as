@@ -16,6 +16,4 @@ package example.commons.utils
             callback(Response.ofError("Method .invoke is not implemented on AsyncConnector"));
         }
     }
-
-
 }
