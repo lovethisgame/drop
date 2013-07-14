@@ -137,7 +137,6 @@ View Event dispatching can be seen in a [HerdPanel.mxml](../drop-as3-example/src
             dispatchEvent(ViewEvent.of(A_ADD_SHEEP_CLICKED, event));
         }
     ]]></fx:Script>
-
     <s:Button id="addSheepButton" label="Add Sheep"
               verticalCenter="0" horizontalCenter="0"
               click="addSheepButton_clickHandler(event)"/>
@@ -147,6 +146,9 @@ View Event dispatching can be seen in a [HerdPanel.mxml](../drop-as3-example/src
 And listening in a [HerdPanelMediator.mxml](../drop-as3-example/src/main/flex/example/view/herd/HerdPanelMediator.as):
 
 ```actionscript
+public class HerdPanelMediator
+        extends Mediator
+{
     public function HerdPanelMediator(view : HerdPanel)
     {
         super(GlobalContext.instance, view);
@@ -168,32 +170,28 @@ And listening in a [HerdPanelMediator.mxml](../drop-as3-example/src/main/flex/ex
 
 #### Listening for external notifications
 
-Following pair shows simple View that is controlled by Mediator also listening for specific system notifications:
+[MessagePanel.mxml](../drop-as3-example/src/main/flex/example/view/message/MessagePanel.mxml) exposes `dataProvider` setter that applies message text to the label control:
 
 ```actionscript
 <?xml version="1.0"?>
 <s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
-         xmlns:s="library://ns.adobe.com/flex/spark"
-         width="100%" height="100%"
-         title="Herd status panel">
-
+         xmlns:s="library://ns.adobe.com/flex/spark">
     <fx:Script>
         <![CDATA[
-        /* public method exposed to the mediator, allows for setting the message text */
         public function set dataProvider (label : String) : void
         {
             statusLabel.text = label;
         }
         ]]>
     </fx:Script>
-
     <s:Label id="statusLabel"
              verticalCenter="0" horizontalCenter="0"/>
-
 </s:Panel>
+```
 
+[MessagePanelMediator.as](../drop-as3-example/src/main/flex/example/view/message/MessagePanelMediator.as) listens for `IOnSheepCountChanged` notification and applies `dataProvider` to the `MessagePanel` View:
 
-
+```actionscript
 public class MessagePanelMediator
     extends Mediator
     implements IOnSheepCountChanged
@@ -203,8 +201,6 @@ public class MessagePanelMediator
         super(GlobalContext.instance, view);
     }
 
-
-    /* listen for the sheep count change to update the sheep count */
     public function onSheepCountChanged(sheepCount : uint) : void
     {
         messagePanel.dataProvider = (sheepCount != 0) ?
@@ -212,12 +208,10 @@ public class MessagePanelMediator
                 "Sheep herd is empty";
     }
 
-    /* listen for the disaster event to print that out */
     public function onDisasterHappened(sheepCount : uint, description : String) : void
     {
         messagePanel.dataProvider = description;
     }
-
 
     private function get messagePanel() : MessagePanel
     {
@@ -227,42 +221,29 @@ public class MessagePanelMediator
 ```
 
 
-#### Initializing application
+## Initialization
 
-Application initializaiton is usually done by the Application Mediator, instanciated by the main Application View, like shown here:
+Once [ApplicationView](../drop-as3-example/src/main/flex/example/view/ExampleApplication.mxml) created, an [ApplicationMediator](../drop-as3-example/src/main/flex/example/view/ExampleApplicationMediator.as) is initialized, which in turn creates all the system actors.
 
 ```actionscript
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Base application file -->
 <s:Application xmlns:s="library://ns.adobe.com/flex/spark"
                xmlns:fx="http://ns.adobe.com/mxml/2009"
-               xmlns:herd="example.view.herd.*"
-               xmlns:message="example.view.message.*"
                creationComplete="creationCompleteHandler(event)">
-
-
-    <fx:Script>
-        <![CDATA[
+    <fx:Script><![CDATA[
         import mx.events.FlexEvent;
-
-        /* creates main application mediator once the view is created */
         private function creationCompleteHandler (event : FlexEvent) : void
         {
             new ExampleApplicationMediator(this);
         }
-        ]]>
-    </fx:Script>
-
-    <s:VGroup verticalCenter="0" horizontalCenter="0" width="300" height="200">
-        <herd:HerdPanel id="herdPanel"/>
-        <message:MessagePanel id="messagePanel"/>
-    </s:VGroup>
-
+    ]]></fx:Script>
+    <!-- view components here ... -->
 </s:Application>
+```
 
+And Application Mediator: 
 
-
-/** Mediator for the main Application, best place to create model, controller and view actors. */
+```actionscript
 public class ExampleApplicationMediator
     extends Mediator
 {
@@ -287,7 +268,9 @@ public class ExampleApplicationMediator
 }
 ```
 
-Notice Mediators initialization happens in a hierarchy with parent view Mediators initializing Mediators for the children view.
+Mediators initialization happens hierarchically with parent Mediators initializing Mediators for the child views.
+
+> **tip:** Generally it is a good idea to dispatch IOnApplicationReady notification in a way shown above once all Actors created and execute all initial data retrieving, view preparing and internal processes launch within listeners in a safe manner, rather than in Actor contstructors.
 
 
 ## How to use
