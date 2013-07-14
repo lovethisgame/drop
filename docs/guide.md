@@ -38,24 +38,19 @@ As explained below, application written on Drop consists of logic processing cla
  
 ### The appname/actors directory
 
-The `appname/actors` directory usually contains a single `GlobalContext` class which serves as a ServiceLocator for resolving Actors, and the Actor communication interfaces themselves. Actor interfaces are split into two groups:
+The `appname/actors` directory usually contains a single [GlobalContext](../drop-as3-example/src/main/flex/example/actors/GlobalContext.as) class which serves as a ServiceLocator for resolving Actors, and the Actor communication interfaces themselves. Actor interfaces are split into two groups:
 * **singletones** - interfaces that start with `I<...>` name prefix and define API for managers, commands, workers, services of which there is a single implementation within the system.
 * **notifications** - interfaces that start with `IOn<...>` name prefix and defined API for actors that listen for specific events or actions happening within the system.
 
-Example of Singletone and Notification interfaces:
-```actionscript
-public interface ISheepHerdController
-{
-    function addSheep () : void;
-}
+Example of Singletone interfaces:
+* [ISheepHerdController.as](../drop-as3-example/src/main/flex/example/actors/singletones/ISheepHerdController.as) 
+* [IWeatherService.as](../drop-as3-example/src/main/flex/example/actors/singletones/IWeatherService.as) 
 
-public interface IOnWeatherChanged
-{
-    function onWeatherChanged (weather : Weather) : void;
-}
-```
+And Notification interfaces:
+* [IOnSheepCountChanged.as](../drop-as3-example/src/main/flex/example/actors/notifications/IOnSheepCountChanged.as)
+* [IOnWeatherChanged.as](../drop-as3-example/src/main/flex/example/actors/notifications/IOnWeatherChanged.as)
 
-Central Drop framework idea is that **Actors do not communicate directly**. Instead they resolve each other via Context by specific Actor interface defined in `appname/actors` package and then invoke required methods. Following `Context` methods can be used to resolve the Actors:
+Core idea is that **Actors do not communicate directly**, instead they resolve each other via [GlobalContext](../drop-as3-example/src/main/flex/example/actors/GlobalContext.as) by specific Actor interface defined in `appname/actors` package and then invoke required methods. Following `Context` methods can be used to resolve the Actors:
 * `.instanceOf (type : Class) : IConcernedActor` - finds one and only one Actor instance of the specified interface, fails if more than 1 Actors found;
 * `.arrayOf (type : Class) : Array` - finds an array of Actors for specified interface;
 * `.invoke (type : Class, callback : Function) : void` - executes supplied callback function with every Actor of the specified interface as an argument. Handy for notifying multiple Actors.
