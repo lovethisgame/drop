@@ -80,7 +80,7 @@ Framework does not bundle any 3rd party utilities and components library. For ut
 
 Controllers are Actors that contain business logic and / or orchestrate other Actors such as Services and Mediators. Examples include executable commands triggered directly or by notification, various managers, complex execution sequences or aspect controllers.
 
-Controllers decouple the complex business logic and facade that behind Actor interfaces, see the [Shepherd.as](../drop-as-example/src/main/flex/example/controller/Shepherd.as) for example:
+Controllers decouple the complex business logic and facade that behind Actor interfaces, see the [Shepherd.as](../drop-as3-example/src/main/flex/example/controller/Shepherd.as) for example:
 ```actionscript
 public class Shepherd
     extends Controller
