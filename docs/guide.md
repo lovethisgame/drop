@@ -281,5 +281,5 @@ Mediators initialization happens hierarchically with parent Mediators initializi
 
 Drop is designed for modification and extension. For a particular project it might be decided to introduce additional or modified Actor types structure.
 
-> **tip:** Whatever architecture is followed, it must be made sure every Actor is only concerned with the aspect it's type designed to handle, and the actors communicate in decoupled manner via well-defined communication interfaces.
+Whatever architecture is followed, it must be made sure every Actor is only concerned with the aspect it's type designed to handle, and the actors communicate in decoupled manner via well-defined communication interfaces.
 
