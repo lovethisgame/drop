@@ -235,6 +235,9 @@ In turn, every Mediator must:
 * perform a business logic only of a single View it is assigned to;
 * delegate non-View specific logic to other mediators, services or controllers responsible for it.
 
+
+#### ViewEvent dispatching
+
 Following View-Mediator pair shows the ViewEvent dispatching / intercepting mechanics:
 
 ```actionscript
@@ -323,6 +326,9 @@ public class HerdPanelMediator
 }
 ```
 
+
+#### Listening for external notifications
+
 Following pair shows simple View that is controlled by Mediator also listening for specific system notifications:
 
 ```actionscript
@@ -380,6 +386,69 @@ public class MessagePanelMediator
     }
 }
 ```
+
+
+#### Initializing application
+
+Application initializaiton is usually done by the Application Mediator, instanciated by the main Application View, like shown here:
+
+```actionscript
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Base application file -->
+<s:Application xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns:fx="http://ns.adobe.com/mxml/2009"
+               xmlns:herd="example.view.herd.*"
+               xmlns:message="example.view.message.*"
+               creationComplete="creationCompleteHandler(event)">
+
+
+    <fx:Script>
+        <![CDATA[
+        import mx.events.FlexEvent;
+
+        /* creates main application mediator once the view is created */
+        private function creationCompleteHandler (event : FlexEvent) : void
+        {
+            new ExampleApplicationMediator(this);
+        }
+        ]]>
+    </fx:Script>
+
+    <s:VGroup verticalCenter="0" horizontalCenter="0" width="300" height="200">
+        <herd:HerdPanel id="herdPanel"/>
+        <message:MessagePanel id="messagePanel"/>
+    </s:VGroup>
+
+</s:Application>
+
+
+
+/** Mediator for the main Application, best place to create model, controller and view actors. */
+public class ExampleApplicationMediator
+    extends Mediator
+{
+    public function ExampleApplicationMediator(view : ExampleApplication)
+    {
+        super(GlobalContext.instance, view);
+
+        /* initializing model layer */
+        new WeatherService();
+
+        /* initializing controller layer */
+        new Shepherd();
+
+        /* initializing mediators for included components */
+        new HerdPanelMediator(view.herdPanel);
+        new MessagePanelMediator(view.messagePanel);
+
+        /* once actors initialized, sending the ready notification */
+        invoke(IOnApplicationReady, function (a : IOnApplicationReady) : void
+                { a.onApplicationReady(); });
+    }
+}
+```
+
+Notice Mediators initialization happens in a hierarchy with parent view Mediators initializing Mediators for the children view.
 
 
 ## How to use
