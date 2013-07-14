@@ -94,14 +94,12 @@ Every Controller automatically registers itself within the GlobalContext upon in
 ### The appname/model directory
 
 Model layer is at heart of every application as it defines Domain Objects and Domain API and can be found in [appname/model](../drop-as3-example/src/main/flex/example/model) directory. Framework allows to follow various practices to define the Model, for instance applying a Domain Driven Development approach, but in core manages the two types of classes:
-* **data access objects** - these are services, proxies, data stubs, remote endpoints etc. that provide a data feed for the application to present or means to control and modify the application data. Drop provides `Service` and `Proxy` basic Actor classes to represent those.
-* **data transfer objects** - these are value objects and entities that represent the Domain.
-
-Data access objects are stored in [appname/model/services](../drop-as3-example/src/main/flex/example/model/services) package, whereas data transfer objects are kept in [appname/model/vos](../drop-as3-example/src/main/flex/example/model/vos), i.e. Value Objects package.
-
-[WeatherService.as](../drop-as3-example/src/main/flex/example/model/service/WeatherService.as) is a Service example, and [Weather.as](../drop-as3-example/src/main/flex/example/model/vos/Weather.as) is a Value Object.
+* **data access objects** - found in [appname/model/services](../drop-as3-example/src/main/flex/example/model/services), these are services, proxies, data stubs, remote endpoints etc. that provide a data feed for the application to present or means to control and modify the application data. Drop provides `Service` and `Proxy` basic Actor classes to represent those.
+* **data transfer objects** - found in [appname/model/vos](../drop-as3-example/src/main/flex/example/model/vos), these are value objects and entities that represent the Domain.
 
 No application business or presentation logic should be handled within the Model layer. Controllers and Mediators should be used instead.
+
+[WeatherService.as](../drop-as3-example/src/main/flex/example/model/services/WeatherService.as) is a Service example, and [Weather.as](../drop-as3-example/src/main/flex/example/model/vos/Weather.as) is a Value Object.
 
 > **tip:** Services and Proxies may use direct response mechanics via IOn interface or indirect notification broadcasting via IOn interface, whichever preferred and consistent with an approach chosen by development team.
 
