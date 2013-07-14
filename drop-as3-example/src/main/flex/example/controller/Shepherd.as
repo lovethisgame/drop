@@ -44,7 +44,7 @@ package example.controller
             {
                 _sheepCount = 0;
                 invoke(IOnSheepCountChanged, function (a : IOnSheepCountChanged) : void
-                        { a.onDisasterHappened(_sheepCount, "Herd was killed by a Sudden Storm!"); });
+                        { a.onDisasterHappened(_sheepCount, "Herd was destroyed by a Sudden Storm!"); });
             }
         }
     }
