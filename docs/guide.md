@@ -1,6 +1,6 @@
 # Drop Development Guide
 
-All the code samples below are taken from the drop-as3-example subproject found within the repository.
+All the code samples below are taken from the [drop-as3-example](../drop-as3-example) subproject found within the repository.
 
 ## Architecture
 
