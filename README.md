@@ -5,7 +5,7 @@
 
 Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript on Apache Flex and AIR platforms.
 
-Drop derives from **PureMVC** in an attempt to minimize implementation approach discordance, forcing to write a strict, consistent and thus more safe code. Framework is designed to be brutally minimal and requires no boilerplate code to be followed. Drop also introduces typed notification model and strong notion of *Separation of Concerns* concept.
+Drop derives from **PureMVC** in an attempt to minimize implementation approach discordance, forcing to write a strict, consistent and thus more safe code. Framework is designed to be brutally minimal and requires no boilerplate code to apply. Drop also introduces typed notification model and strong notion of *Separation of Concerns* concept.
 
 Hybrid microarchitecture incorporates following approaches:
 * **Inversion of Control** based on ServiceLocator, called `Context`;
