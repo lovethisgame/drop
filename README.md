@@ -1,10 +1,10 @@
 # Drop Framework
 
+<img src="/docs/logo.png" align="right"></img>
 > For Architecture, Anatomy, Best Tips and Usage info, refer to [Drop AS3 Framework Website](http://jdanilov.github.io/drop/).
 
 Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript on Apache Flex and AIR platforms.
 
-<img src="/docs/logo.png" align="right"></img>
 Drop derives from **PureMVC** in an attempt to minimize implementation approach discordance, forcing to write a strict, consistent and thus more safe code. Framework is designed to be brutally minimal and requires no boilerplate code to be followed. Drop also introduces typed notification model and strong notion of *Separation of Concerns* concept.
 
 Hybrid microarchitecture incorporates following approaches:
