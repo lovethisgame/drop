@@ -10,4 +10,4 @@ Hybrid framework features:
 * Model / View / Controller tiers coded in `Services` / `Mediators` / `Controller` classes respectively;
 * Strongly-typed notification & delegation model based on Actor Interfaces.
 
-For Architecture, Anatomy, Best Tips and Usage info, refer to [Drop Development Guide](docs/guide.md).
+For Architecture, Anatomy, Best Tips and Usage info, refer to [Drop Documentation Page](http://jdanilov.github.io/drop/).
