@@ -4,40 +4,30 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Drop by jdanilov</title>
+
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/jdanilov/drop">View On GitHub</a></li>
-          <li class="downloads"><a href="https://github.com/jdanilov/drop/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/jdanilov/drop/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
-
     <div class="wrapper">
+      <header>
+        <h1>Drop</h1>
+        <p>mvc / ioc microframework for Apache Flex</p>
 
+        <p class="view"><a href="https://github.com/jdanilov/drop">View the Project on GitHub <small>jdanilov/drop</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/jdanilov/drop/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/jdanilov/drop/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/jdanilov/drop">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
       <section>
-        <div id="title">
-          <h1>Drop</h1>
-          <p>mvc / ioc microframework for Apache Flex</p>
-          <hr>
-          <span class="credits left">Project maintained by <a href="https://github.com/jdanilov">jdanilov</a></span>
-          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
-        </div>
-
         <h1>
 <a name="drop" class="anchor" href="#drop"><span class="octicon octicon-link"></span></a>Drop</h1>
 
@@ -72,19 +62,19 @@ Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript on 
 
 <p>Typical application / library written on drop framework has the following structure:</p>
 
-<pre><code>org.dropframework.*    → included framework sources
-appname                → application root
- L actors                → root for internal communication interfaces (actors)
-    L singletones          → actor interfaces with single implementation: I&lt;...&gt;
-    L notifications        → actor interfaces with multiple implementation: IOn&lt;...&gt;
- L commons               → root for all shared generic classes
-    L components           → shared generic components
-    L utils                → shared generic utility classes
- L controller            → root for business logic controllers
- L model                 → root for model classes
-    L services             → proxies, services, data access objects
-    L vos                  → value objects, entities, data transfer objects
- L view                  → root for views and mediators
+<pre><code>org.dropframework.*    &gt; included framework sources
+appname                &gt; application root
+ L actors                &gt; root for internal communication interfaces (actors)
+    L singletones          &gt; actor interfaces with single implementation: I&lt;...&gt;
+    L notifications        &gt; actor interfaces with multiple implementation: IOn&lt;...&gt;
+ L commons               &gt; root for all shared generic classes
+    L components           &gt; shared generic components
+    L utils                &gt; shared generic utility classes
+ L controller            &gt; root for business logic controllers
+ L model                 &gt; root for model classes
+    L services             &gt; proxies, services, data access objects
+    L vos                  &gt; value objects, entities, data transfer objects
+ L view                   &gt; root for views and mediators
 </code></pre>
 
 <p>As explained below, application written on Drop consists of logic processing classes called Actors that control specific system aspects and communicate with each other via well-defined Interfaces.</p>
@@ -125,9 +115,7 @@ appname                → application root
 <code>.invoke (type : Class, callback : Function) : void</code> - executes supplied callback function with every Actor of the specified interface as an argument. Handy for notifying multiple Actors.</li>
 </ul><p>This approach aims to decouple the system components for better maintainability. This way, <code>appname/actors</code> directory serves as a collection of interfaces specifying the internal system mechanics.</p>
 
-<blockquote>
 <p><strong>tip:</strong> Generally it is adviced to rely on notification interfaces versus singletone ones where possible as they allow for better loose coupling.</p>
-</blockquote>
 
 <h3>
 <a name="the-appnamecommons-directory" class="anchor" href="#the-appnamecommons-directory"><span class="octicon octicon-link"></span></a>The appname/commons directory</h3>
@@ -156,9 +144,7 @@ appname                → application root
 
 <p>Every Controller automatically registers itself within the GlobalContext upon initialization.</p>
 
-<blockquote>
 <p><strong>tip:</strong> Strictly, Controllers are not always required as Mediators and Services (see below) can and should contain application logic related to presentation and model layers. Use Controllers to decouple and manage the non-presentation and non-model related logic, control a system aspect or orchestrate other Actors via their interfaces.</p>
-</blockquote>
 
 <h3>
 <a name="the-appnamemodel-directory" class="anchor" href="#the-appnamemodel-directory"><span class="octicon octicon-link"></span></a>The appname/model directory</h3>
@@ -174,9 +160,7 @@ appname                → application root
 
 <p><a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/model/services/WeatherService.as">WeatherService.as</a> is a Service example, and <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/model/vos/Weather.as">Weather.as</a> is a Value Object.</p>
 
-<blockquote>
 <p><strong>tip:</strong> Services and Proxies may use direct response mechanics via IOn interface or indirect notification broadcasting via IOn interface, whichever preferred and consistent with an approach chosen by development team.</p>
-</blockquote>
 
 <h3>
 <a name="the-appnameview-directory" class="anchor" href="#the-appnameview-directory"><span class="octicon octicon-link"></span></a>The appname/view directory</h3>
@@ -345,9 +329,7 @@ appname                → application root
 
 <p>Mediators initialization happens hierarchically with parent Mediators initializing Mediators for the child views.</p>
 
-<blockquote>
 <p><strong>tip:</strong> Generally it is a good idea to dispatch IOnApplicationReady notification in a way shown above once all Actors created and execute all initial data retrieving, view preparing and internal processes launch within listeners in a safe manner, rather than in Actor contstructors.</p>
-</blockquote>
 
 <h2>
 <a name="how-to-use" class="anchor" href="#how-to-use"><span class="octicon octicon-link"></span></a>How to use</h2>
@@ -360,9 +342,12 @@ appname                → application root
 
 <p>Whatever architecture is followed, it must be made sure every Actor is only concerned with the aspect it's type designed to handle, and the actors communicate in decoupled manner via well-defined communication interfaces.</p>
       </section>
-
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/jdanilov">jdanilov</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    <script src="javascripts/scale.fix.js"></script>
     
   </body>
 </html>
