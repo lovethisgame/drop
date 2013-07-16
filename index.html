@@ -41,7 +41,7 @@
         <h1>
 <a name="drop" class="anchor" href="#drop"><span class="octicon octicon-link"></span></a>Drop</h1>
 
-<p><img src="/docs/logo.png" align="right">
+<p><img src="https://github.com/jdanilov/drop/docs/logo.png" align="right">
 Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript on Apache Flex and AIR platforms.</p>
 
 <p>Drop derives from PureMVC and aims to minimize implementation approach discordance, forcing to write bug-safe and consistent solutions with less boilerplate code, also introducing typed notification model and strong notion of <em>Separation of Concerns</em> concept.</p>
@@ -52,7 +52,7 @@ Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript on 
 <li>Inversion of Control micro-architecture based on ServiceLocator, called <code>Context</code>;</li>
 <li>Model / View / Controller tiers coded in <code>Services</code> / <code>Mediators</code> / <code>Controller</code> classes respectively;</li>
 <li>Strongly-typed notification &amp; delegation model based on Actor Interfaces.</li>
-</ul><p>All the code samples below are taken from the <a href="../drop-as3-example/src/main/flex">drop-as3-example</a> subproject found within the repository.</p>
+</ul><p>All the code samples below are taken from the <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex">drop-as3-example</a> subproject found within the repository.</p>
 
 <h2>
 <a name="architecture" class="anchor" href="#architecture"><span class="octicon octicon-link"></span></a>Architecture</h2>
@@ -72,19 +72,19 @@ Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript on 
 
 <p>Typical application / library written on drop framework has the following structure:</p>
 
-<pre><code>org.dropframework.*           → included framework sources
-appname                       → application root
- └ actors                       → root for internal communication interfaces (actors)
-    └ singletones                 → actor interfaces with single implementation: I&lt;...&gt;
-    └ notifications               → actor interfaces with multiple implementation: IOn&lt;...&gt;
- └ commons                      → root for all shared generic classes
-    └ components                  → shared generic components
-    └ utils                       → shared generic utility classes
- └ controller                   → root for business logic controllers
- └ model                        → root for model classes
-    └ services                    → proxies, services, data access objects
-    └ vos                         → value objects, entities, data transfer objects
- └ view                         → root for views and mediators
+<pre><code>org.dropframework.*    → included framework sources
+appname                → application root
+ L actors                → root for internal communication interfaces (actors)
+    L singletones          → actor interfaces with single implementation: I&lt;...&gt;
+    L notifications        → actor interfaces with multiple implementation: IOn&lt;...&gt;
+ L commons               → root for all shared generic classes
+    L components           → shared generic components
+    L utils                → shared generic utility classes
+ L controller            → root for business logic controllers
+ L model                 → root for model classes
+    L services             → proxies, services, data access objects
+    L vos                  → value objects, entities, data transfer objects
+ L view                  → root for views and mediators
 </code></pre>
 
 <p>As explained below, application written on Drop consists of logic processing classes called Actors that control specific system aspects and communicate with each other via well-defined Interfaces.</p>
@@ -92,7 +92,7 @@ appname                       → application root
 <h3>
 <a name="the-appnameactors-directory" class="anchor" href="#the-appnameactors-directory"><span class="octicon octicon-link"></span></a>The appname/actors directory</h3>
 
-<p>The <a href="../drop-as3-example/src/main/flex/example/actors">appname/actors</a> directory usually contains a single <a href="../drop-as3-example/src/main/flex/example/actors/GlobalContext.as">GlobalContext</a> class which serves as a ServiceLocator for resolving Actors, and the Actor communication interfaces themselves. Actor interfaces are split into two groups:</p>
+<p>The <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/actors">appname/actors</a> directory usually contains a single <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/actors/GlobalContext.as">GlobalContext</a> class which serves as a ServiceLocator for resolving Actors, and the Actor communication interfaces themselves. Actor interfaces are split into two groups:</p>
 
 <ul>
 <li>
@@ -103,18 +103,18 @@ appname                       → application root
 
 <ul>
 <li>
-<a href="../drop-as3-example/src/main/flex/example/actors/singletones/ISheepHerdController.as">ISheepHerdController.as</a> </li>
+<a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/actors/singletones/ISheepHerdController.as">ISheepHerdController.as</a> </li>
 <li>
-<a href="../drop-as3-example/src/main/flex/example/actors/singletones/IWeatherService.as">IWeatherService.as</a> </li>
+<a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/actors/singletones/IWeatherService.as">IWeatherService.as</a> </li>
 </ul><p>And Notification interfaces:</p>
 
 <ul>
-<li><a href="../drop-as3-example/src/main/flex/example/actors/notifications/IOnSheepCountChanged.as">IOnSheepCountChanged.as</a></li>
-<li><a href="../drop-as3-example/src/main/flex/example/actors/notifications/IOnWeatherChanged.as">IOnWeatherChanged.as</a></li>
+<li><a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/actors/notifications/IOnSheepCountChanged.as">IOnSheepCountChanged.as</a></li>
+<li><a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/actors/notifications/IOnWeatherChanged.as">IOnWeatherChanged.as</a></li>
 </ul><h4>
 <a name="actors-communication" class="anchor" href="#actors-communication"><span class="octicon octicon-link"></span></a>Actors communication</h4>
 
-<p>Core idea is that <strong>Actors do not communicate directly</strong>, instead they resolve each other via <a href="../drop-as3-example/src/main/flex/example/actors/GlobalContext.as">GlobalContext</a> by specific Actor interface defined in <code>appname/actors</code> package and then invoke required methods. Following <code>Context</code> methods can be used to resolve the Actors:</p>
+<p>Core idea is that <strong>Actors do not communicate directly</strong>, instead they resolve each other via <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/actors/GlobalContext.as">GlobalContext</a> by specific Actor interface defined in <code>appname/actors</code> package and then invoke required methods. Following <code>Context</code> methods can be used to resolve the Actors:</p>
 
 <ul>
 <li>
@@ -132,7 +132,7 @@ appname                       → application root
 <h3>
 <a name="the-appnamecommons-directory" class="anchor" href="#the-appnamecommons-directory"><span class="octicon octicon-link"></span></a>The appname/commons directory</h3>
 
-<p>The <a href="../drop-as3-example/src/main/flex/example/commons">appname/commons</a> directory contains all components, abstractions, utilities and support modules that are:</p>
+<p>The <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/commons">appname/commons</a> directory contains all components, abstractions, utilities and support modules that are:</p>
 
 <ul>
 <li>generic enough to be reused or means to be extended for the use;</li>
@@ -144,9 +144,9 @@ appname                       → application root
 <h3>
 <a name="the-appnamecontroller-directory" class="anchor" href="#the-appnamecontroller-directory"><span class="octicon octicon-link"></span></a>The appname/controller directory</h3>
 
-<p>Controllers are Actors that contain business logic and / or orchestrate other Actors such as Services and Mediators are stored in <a href="../drop-as3-example/src/main/flex/example/controller">appname/controller</a> directory. Controllers include executable commands triggered directly or by notification, various system managers, complex execution sequences or aspect controllers.</p>
+<p>Controllers are Actors that contain business logic and / or orchestrate other Actors such as Services and Mediators are stored in <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/controller">appname/controller</a> directory. Controllers include executable commands triggered directly or by notification, various system managers, complex execution sequences or aspect controllers.</p>
 
-<p>Controllers decouple the complex business logic and facade that behind Actor interfaces, see the <a href="../drop-as3-example/src/main/flex/example/controller/Shepherd.as">Shepherd.as</a>.</p>
+<p>Controllers decouple the complex business logic and facade that behind Actor interfaces, see the <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/controller/Shepherd.as">Shepherd.as</a>.</p>
 
 <p>Notice the way notification broadcasted to every Actor implementing the <code>IOnSheepCountChanged</code> and <code>IOnDisasterHappened</code> interface using the <code>invoke</code> method:</p>
 
@@ -163,16 +163,16 @@ appname                       → application root
 <h3>
 <a name="the-appnamemodel-directory" class="anchor" href="#the-appnamemodel-directory"><span class="octicon octicon-link"></span></a>The appname/model directory</h3>
 
-<p>Model layer is at heart of every application as it defines Domain Objects and Domain API and can be found in <a href="../drop-as3-example/src/main/flex/example/model">appname/model</a> directory. Framework allows to follow various practices to define the Model, for instance applying a Domain Driven Development approach, but in core manages the two types of classes:</p>
+<p>Model layer is at heart of every application as it defines Domain Objects and Domain API and can be found in <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/model">appname/model</a> directory. Framework allows to follow various practices to define the Model, for instance applying a Domain Driven Development approach, but in core manages the two types of classes:</p>
 
 <ul>
 <li>
-<strong>data access objects</strong> - found in <a href="../drop-as3-example/src/main/flex/example/model/services">appname/model/services</a>, these are services, proxies, data stubs, remote endpoints etc. that provide a data feed for the application to present or means to control and modify the application data. Drop provides <code>Service</code> and <code>Proxy</code> basic Actor classes to represent those.</li>
+<strong>data access objects</strong> - found in <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/model/services">appname/model/services</a>, these are services, proxies, data stubs, remote endpoints etc. that provide a data feed for the application to present or means to control and modify the application data. Drop provides <code>Service</code> and <code>Proxy</code> basic Actor classes to represent those.</li>
 <li>
-<strong>data transfer objects</strong> - found in <a href="../drop-as3-example/src/main/flex/example/model/vos">appname/model/vos</a>, these are value objects and entities that represent the Domain.</li>
+<strong>data transfer objects</strong> - found in <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/model/vos">appname/model/vos</a>, these are value objects and entities that represent the Domain.</li>
 </ul><p>No application business or presentation logic should be handled within the Model layer. Controllers and Mediators should be used instead.</p>
 
-<p><a href="../drop-as3-example/src/main/flex/example/model/services/WeatherService.as">WeatherService.as</a> is a Service example, and <a href="../drop-as3-example/src/main/flex/example/model/vos/Weather.as">Weather.as</a> is a Value Object.</p>
+<p><a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/model/services/WeatherService.as">WeatherService.as</a> is a Service example, and <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/model/vos/Weather.as">Weather.as</a> is a Value Object.</p>
 
 <blockquote>
 <p><strong>tip:</strong> Services and Proxies may use direct response mechanics via IOn interface or indirect notification broadcasting via IOn interface, whichever preferred and consistent with an approach chosen by development team.</p>
@@ -181,7 +181,7 @@ appname                       → application root
 <h3>
 <a name="the-appnameview-directory" class="anchor" href="#the-appnameview-directory"><span class="octicon octicon-link"></span></a>The appname/view directory</h3>
 
-<p>The <a href="../drop-as3-example/src/main/flex/example/view">appname/view</a> directory is where the hierarchy of visual elements and containers defined. Classes there can be of 3 following types:</p>
+<p>The <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/view">appname/view</a> directory is where the hierarchy of visual elements and containers defined. Classes there can be of 3 following types:</p>
 
 <ul>
 <li>
@@ -204,7 +204,7 @@ appname                       → application root
 </ul><h4>
 <a name="viewevent-dispatching" class="anchor" href="#viewevent-dispatching"><span class="octicon octicon-link"></span></a>ViewEvent dispatching</h4>
 
-<p>View Event dispatching can be seen in a <a href="../drop-as3-example/src/main/flex/example/view/herd/HerdPanel.mxml">HerdPanel.mxml</a>:</p>
+<p>View Event dispatching can be seen in a <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/view/herd/HerdPanel.mxml">HerdPanel.mxml</a>:</p>
 
 <div class="highlight"><pre><span class="o">&lt;</span><span class="nx">s</span><span class="o">:</span><span class="nx">Panel</span> <span class="nx">xmlns</span><span class="o">:</span><span class="nx">fx</span><span class="o">=</span><span class="s2">"http://ns.adobe.com/mxml/2009"</span>
          <span class="nx">xmlns</span><span class="o">:</span><span class="nx">s</span><span class="o">=</span><span class="s2">"library://ns.adobe.com/flex/spark"</span><span class="o">&gt;</span>
@@ -223,7 +223,7 @@ appname                       → application root
 <span class="o">&lt;/</span><span class="nx">s</span><span class="o">:</span><span class="nx">Panel</span><span class="o">&gt;</span>
 </pre></div>
 
-<p>And listening in a <a href="../drop-as3-example/src/main/flex/example/view/herd/HerdPanelMediator.as">HerdPanelMediator.mxml</a>:</p>
+<p>And listening in a <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/view/herd/HerdPanelMediator.as">HerdPanelMediator.mxml</a>:</p>
 
 <div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nx">HerdPanelMediator</span>
         <span class="kd">extends</span> <span class="nx">Mediator</span>
@@ -249,7 +249,7 @@ appname                       → application root
 <h4>
 <a name="listening-for-external-notifications" class="anchor" href="#listening-for-external-notifications"><span class="octicon octicon-link"></span></a>Listening for external notifications</h4>
 
-<p><a href="../drop-as3-example/src/main/flex/example/view/message/MessagePanel.mxml">MessagePanel.mxml</a> exposes <code>dataProvider</code> setter that applies message text to the label control:</p>
+<p><a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/view/message/MessagePanel.mxml">MessagePanel.mxml</a> exposes <code>dataProvider</code> setter that applies message text to the label control:</p>
 
 <div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">xml</span> <span class="nx">version</span><span class="o">=</span><span class="s2">"1.0"</span><span class="o">?&gt;</span>
 <span class="o">&lt;</span><span class="nx">s</span><span class="o">:</span><span class="nx">Panel</span> <span class="nx">xmlns</span><span class="o">:</span><span class="nx">fx</span><span class="o">=</span><span class="s2">"http://ns.adobe.com/mxml/2009"</span>
@@ -267,7 +267,7 @@ appname                       → application root
 <span class="o">&lt;/</span><span class="nx">s</span><span class="o">:</span><span class="nx">Panel</span><span class="o">&gt;</span>
 </pre></div>
 
-<p><a href="../drop-as3-example/src/main/flex/example/view/message/MessagePanelMediator.as">MessagePanelMediator.as</a> listens for <code>IOnSheepCountChanged</code> notification and applies <code>dataProvider</code> to the <code>MessagePanel</code> View:</p>
+<p><a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/view/message/MessagePanelMediator.as">MessagePanelMediator.as</a> listens for <code>IOnSheepCountChanged</code> notification and applies <code>dataProvider</code> to the <code>MessagePanel</code> View:</p>
 
 <div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nx">MessagePanelMediator</span>
     <span class="kd">extends</span> <span class="nx">Mediator</span>
@@ -300,7 +300,7 @@ appname                       → application root
 <h2>
 <a name="initialization" class="anchor" href="#initialization"><span class="octicon octicon-link"></span></a>Initialization</h2>
 
-<p>Once <a href="../drop-as3-example/src/main/flex/example/view/ExampleApplication.mxml">ApplicationView</a> created, an <a href="../drop-as3-example/src/main/flex/example/view/ExampleApplicationMediator.as">ApplicationMediator</a> is initialized, which in turn creates all the system actors.</p>
+<p>Once <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/view/ExampleApplication.mxml">ApplicationView</a> created, an <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/view/ExampleApplicationMediator.as">ApplicationMediator</a> is initialized, which in turn creates all the system actors.</p>
 
 <div class="highlight"><pre><span class="o">&lt;?</span><span class="nx">xml</span> <span class="nx">version</span><span class="o">=</span><span class="s2">"1.0"</span> <span class="nx">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="o">?&gt;</span>
 <span class="o">&lt;</span><span class="nx">s</span><span class="o">:</span><span class="nx">Application</span> <span class="nx">xmlns</span><span class="o">:</span><span class="nx">s</span><span class="o">=</span><span class="s2">"library://ns.adobe.com/flex/spark"</span>
