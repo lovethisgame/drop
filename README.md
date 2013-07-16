@@ -1,7 +1,7 @@
 # Drop Framework
 
 <img src="/docs/logo.png" align="right"></img>
-> For Architecture, Anatomy, Best Tips and Usage info, refer to [Drop AS3 Framework Website](http://jdanilov.github.io/drop/).
+> For Architecture, Anatomy, Best Tips and Usage, refer to [Drop AS3 Framework Website](http://jdanilov.github.io/drop/).
 
 Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript on Apache Flex and AIR platforms.
 
