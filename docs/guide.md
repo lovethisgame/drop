@@ -1,15 +1,31 @@
-# Drop Development Guide
+# Documentation
 
-All the code samples below are taken from the drop-as3-example subproject found within the repository.
+<img src="../docs/logo.png" align="right"></img>
+Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript on Apache Flex and AIR platforms.
+
+Drop derives from **PureMVC** in an attempt to minimize implementation approach discordance, forcing to write a strict, consistent and thus more safe code. Framework is designed to be brutally minimal and requires no boilerplate code to apply. Drop also introduces typed notification model and strong notion of *Separation of Concerns* concept.
+
+Hybrid microarchitecture incorporates following approaches:
+* **Inversion of Control** based on ServiceLocator, called `Context`;
+* **Model / View / Controller** tiers coded in `Services` / `Mediators` / `Controller` classes respectively;
+* **Strongly-typed Notification** & **Call Forwarding** model based on native interfaces.
+
+Core framework design aspects:
+* **Simplicity** - it takes very little effort to understand and start using the framework in real project;
+* **Enforced Consistency** - architecture rules are very strict resulting in a more consistent and safe code produced by development teams. It is also naturally hard to misuse or misinterpret framework ideas;
+* **Decoupling and Transparency** - framework improves code clarity, transparency and maintainability by exposing internal system API into a set of interfaces used to reduce modules coupling and keep the big picture in one place, easily and quickly accessible;
+* **Minute Setup Time** - speaks for itself.
+
+Free, Opensource, Apache license. All the code samples below are taken from the [drop-as3-example](../drop-as3-example/src/main/flex) module accessible within the GitHub repository.
 
 ## Architecture
 
-In essence framework breaks down a system into independable classes called Actors, split into logical tiers (Model, View, Controller), each concerned with specific system aspect and communicating with other Actors via well-defined interfaces. All Actor instanes are stored in a single Service Locator object, called Context, that allows to resolve Actors by their interface.
+In essence framework breaks down a system into independable classes called Actors, split across logical tiers (Model, View, Controller), each concerned with specific system aspect. Actors communicate with each other via well-defined interfaces. All Actor instanes are stored in a single IoC service locator object, called Context. Context allows to resolve Actors by their interfaces.
 
 Actors come in three types:
-* Services (and Proxies) that represent Model layer,
-* Mediators that represent View layer,
-* Controllers that represent Controller layer.
+* Services (and Proxies) that represent Model layer: call remote network interfaces, fetch local files, etc.
+* Mediators that represent View layer, handle UI Components.
+* Controllers that represent Controller layer: handle decoupled application business logic.
 
 Actors are coded in independent, robust manner, following specific rules explained below.
 
@@ -33,14 +49,30 @@ appname                       → application root
  └ view                         → root for views and mediators
 ```
  
-As explained below, application written on Drop consists of logic processing classes called Actors that control specific system aspects and communicate with each other via well-defined Interfaces.
+As mentioned above, application consists of logic processing classes called Actors that control specific system aspects, domain and components, communicating with each other via well-defined Interfaces.
 
  
 ### The appname/actors directory
 
-The [appname/actors](../drop-as3-example/src/main/flex/example/actors) directory usually contains a single [GlobalContext](../drop-as3-example/src/main/flex/example/actors/GlobalContext.as) class which serves as a ServiceLocator for resolving Actors, and the Actor communication interfaces themselves. Actor interfaces are split into two groups:
-* **singletones** - interfaces that start with `I<...>` name prefix and define API for managers, commands, workers, services of which there is a single implementation within the system.
+The [appname/actors](../drop-as3-example/src/main/flex/example/actors) directory contains at least one Context class, usually named as [GlobalContext or <ApplicationName>Context](../drop-as3-example/src/main/flex/example/actors/GlobalContext.as) which represents as a ServiceLocator for resolving Actors; and in subpackages the Actor communication interfaces themselves. Actor interfaces are split into two groups:
+* **singletones** - interfaces that start with `I<...>` name prefix and define API for managers, commands, workers, services of which there is strictly a single implementation within the system.
 * **notifications** - interfaces that start with `IOn<...>` name prefix and defined API for actors that listen for specific events or actions happening within the system.
+
+Native language interfaces are used to define singletones and notifications, for example:
+```actionscript
+/* Singletone communication interface */
+public class IPoolManager
+{
+    function managePool(size : uint) : void;
+    function destroyPool() : void;
+}
+
+/* Notification communication interface */
+public class IOnSomethingHappened
+{
+   function onSomethingHappened(something : String) : void;
+}
+```
 
 Example of Singletone interfaces:
 * [ISheepHerdController.as](../drop-as3-example/src/main/flex/example/actors/singletones/ISheepHerdController.as) 
@@ -50,61 +82,96 @@ And Notification interfaces:
 * [IOnSheepCountChanged.as](../drop-as3-example/src/main/flex/example/actors/notifications/IOnSheepCountChanged.as)
 * [IOnWeatherChanged.as](../drop-as3-example/src/main/flex/example/actors/notifications/IOnWeatherChanged.as)
 
+When created, Actor instances are bound to a single `Context` where they reside and can be resolved for communication.
+
 
 #### Actors communication
 
-Core idea is that **Actors do not communicate directly**, instead they resolve each other via [GlobalContext](../drop-as3-example/src/main/flex/example/actors/GlobalContext.as) by specific Actor interface defined in `appname/actors` package and then invoke required methods. Following `Context` methods can be used to resolve the Actors:
-* `.instanceOf (type : Class) : IConcernedActor` - finds one and only one Actor instance of the specified interface, fails with Error if more than 1 Actors found;
-* `.arrayOf (type : Class) : Array` - finds an array of Actors for specified interface;
-* `.invoke (type : Class, callback : Function) : void` - executes supplied callback function with every Actor of the specified interface as an argument. Handy for notifying multiple Actors.
+Actors never communicate directly, *except for the single case explained below for Mediators*. Instead they resolve each other via `Context` supplying specific Actor interface defined in `appname/actors` package they want to find and then invoke required methods on returned instance(s).
 
-This approach aims to decouple the system components for better maintainability. This way, `appname/actors` directory serves as a collection of interfaces specifying the internal system mechanics.
+This approach decoulpes Actors and facades implementation complexity behind the contracts defined by communication interfaces. Following `Context` methods can be used to resolve the Actors:
+* `.instanceOf (type : Class) : IConcernedActor` - finds one and only one Actor instance of the specified interface, fails with Error if more than 1 Actors found. Singletone communication interface should be supplied as an argument.
+* `.arrayOf (type : Class) : Array` - finds an array of Actors for specified interface.
+* `.invoke (type : Class, callback : Function) : void` - executes supplied callback function, consequently passing every Actor of the specified interface as an argument. Very similar to calling `arrayOf(type).every(callback)`. Handy for notifying multiple Actors.
 
-> **tip:** Generally it is adviced to rely on notification interfaces versus singletone ones where possible as they allow for better loose coupling.
+Methods explained above are also available on Actors themselves, so you will normally never call a Context directly, but invoke code similar to:
 
+```actionscript
+    // some code within an Actor...
+    IPoolManager(super.instanceOf(IPoolManager)).managePool(3);
+    super.invoke(IOnSomethingHappened, function (a : IOnSomethingHappened) : void
+            { a.onSomethingHappened("Pool Manager was asked to manage a pool of 3 items"); });                
+```
+
+Keyword `super` above is normally dropped, and included here for clarity.
+ 
  
 ### The appname/commons directory
 
 The [appname/commons](../drop-as3-example/src/main/flex/example/commons) directory contains all components, abstractions, utilities and support modules that are:
 * generic enough to be reused or means to be extended for the use;
-* do not handle any application business logic directrly.
+* do not handle any application business logic directly.
 
-Directory content is rather custom, in case of Apache Flex application it is adviced to have a `components` sub package to contain all the shared and reusable components, and `utils` directory for various utilities.
+Directory content is rather custom, but in case of Apache Flex application it is adviced to have a `components` sub package to contain all the shared and reusable components and containers, and `utils` directory for various utilities.
 
-Framework does not bundle any 3rd party utilities and components library. For utilities, such as those working with Objects, Strings, ByteArrays, Logging system etc. there are few good free options available, such as as3commons library that can found here: http://www.as3commons.org.
+Drop framework does not bundle any 3rd party utilities and components library. For utilities, such as those working with Objects, Strings, ByteArrays, Logging system etc. there are few good free options available, such as as3commons library that can found here: http://www.as3commons.org. Also mind reviewing this list http://www.adrianparr.com/?p=83.
 
 
 ### The appname/controller directory
 
-Controllers are Actors that contain business logic and / or orchestrate other Actors such as Services and Mediators are stored in [appname/controller](../drop-as3-example/src/main/flex/example/controller) directory. Controllers include executable commands triggered directly or by notification, various system managers, complex execution sequences or aspect controllers.
+Controllers decouple the complex business logic and facade that behind Actor interfaces and may orchestrate other Actors such as Services and Mediators. Controllers are stored in [appname/controller](../drop-as3-example/src/main/flex/example/controller) directory and can form executable commands triggered via singletone or notification interfaces, various system managers, complex execution sequences or aspect controllers.
 
-Controllers decouple the complex business logic and facade that behind Actor interfaces, see the [Shepherd.as](../drop-as3-example/src/main/flex/example/controller/Shepherd.as).
-
-Notice the way notification broadcasted to every Actor implementing the `IOnSheepCountChanged` and `IOnDisasterHappened` interface using the `invoke` method:
+Here is a simple Controller carcass:
 ```actionscript
-invoke(IOnSheepCountChanged, function (a : IOnSheepCountChanged) : void
-        { a.onSheepCountChanged(_sheepCount); });
+public class ControllerName
+    extends Controller
+    /* implements <communication-interface-1>,
+                  <communication-interface-2>,
+                  ... */
+{
+    public function ControllerName ()
+    {
+        super(GlobalContext.instance);
+    }
+
+    /* communication interface methods */
+}
 ```
 
-Every Controller automatically registers itself within the GlobalContext upon initialization.
-
-> **tip:** Strictly, Controllers are not always required as Mediators and Services (see below) can and should contain application logic related to presentation and model layers. Use Controllers to decouple and manage the non-presentation and non-model related logic, control a system aspect or orchestrate other Actors via their interfaces.
+See the [Shepherd.as](../drop-as3-example/src/main/flex/example/controller/Shepherd.as) as a controller example.
 
 
 ### The appname/model directory
 
-Model layer is at heart of every application as it defines Domain Objects and Domain API and can be found in [appname/model](../drop-as3-example/src/main/flex/example/model) directory. Framework allows to follow various practices to define the Model, for instance applying a Domain Driven Development approach, but in core manages the two types of classes:
-* **data access objects** - found in [appname/model/services](../drop-as3-example/src/main/flex/example/model/services), these are services, proxies, data stubs, remote endpoints etc. that provide a data feed for the application to present or means to control and modify the application data. Drop provides `Service` and `Proxy` basic Actor classes to represent those.
-* **data transfer objects** - found in [appname/model/vos](../drop-as3-example/src/main/flex/example/model/vos), these are value objects and entities that represent the Domain.
+Model layer defines Domain Objects and Domain API and located within [appname/model](../drop-as3-example/src/main/flex/example/model) directory. Framework allows to follow various practices to define the Model, such as Domain Driven Development approach, but in core restricts model classes present on a system to two meta-types:
+* **data access objects** - found in [appname/model/services](../drop-as3-example/src/main/flex/example/model/services), these are services, proxies, data stubs, endpoint invokers etc. that provide a data feed or means to control and modify the domain data. Drop provides `Service` and `Proxy` Actor supertypes to incorporate those.
+* **data transfer objects** - found in [appname/model/vos](../drop-as3-example/src/main/flex/example/model/vos), these are value objects and entities that represent the domain itself.
 
-No application business or presentation logic should be handled within the Model layer. Controllers and Mediators should be used instead.
+Here is a simple Service carcass:
+```actionscript
+public class ServiceName
+    extends Service
+    /* implements <communication-interface-1>,
+                  <communication-interface-2>,
+                  ... */
+{
+    public function ServiceName ()
+    {
+        super(GlobalContext.instance);
+    }
 
-[WeatherService.as](../drop-as3-example/src/main/flex/example/model/services/WeatherService.as) is a Service example, and [Weather.as](../drop-as3-example/src/main/flex/example/model/vos/Weather.as) is a Value Object.
+    /* communication interface methods */
+}
+```
 
-> **tip:** Services and Proxies may use direct response mechanics via IOn interface or indirect notification broadcasting via IOn interface, whichever preferred and consistent with an approach chosen by development team.
+No application business or presentation logic handled within the Model layer. Controllers and Mediators should be used instead. However it is allowed for model Actors to perform CRUD, data normalization, caching, call redirection operations and so on.
+
+See the [WeatherService.as](../drop-as3-example/src/main/flex/example/model/services/WeatherService.as) as a Service example, and [Weather.as](../drop-as3-example/src/main/flex/example/model/vos/Weather.as) as a Value Object.
 
 
 ### The appname/view directory
+
+todo: update the text below this point:
 
 The [appname/view](../drop-as3-example/src/main/flex/example/view) directory is where the hierarchy of visual elements and containers defined. Classes there can be of 3 following types:
 * **views** - all visual display objects, controls and custom ui components that shown on a screen, usually coded in MXML, for example `MessagePanel.mxml`;
@@ -221,7 +288,7 @@ public class MessagePanelMediator
 ```
 
 
-## Initialization
+## App Initialization
 
 Once [ApplicationView](../drop-as3-example/src/main/flex/example/view/ExampleApplication.mxml) created, an [ApplicationMediator](../drop-as3-example/src/main/flex/example/view/ExampleApplicationMediator.as) is initialized, which in turn creates all the system actors.
 
@@ -279,7 +346,16 @@ Mediators initialization happens hierarchically with parent Mediators initializi
 - Checkout and include the sources of a drop-as3 project.
 - Have fun playing, changing and creating!
 
-> **tip:** Drop is designed for modification and extension. For a particular project it might be decided to introduce additional or modified Actor types structure.
+Drop is designed for modification and extension. For a particular project it might be decided to introduce additional or modified Actor types structure.
 
-> **tip:** Whatever architecture is followed, it must be made sure every Actor is only concerned with the aspect it's type designed to handle, and the actors communicate in decoupled manner via well-defined communication interfaces.
+Whatever architecture is followed, it must be made sure every Actor is only concerned with the aspect it's type designed to handle, and the actors communicate in decoupled manner via well-defined communication interfaces.
 
+## Best Practices
+
+todo: group methods in communication interfaces; define AppMediator, AppController, AppService and AppProxy; do not call Actors from Boundaries; do not call Boundaries from Boundaries; do not call Boundaries that do not belong to an Actor from that Actor; use sophisticated IDE; write proxy-getters; Multicore projects.
+
+> **tip:** Generally it is adviced to rely on notification interfaces versus singletone ones where possible as they allow for better loose coupling.
+
+> **tip:** Strictly, Controllers are not always required as Mediators and Services (see below) can and should contain application logic related to presentation and model layers. Use Controllers to decouple and manage the non-presentation and non-model related logic, control a system aspect or orchestrate other Actors via their interfaces.
+
+> **tip:** Services and Proxies may use direct response mechanics via IOn interface or indirect notification broadcasting via IOn interface, whichever preferred and consistent with an approach chosen by development team.
