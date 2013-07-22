@@ -43,15 +43,6 @@ package org.dropframework.core.contexts
 
 
         /**
-         * Returns an array of actors of a given Observer Interface / Class.
-         *
-         * @param type class/interface of the instances to lookup for.
-         * @return non null array of actors of a given type.
-         * */
-        function arrayOf (type : Class) : Array /* <type> */;
-
-
-        /**
          * Returns an actor referenced by a given type if exists.
          *
          * @param type - String/Class to lookup service instance by.
@@ -63,14 +54,16 @@ package org.dropframework.core.contexts
 
 
         /**
-         * Iterates over an array of the actors of targetType calling supplied callback function for the every instance,
-         * passing instances one by one into the callback function as an argument. If no instances found of a given type
-         * then callback won't be called.
+         * Iterates over an array of the actors of targetType calling supplied callbackOrArgs function for the every
+         * instance, passing instances one by one into the callbackOrArgs function as an argument. If no instances
+         * found of a given type then callbackOrArgs won't be called.
          *
          * @param type type to resolve actors by.
-         * @param callback a <code>function (actor : type) : *</code> called for every actor of a given type found
-         * in the context.
+         * @param callbackOrArgs is either:<br/>
+         * - a <code>function (actor : type) : *</code> called for every actor of a given type found in the context.<br/>
+         * - an array of parameters to apply to every function found on the given class type for every actor of the
+         * given type found in the context.
          */
-        function invoke (type : Class, callback : Function /* (c : type) */) : void;
+        function call (type : Class, callbackOrArgs : Object /* (c : type) */ = null) : void;
     }
 }

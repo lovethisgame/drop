@@ -37,7 +37,7 @@ package example.model.services
                     {
                         if (response.hasError())
                         {
-                            invoke(IOnNetworkError, function (a : IOnNetworkError) : void
+                            call(IOnNetworkError, function (a : IOnNetworkError) : void
                                     { a.onNetworkError(response.error); });
                             callback(null);
                         }

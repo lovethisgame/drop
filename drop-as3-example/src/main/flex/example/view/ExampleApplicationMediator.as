@@ -28,7 +28,7 @@ package example.view
             new MessagePanelMediator(view.messagePanel);
 
             /* once actors initialized, sending the ready notification */
-            invoke(IOnApplicationReady, function (a : IOnApplicationReady) : void
+            call(IOnApplicationReady, function (a : IOnApplicationReady) : void
                     { a.onApplicationReady(); });
         }
     }

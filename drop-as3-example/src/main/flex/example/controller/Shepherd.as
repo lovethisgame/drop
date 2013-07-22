@@ -28,13 +28,13 @@ package example.controller
         public function addSheep () : void
         {
             _sheepCount++;
-            invoke(IOnSheepCountChanged, function (a : IOnSheepCountChanged) : void
+            call(IOnSheepCountChanged, function (a : IOnSheepCountChanged) : void
                     { a.onSheepCountChanged(_sheepCount); });
         }
 
         public function onApplicationReady() : void
         {
-            invoke(IOnSheepCountChanged, function (a : IOnSheepCountChanged) : void
+            call(IOnSheepCountChanged, function (a : IOnSheepCountChanged) : void
                     { a.onSheepCountChanged(_sheepCount); });
         }
 
@@ -43,7 +43,7 @@ package example.controller
             if (weather.isStorm)
             {
                 _sheepCount = 0;
-                invoke(IOnSheepCountChanged, function (a : IOnSheepCountChanged) : void
+                call(IOnSheepCountChanged, function (a : IOnSheepCountChanged) : void
                         { a.onDisasterHappened(_sheepCount, "Herd was destroyed by a Sudden Storm!"); });
             }
         }

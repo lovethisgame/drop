@@ -70,21 +70,15 @@ package org.dropframework.core.actors
         }
 
 
-        public function arrayOf (type : Class) : Array
-        {
-            return _context.arrayOf(type);
-        }
-
-
         public function instanceOf (type : Class) : IConcernedActor
         {
             return _context.instanceOf(type);
         }
 
 
-        public function invoke (targetType : Class, callback : Function) : void
+        public function call (targetType : Class, callbackOrArgs : Object = null) : void
         {
-            return _context.invoke(targetType, callback);
+            return _context.call(targetType, callbackOrArgs);
         }
     }
 }

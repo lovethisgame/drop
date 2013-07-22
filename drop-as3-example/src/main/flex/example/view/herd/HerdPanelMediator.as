@@ -34,8 +34,7 @@ package example.view.herd
                         weatherService.measureWeather(
                                 function (weather : Weather) : void
                                 {
-                                    invoke(IOnWeatherChanged, function (a : IOnWeatherChanged) : void
-                                        { a.onWeatherChanged(weather); });
+                                    call(IOnWeatherChanged, [weather]);
                                 });
                     });
         }

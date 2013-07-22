@@ -16,7 +16,9 @@
 package org.dropframework.core.contexts
 {
 
-    import org.dropframework.core.actors.IConcernedActor;
+import flash.utils.describeType;
+
+import org.dropframework.core.actors.IConcernedActor;
     import org.dropframework.core.commons.DropFrameworkError;
 
 
@@ -30,7 +32,7 @@ package org.dropframework.core.contexts
     public class Context implements IContext
     {
         protected var actors        : Vector.<IConcernedActor>;
-        protected var actorsMapping : Vector.<Object> /* {type : Class, actors : Array<IConcernedActor>} */;
+        protected var actorsMapping : Vector.<Entry>;
 
 
         /**
@@ -39,7 +41,7 @@ package org.dropframework.core.contexts
         public function Context () : void
         {
             this.actors        = new Vector.<IConcernedActor>();
-            this.actorsMapping = new Vector.<Object>();
+            this.actorsMapping = new Vector.<Entry>();
         }
 
 
@@ -83,9 +85,53 @@ package org.dropframework.core.contexts
         }
 
 
-        public function arrayOf (type : Class) : Array /* <type> */
+        public function call (type : Class, callbackOrArgs : Object /* (c : type) */ = null) : void
         {
-            // we start at looking for the type in the mapping
+            var c : Object;
+            if (callbackOrArgs && callbackOrArgs is Function)
+            {
+                for each (c in arrayOf(type))
+                {
+                    (callbackOrArgs as Function)(c);
+                }
+            }
+            else
+            {
+                var xml : XML = describeType(type);
+                var list : XMLList = xml.factory.method;
+                var names : Vector.<String> = new Vector.<String>();
+                for each (var method : * in list)
+                {
+                    names.push(method.attribute('name'));
+                }
+                for each (var name : String in names)
+                {
+                    for each (c in arrayOf(type))
+                    {
+                        c[name].apply(null, callbackOrArgs);
+                    }
+                }
+            }
+        }
+
+
+        public function instanceOf (type : Class) : IConcernedActor /* of type */
+        {
+            var result : Array = arrayOf(type);
+
+            if (result.length == 0)
+                return null;
+
+            if (result.length > 1)
+                throw new DropFrameworkError("More than one Actor found for type '" + type + "'");
+
+            return result[0] as IConcernedActor;
+        }
+
+
+        protected function arrayOf (type : Class) : Array /* <type> */
+        {
+            // we start looking for the type in the mapping
             for each (var entry : Entry in actorsMapping)
             {
                 if (entry.type == type)
@@ -107,30 +153,7 @@ package org.dropframework.core.contexts
             // ... and add a new entry in the mapping
             actorsMapping.push(new Entry(type, result));
 
-            return result.slice();
-        }
-
-
-        public function invoke (type : Class, callback : Function /* (c : type) */) : void
-        {
-            for each (var c : Object in arrayOf(type))
-            {
-                callback(c);
-            }
-        }
-
-
-        public function instanceOf (type : Class) : IConcernedActor /* of type */
-        {
-            var result : Array = arrayOf(type);
-
-            if (result.length == 0)
-                return null;
-
-            if (result.length > 1)
-                throw new DropFrameworkError("More than one Actor found for type '" + type + "'");
-
-            return result[0] as IConcernedActor;
+            return result;
         }
     }
 }
