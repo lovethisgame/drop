@@ -80,15 +80,15 @@ Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript on 
 appname               → application root
  L actors               → root for internal communication interfaces (actors)
     L singletones         → actor interfaces with single implementation: I&lt;...&gt;
-    L notifications           → actor interfaces with multiple implementation: IOn&lt;...&gt;
- L commons                  → root for all shared generic classes
-    L components              → shared generic components
-    L utils                   → shared generic utility classes
- L controller               → root for business logic controllers
- L model                    → root for model classes
-    L services                → proxies, services, data access objects
-    L vos                     → value objects, entities, data transfer objects
- L view                     → root for views and mediators
+    L notifications       → actor interfaces with multiple implementation: IOn&lt;...&gt;
+ L commons              → root for all shared generic classes
+    L components          → shared generic components
+    L utils               → shared generic utility classes
+ L controller           → root for business logic controllers
+ L model                → root for model classes
+    L services            → proxies, services, data access objects
+    L vos                 → value objects, entities, data transfer objects
+ L view                 → root for views and mediators
 </code></pre>
 
 <p>As mentioned above, application consists of logic processing classes called Actors that control specific system aspects, domain and components, communicating with each other via well-defined Interfaces.</p>
@@ -154,7 +154,7 @@ appname               → application root
 <div class="highlight"><pre><span class="c1">// some code within an Actor...</span>
 <span class="nx">IPoolManager</span><span class="p">(</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">IPoolManager</span><span class="p">)).</span><span class="nx">managePool</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
 <span class="nx">call</span><span class="p">(</span><span class="nx">IOnSomethingHappened</span><span class="o">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">a</span> <span class="o">:</span> <span class="nx">IOnSomethingHappened</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
-        <span class="p">{</span> <span class="nx">a</span><span class="p">.</span><span class="nx">onSomethingHappened</span><span class="p">(</span><span class="s2">"Pool Manager was asked to manage a pool of 3 items"</span><span class="p">);</span> <span class="p">});</span>                
+        <span class="p">{</span> <span class="nx">a</span><span class="p">.</span><span class="nx">onSomethingHappened</span><span class="p">(</span><span class="s2">"Pool Manager now manages 3 items"</span><span class="p">);</span> <span class="p">});</span>                
 <span class="nx">call</span><span class="p">(</span><span class="nx">IOnPoolUpdated</span><span class="o">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">a</span> <span class="o">:</span> <span class="nx">IOnPoolUpdated</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
         <span class="p">{</span> <span class="nx">a</span><span class="p">.</span><span class="nx">onPoolUpdated</span><span class="p">();</span> <span class="p">});</span>                
 </pre></div>
@@ -162,7 +162,7 @@ appname               → application root
 <p>Given there is a single method per Notification interface, a shortcut syntax can be used:</p>
 
 <div class="highlight"><pre><span class="nx">IPoolManager</span><span class="p">(</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">IPoolManager</span><span class="p">)).</span><span class="nx">managePool</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
-<span class="nx">call</span><span class="p">(</span><span class="nx">IOnSomethingHappened</span><span class="o">,</span> <span class="p">[</span><span class="s2">"Pool Manager was asked to manage a pool of 3 items"</span><span class="p">]);</span>                
+<span class="nx">call</span><span class="p">(</span><span class="nx">IOnSomethingHappened</span><span class="o">,</span> <span class="p">[</span><span class="s2">"Pool Manager now manages 3 items"</span><span class="p">]);</span>                
 <span class="nx">call</span><span class="p">(</span><span class="nx">IOnPoolUpdated</span><span class="p">);</span>
 </pre></div>
 
