@@ -76,19 +76,19 @@ Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript on 
 
 <p>Typical application / library written on drop framework has the following structure:</p>
 
-<pre><code>org.dropframework.*           &gt; included framework sources
-appname                       &gt; application root
- L actors                       &gt; root for internal communication interfaces (actors)
-    L singletones                 &gt; actor interfaces with single implementation: I&lt;...&gt;
-    L notifications               &gt; actor interfaces with multiple implementation: IOn&lt;...&gt;
- L commons                      &gt; root for all shared generic classes
-    L components                  &gt; shared generic components
-    L utils                       &gt; shared generic utility classes
- L controller                   &gt; root for business logic controllers
- L model                        &gt; root for model classes
-    L services                    &gt; proxies, services, data access objects
-    L vos                         &gt; value objects, entities, data transfer objects
- L view                         &gt; root for views and mediators
+<pre><code>org.dropframework.*    → included framework sources
+appname               → application root
+ L actors               → root for internal communication interfaces (actors)
+    L singletones         → actor interfaces with single implementation: I&lt;...&gt;
+    L notifications           → actor interfaces with multiple implementation: IOn&lt;...&gt;
+ L commons                  → root for all shared generic classes
+    L components              → shared generic components
+    L utils                   → shared generic utility classes
+ L controller               → root for business logic controllers
+ L model                    → root for model classes
+    L services                → proxies, services, data access objects
+    L vos                     → value objects, entities, data transfer objects
+ L view                     → root for views and mediators
 </code></pre>
 
 <p>As mentioned above, application consists of logic processing classes called Actors that control specific system aspects, domain and components, communicating with each other via well-defined Interfaces.</p>
