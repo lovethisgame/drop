@@ -106,7 +106,7 @@ Methods explained above are also available on Actors themselves, so you will nor
             { a.onPoolUpdated(); });                
 ```
 
-Using shortcut syntax, calls can be shortened to:
+Given there is a single method per Notification interface, a shortcut syntax can be used:
 
 ```actionscript
     IPoolManager(instanceOf(IPoolManager)).managePool(3);
