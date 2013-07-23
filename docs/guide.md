@@ -183,19 +183,19 @@ The [appname/view](../drop-as3-example/src/main/flex/example/view) directory is 
 When deciding on where a particular code should go, View or Mediator, keep in mind:
 * Every View should be as logic unaware and thin as possible, delegating all the business to Mediators. 
 * Views should know nothing on Mediators they're assigned to, be totally separate from the system, and may only:
-** include other views;
-** broadcast events of special type `ViewEvent` caught by Mediators;
-** expose public methods to set properties or apply data providers.
+ - include other views;
+ - broadcast events of special type `ViewEvent` caught by Mediators;
+ - expose public methods to set properties or apply data providers.
 * In turn, every Mediator must:
-** perform a business logic only of a single View it has been assigned to;
-** delegate non-View specific logic to other Mediators, Services or Controllers better responsible for it, separating the concerns properly in a loosely coupled manner.
+ - perform a business logic only of a single View it has been assigned to;
+ - delegate non-View specific logic to other Mediators, Services or Controllers better responsible for it, separating the concerns properly in a loosely coupled manner.
 
 
 #### View to Mediator communication
 
 View may expose a set of public methods available for Mediator to call, such as `set dataProvider`, thus defining it's outter interface. Mediator call these methods to set View properties, state, data provider, etc.
 
-View also generate events, such as on creation complete, mouse clicks, scroll position change, and so on. Framework follows *One Event Type for All* Strategy, thus by convention View is required to re-dispatch an event as an object of a special dynamic type `ViewEvent`.
+View also generate events, such as on creation complete, mouse clicks, scroll position change, and so on. Framework follows *One Event Type for All* approach, thus by convention View is required to re-dispatch an event as an object of a special dynamic type `ViewEvent`.
 
 Every ViewEvent has an `actionName`. Being dispatched ViewEvents are intercepted by a helper instance called `adapter` found within every Mediator, and a particular Mediator listener function for a given `actionName` is invoked.
 
