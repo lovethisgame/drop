@@ -98,20 +98,20 @@ This approach decoulpes Actors and facades implementation complexity behind the 
 Methods explained above are also available on Actors themselves, so you will normally never call a Context directly, but invoke code similar to:
 
 ```actionscript
-    // some code within an Actor...
-    IPoolManager(instanceOf(IPoolManager)).managePool(3);
-    call(IOnSomethingHappened, function (a : IOnSomethingHappened) : void
-            { a.onSomethingHappened("Pool Manager was asked to manage a pool of 3 items"); });                
-    call(IOnPoolUpdated, function (a : IOnPoolUpdated) : void
-            { a.onPoolUpdated(); });                
+// some code within an Actor...
+IPoolManager(instanceOf(IPoolManager)).managePool(3);
+call(IOnSomethingHappened, function (a : IOnSomethingHappened) : void
+        { a.onSomethingHappened("Pool Manager was asked to manage a pool of 3 items"); });                
+call(IOnPoolUpdated, function (a : IOnPoolUpdated) : void
+        { a.onPoolUpdated(); });                
 ```
 
 Given there is a single method per Notification interface, a shortcut syntax can be used:
 
 ```actionscript
-    IPoolManager(instanceOf(IPoolManager)).managePool(3);
-    call(IOnSomethingHappened, ["Pool Manager was asked to manage a pool of 3 items"]);                
-    call(IOnPoolUpdated);
+IPoolManager(instanceOf(IPoolManager)).managePool(3);
+call(IOnSomethingHappened, ["Pool Manager was asked to manage a pool of 3 items"]);                
+call(IOnPoolUpdated);
 ```
  
  
@@ -351,29 +351,29 @@ Proper logic separation within isolated Actors is a key to keep system maintanab
 When coding an Actor that deals with other Interfaces or a Mediator that modifies a View, it comes handy to define proxy getters that return typed objects. So instead of casting the return object every time:
 
 ```actionscript
-    HelloView(adapter.view).message = "Hello!"
-    IWakeUpController(instanceOf(IWakeUpController)).wakeUp();
+HelloView(adapter.view).message = "Hello!"
+IWakeUpController(instanceOf(IWakeUpController)).wakeUp();
 ```
 
 define two getters:
 
 ```actionscript
-    private function get wakeUpController() : IWakeUpController
-    {
-        return instanceOf(IWakeUpController) as IWakeUpController;
-    }
-    
-    private function get helloView() : HelloView
-    {
-        return adapter.view as HelloView;
-    }
+private function get wakeUpController() : IWakeUpController
+{
+    return instanceOf(IWakeUpController) as IWakeUpController;
+}
+ 
+private function get helloView() : HelloView
+{
+    return adapter.view as HelloView;
+}
 ```
 
 and call more readable and concise instructions:
 
 ```actionscript
-    helloView.message = "Hello!"
-    wakeUpController.wakeUp();
+helloView.message = "Hello!"
+wakeUpController.wakeUp();
 ```
 
 
@@ -382,10 +382,10 @@ and call more readable and concise instructions:
 Avoid passing the same GlobalContext instance to the parent Actor type within constructor over again for every Actor like in here:
 
 ```actionscript
-    public function ServiceName ()
-    {
-        super(GlobalContext.instance);
-    }
+public function ServiceName ()
+{
+    super(GlobalContext.instance);
+}
 ```
 
 by defining <AppName>Mediator, <AppName>Controller, <AppName>Service and <AppName>Proxy:
@@ -427,8 +427,8 @@ public class IOnNetworkStatusChanged
 Downside is invoking a concise `call(IOnNetworkStatusChanged)` syntax will fail as will execute every method on an Interface. Use full syntax instead:
 
 ```actionscript
-    call(IOnNetworkStatusChanged,
-            function (a : IOnNetworkStatusChanged) : void { a.onNetworkLost(); });
+call(IOnNetworkStatusChanged,
+        function (a : IOnNetworkStatusChanged) : void { a.onNetworkLost(); });
 ```
 
 
@@ -460,8 +460,8 @@ class InstanceLock { }
 Service and Proxy interfaces are not necessary as Actors called directly:
 
 ```actionscript
-    Model.sso.signIn(username, passwordHash, callback);
-    Model.dashboard.dropAllPortlets(callback);
+Model.sso.signIn(username, passwordHash, callback);
+Model.dashboard.dropAllPortlets(callback);
 ```
 
 This is only applicable if Model layer is thin and completely isolated from the business logic, serving only as a gateway to Domain hosted separately.
