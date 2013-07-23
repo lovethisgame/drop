@@ -321,29 +321,28 @@ Example of application initialization can be found in [ApplicationView](../drop-
 
 ## Framework Usage
 
-Drop is designed for modification and extension. For a particular project it might be decided to introduce additional or modified Actor types structure.
+Steps to start using the framework:
 
-High level steps include:
-
-- Include the framework sources into your (new) project;
-- Create a single GlobalContext class;
-- Design and define Singletone and Notification interfaces
-- Define Mediators to handle views, Services and Value Objects for domain, Controllers for business logic;
-- Wire actors together via Interfaces.
+* Include the framework sources into your (new) project;
+* Create a single GlobalContext class;
+* Design and define Singletone and Notification interfaces
+* Define Mediators to handle views, Services and Value Objects for domain, Controllers for business logic;
+* Wire actors together via Interfaces.
 
 Whatever architecture is followed, it must be made sure:
+
 * every Actor is only concerned with the aspect it's type designed to handle,
 * actors communicate in decoupled manner via well-defined communication interfaces.
 
 
 ## Tips and Best Practices
 
-### Isolate boundary classes
+##### Isolate boundary classes
 
 do not call Actors from Boundaries; do not call Boundaries from Boundaries; do not call Boundaries that do not belong to an Actor from that Actor;
 
 
-### Use proxy getters
+##### Use proxy getters
 
 write proxy-getters;
 
@@ -383,7 +382,7 @@ use sophisticated IDE that support navigation within classes hierarchy
 > **tip:** Generally it is adviced to rely on notification interfaces versus singletone ones where possible as they allow for better loose coupling.
 
 
-### Perform initialization on IOnApplicationReady
+### Perform Actors initialization on IOnApplicationReady
 
 > **tip:** Generally it is a good idea to dispatch IOnApplicationReady notification in a way shown above once all Actors created and execute all initial data retrieving, view preparing and internal processes launch within listeners in a safe manner, rather than in Actor contstructors.
 
