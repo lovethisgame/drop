@@ -348,54 +348,144 @@ Proper logic separation within isolated Actors is a key to keep system maintanab
 
 **Use proxy getters**
 
-write proxy-getters;
+When coding an Actor that deals with other Interfaces or a Mediator that modifies a View, it comes handy to define proxy getters that return typed objects. So instead of casting the return object every time:
+
+```actionscript
+    HelloView(adapter.view).message = "Hello!"
+    IWakeUpController(instanceOf(IWakeUpController)).wakeUp();
+```
+
+define two getters:
+
+```actionscript
+    private function get wakeUpController() : IWakeUpController
+    {
+        return instanceOf(IWakeUpController) as IWakeUpController;
+    }
+    
+    private function get helloView() : HelloView
+    {
+        return adapter.view as HelloView;
+    }
+```
+
+and call more readable and concise instructions:
+
+```actionscript
+    helloView.message = "Hello!"
+    wakeUpController.wakeUp();
+```
 
 
-### Define context-aware Actor types
+**Define context-aware Actor types**
 
-define AppMediator, AppController, AppService and AppProxy;
+Avoid passing the same GlobalContext instance to the parent Actor type within constructor over again for every Actor like in here:
 
+```actionscript
+    public function ServiceName ()
+    {
+        super(GlobalContext.instance);
+    }
+```
 
-### Group Notification methods
+by defining <AppName>Mediator, <AppName>Controller, <AppName>Service and <AppName>Proxy:
 
-group methods in communication interfaces;
+```actionscript
+public class MyAppService
+    extends Service    
+{
+    public function MyAppService ()
+    {
+        super(GlobalContext.instance);
+    }
+}
+```
 
+and extending those directly:
 
-### Writing multicore Apps
-
-define multiple Contexts
-
-
-### Group Services together
-
-group services in a one static class for easy access, ommit service singetone interfaces
-
-
-### Define domain stubs
-
-define domain stubs within Services
-
-
-### Use sophisticated IDE
-
-use sophisticated IDE that support navigation within classes hierarchy
-
-
-### Rely on Notification interfaces where possible
-
-> **tip:** Generally it is adviced to rely on notification interfaces versus singletone ones where possible as they allow for better loose coupling.
-
-
-### Perform Actors initialization on IOnApplicationReady
-
-> **tip:** Generally it is a good idea to dispatch IOnApplicationReady notification in a way shown above once all Actors created and execute all initial data retrieving, view preparing and internal processes launch within listeners in a safe manner, rather than in Actor contstructors.
+```actionscript
+public class SomeService
+    extends MyAppService    
+{
+    // code goes here
+}
+```
 
 
-### Rely on direct Service Response where possible
+**Group Notification methods**
 
-> **tip:** Services and Proxies may use direct response mechanics via IOn interface or indirect notification broadcasting via IOn interface, whichever preferred and consistent with an approach chosen by development team.
+Notification methods can be grouped within a single Notification interface if logically connected, for example: 
+
+```actionscript
+public class IOnNetworkStatusChanged
+{
+   function onNetworkFound (networkName : String) : void;
+   function onNetworkLost () : void;
+}
+```
+
+Downside is invoking a concise `call(IOnNetworkStatusChanged)` syntax will fail as will execute every method on an Interface. Use full syntax instead:
+
+```actionscript
+    call(IOnNetworkStatusChanged,
+            function (a : IOnNetworkStatusChanged) : void { a.onNetworkLost(); });
+```
 
 
-### General notice
+**Writing multicore Apps**
 
-maintain code regularly, share the code state responsibility within team, stick to chosen practices
+A difference between a single core and multicore applications in Drop is in a number of Contexts and Interface sets. Every Application Module should simply define and use it's own Context (optional) and Communication Interfaces package (adviced).
+
+Should Modules package into separate SWC libraries, it comes handy to have one shared cross library with Communication Interfaces (Singletones and Notifications) shared across Modules.
+
+
+**Group Services together**
+
+Quite often an Application fetches most of it's data from the remote server objects such as HTTP URLs, Java Endpoints, Servlets, and so on. In that case Model layer becomes rather thin, redirecting requests either to local stubs or remote objects.
+
+For simplicity reasons it is adviced to use one common class with static Services / Proxies instances, called Model. For example:
+
+```actionscript
+public class Model
+{
+    public static const sso : SsoService = new SsoService();
+    public static const dashboard : DashboardService = new DashboardService();
+    
+    public function Model (lock : Lock) { }
+}
+
+class InstanceLock { }
+```
+
+Service and Proxy interfaces are not necessary as Actors called directly:
+
+```actionscript
+    Model.sso.signIn(username, passwordHash, callback);
+    Model.dashboard.dropAllPortlets(callback);
+```
+
+This is only applicable if Model layer is thin and completely isolated from the business logic, serving only as a gateway to Domain hosted separately.
+
+Also, Services and Proxies may use direct response mechanics (as shown above) or indirect Notification broadcasting via IOn interface, whichever preferred and consistent with an approach chosen by development team. It is adviced though to rely on a simplest direct responce while possible thus reducing amount of requried Notification interfaces.
+
+
+**Rely on Notification interfaces where possible**
+
+Generally it is adviced to rely on Notification interfaces versus Singletone ones where possible as they allow for better loose coupling.
+
+
+**Use sophisticated IDE**
+
+Modern IDEs with embedded Flex and ActionScript support allow to quickly navigate between Communication Interfaces, Actors that implement them and Actors that call them. This common feature is very handy and saves great amount of time.
+
+
+**Perform Actors initialization on IOnApplicationReady**
+
+It is a good idea to dispatch IOnApplicationReady Notification once all Actors created within main Application Mediator. Initial data retrieving, View preparing and kicking off internal processes is then safely handled within listeners, as all necessary Actors created at a time of invocation.
+
+
+**General tips**
+
+There is no framework or technology that will ensure full code stability, maintainability and bug-safety. Thus it is important to dicuss, agree and stick with the choosen strict consistent approach and practices within the team on a particular project and follow it as much as possible.
+
+Regularly maintaining and sharing the responsibility for code readability, simplicity and safety is a strong requirement regardless of a framework choosen on a mid to long term projects.
