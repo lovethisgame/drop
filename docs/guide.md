@@ -91,19 +91,25 @@ Actors never communicate directly, *except for the single case explained below f
 
 This approach decoulpes Actors and facades implementation complexity behind the contracts defined by communication interfaces. Following `Context` methods can be used to resolve the Actors:
 * `.instanceOf (type : Class) : IConcernedActor` - finds one and only one Actor instance of the specified interface, fails with Error if more than 1 Actors found. Singletone communication interface should be supplied as an argument.
-* `.arrayOf (type : Class) : Array` - finds an array of Actors for specified interface.
-* `.invoke (type : Class, callback : Function) : void` - executes supplied callback function, consequently passing every Actor of the specified interface as an argument. Very similar to calling `arrayOf(type).every(callback)`. Handy for notifying multiple Actors.
+* `.call (type : Class, callback : Function) : void` - executes supplied callback function, consequently passing every Actor of the specified interface as an argument.
+* `.call (type : Class, args : Array) : void` - executes every function found within every Actor of the specified interface with the specified arguments list. A shortcut version of the above.
 
 Methods explained above are also available on Actors themselves, so you will normally never call a Context directly, but invoke code similar to:
 
 ```actionscript
     // some code within an Actor...
     IPoolManager(super.instanceOf(IPoolManager)).managePool(3);
-    super.invoke(IOnSomethingHappened, function (a : IOnSomethingHappened) : void
+    super.call(IOnSomethingHappened, function (a : IOnSomethingHappened) : void
             { a.onSomethingHappened("Pool Manager was asked to manage a pool of 3 items"); });                
 ```
 
-Keyword `super` above is normally dropped, and included here for clarity.
+Using an arguments shortcut syntax, one of the calls above can be simplified to:
+
+```actionscript
+    super.call(IOnSomethingHappened, ["Pool Manager was asked to manage a pool of 3 items"]);                
+```
+
+Keyword `super` above is normally dropped, and is included here for clarity.
  
  
 ### The appname/commons directory
@@ -171,124 +177,93 @@ See the [WeatherService.as](../drop-as3-example/src/main/flex/example/model/serv
 
 ### The appname/view directory
 
-todo: update the text below this point:
+The [appname/view](../drop-as3-example/src/main/flex/example/view) directory is where the hierarchy of visual elements and containers defined. It may contain 3 following types of classes:
+* **Views** - all visual display objects, controls and custom ui components that shown on a screen. Coded in MXML in case of targetting Flex / AIR or AS3 for pure Flash. Naming example: `MessagePanel.mxml`.
+* **Skins** - Flex 4 skin classes used for applying layout and skinning parameters to the View components. Use `Skin` suffix, for instance `MessagePanelSkin.as`.
+* **Mediators** - Actors that listen to View Events dispatched by Views. Mediators control Views by modifying properties and data providers on them; communicate to other system Actors via Singletone or Notification interfaces. Use `Mediator` suffix: `MessagePanelMediator.as`.
 
-The [appname/view](../drop-as3-example/src/main/flex/example/view) directory is where the hierarchy of visual elements and containers defined. Classes there can be of 3 following types:
-* **views** - all visual display objects, controls and custom ui components that shown on a screen, usually coded in MXML, for example `MessagePanel.mxml`;
-* **skins** - flex 4 skin classes used for applying layout and skinning parameters to the View components, for instance `MessagePanelSkin.as`;
-* **mediators** - actors that listen to View Events dispatched by Views; control Views by modifying properties and data providers on them; serving as gateways to the rest of a system, including controllers, services and other Mediators. For example, `MessagePanelMediator.as`.
-
-General rule in defining Views is **to keep each View as logic unaware and thin as possible, delegating all the business to Mediators**. Views should know nothing on Mediators they're assigned to, be totally separate from the system, and may only:
-* include other views;
-* broadcast events of special type `ViewEvent` caught by Mediators;
-* expose public methods to set properties or apply data providers.
-
-In turn, every Mediator must:
-* perform a business logic only of a single View it is assigned to;
-* delegate non-View specific logic to other mediators, services or controllers responsible for it.
+When deciding on where a particular code should go, View or Mediator, keep in mind:
+* Every View should be as logic unaware and thin as possible, delegating all the business to Mediators. 
+* Views should know nothing on Mediators they're assigned to, be totally separate from the system, and may only:
+** include other views;
+** broadcast events of special type `ViewEvent` caught by Mediators;
+** expose public methods to set properties or apply data providers.
+* In turn, every Mediator must:
+** perform a business logic only of a single View it has been assigned to;
+** delegate non-View specific logic to other Mediators, Services or Controllers better responsible for it, separating the concerns properly in a loosely coupled manner.
 
 
-#### ViewEvent dispatching
+#### View to Mediator communication
 
-View Event dispatching can be seen in a [HerdPanel.mxml](../drop-as3-example/src/main/flex/example/view/herd/HerdPanel.mxml):
+View may expose a set of public methods available for Mediator to call, such as `set dataProvider`, thus defining it's outter interface. Mediator call these methods to set View properties, state, data provider, etc.
+
+View also generate events, such as on creation complete, mouse clicks, scroll position change, and so on. Framework follows *One Event Type for All* Strategy, thus by convention View is required to re-dispatch an event as an object of a special dynamic type `ViewEvent`.
+
+Every ViewEvent has an `actionName`. Being dispatched ViewEvents are intercepted by a helper instance called `adapter` found within every Mediator, and a particular Mediator listener function for a given `actionName` is invoked.
+
+Here is an example of a HelloGroup View that defines `set message` method and a ViewEvent dispatched on Button click:
 
 ```actionscript
-<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
-         xmlns:s="library://ns.adobe.com/flex/spark">
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+          xmlns:s="library://ns.adobe.com/flex/spark">
     <fx:Script><![CDATA[
-        public static const A_ADD_SHEEP_CLICKED : String
-               = ViewEvent.uniqueName("A_ADD_SHEEP_CLICKED");
+        public static const A_SAY_HELLO_CLICKED : String
+               = ViewEvent.uniqueName("A_SAY_HELLO_CLICKED");
               
-        private function addSheepButton_clickHandler(event:MouseEvent):void
+        public function set message (value : String) : void
         {
-            dispatchEvent(ViewEvent.of(A_ADD_SHEEP_CLICKED, event));
+            messageLabel.text = value;
+        }
+              
+        private function sayHelloButton_clickHandler (event : MouseEvent) : void
+        {
+            dispatchEvent(ViewEvent.of(A_SAY_HELLO_CLICKED, event));
         }
     ]]></fx:Script>
-    <s:Button id="addSheepButton" label="Add Sheep"
-              verticalCenter="0" horizontalCenter="0"
-              click="addSheepButton_clickHandler(event)"/>
-</s:Panel>
+    <s:Label id="messageLabel"/>
+    <s:Button id="sayHelloButton" label="Say Hello"
+              click="sayHelloButton_clickHandler(event)"/>
+</s:VGroup>
 ```
 
-And listening in a [HerdPanelMediator.mxml](../drop-as3-example/src/main/flex/example/view/herd/HerdPanelMediator.as):
+Notice ViewEvent action name starts with `A_` prefix and a `uniqueName` method may be used to ensure that the name is unique. Below is a Mediator that manages HelloView:
 
 ```actionscript
-public class HerdPanelMediator
+public class HelloGroupMediator
         extends Mediator
 {
-    public function HerdPanelMediator(view : HerdPanel)
+    public function HelloGroupMediator(view : HelloGroup)
     {
         super(GlobalContext.instance, view);
         adapter.onActions(
-                [HerdPanel.A_ADD_SHEEP_CLICKED],
+                [HelloGroup.A_SAY_HELLO_CLICKED],
                 function (event : ViewEvent) : void
                 {
-                    sheepHerdController.addSheep();
+                    helloView.message = "Hello!"
+                    wakeUpController.wakeUp();
                 });
     }
 
-    private function get sheepHerdController() : ISheepHerdController
+    private function get wakeUpController() : IWakeUpController
     {
-        return instanceOf(ISheepHerdController) as ISheepHerdController;
+        return instanceOf(IWakeUpController) as IWakeUpController;
+    }
+    
+    private function get helloView() : HelloView
+    {
+        return adapter.view as HelloView;
     }
 }
 ```
 
+ViewEvent may also contain parameters associated with the parent event, additional parameters gathered by the View and the parent event itself. Factory `ViewEvent.of` and `ViewEvent.ofContent` methods may be usefull to create ViewEvents in that case. 
 
-#### Listening for external notifications
-
-[MessagePanel.mxml](../drop-as3-example/src/main/flex/example/view/message/MessagePanel.mxml) exposes `dataProvider` setter that applies message text to the label control:
-
-```actionscript
-<?xml version="1.0"?>
-<s:Panel xmlns:fx="http://ns.adobe.com/mxml/2009"
-         xmlns:s="library://ns.adobe.com/flex/spark">
-    <fx:Script>
-        <![CDATA[
-        public function set dataProvider (label : String) : void
-        {
-            statusLabel.text = label;
-        }
-        ]]>
-    </fx:Script>
-    <s:Label id="statusLabel"
-             verticalCenter="0" horizontalCenter="0"/>
-</s:Panel>
-```
-
-[MessagePanelMediator.as](../drop-as3-example/src/main/flex/example/view/message/MessagePanelMediator.as) listens for `IOnSheepCountChanged` notification and applies `dataProvider` to the `MessagePanel` View:
-
-```actionscript
-public class MessagePanelMediator
-    extends Mediator
-    implements IOnSheepCountChanged
-{
-    public function MessagePanelMediator(view : MessagePanel)
-    {
-        super(GlobalContext.instance, view);
-    }
-
-    public function onSheepCountChanged(sheepCount : uint) : void
-    {
-        messagePanel.dataProvider = (sheepCount != 0) ?
-                "Sheep herd has " + sheepCount + " sheeps" :
-                "Sheep herd is empty";
-    }
-
-    public function onDisasterHappened(sheepCount : uint, description : String) : void
-    {
-        messagePanel.dataProvider = description;
-    }
-
-    private function get messagePanel() : MessagePanel
-    {
-        return adapter.view as MessagePanel;
-    }
-}
-```
+View Event dispatching example can be seen in a [HerdPanel.mxml](../drop-as3-example/src/main/flex/example/view/herd/HerdPanel.mxml), and listening in a [HerdPanelMediator.mxml](../drop-as3-example/src/main/flex/example/view/herd/HerdPanelMediator.as).
 
 
 ## App Initialization
+
+todo: update the following chapter
 
 Once [ApplicationView](../drop-as3-example/src/main/flex/example/view/ExampleApplication.mxml) created, an [ApplicationMediator](../drop-as3-example/src/main/flex/example/view/ExampleApplicationMediator.as) is initialized, which in turn creates all the system actors.
 
