@@ -340,9 +340,9 @@ Whatever architecture is followed, it must be made sure:
 **Divide and Isolate everything**
 
 Care should be taken to make sure these rules are followed:
-* Actors never called from Boundaries (i.e. non-Actors): Views only dispatch ViewEvents, others (if ever any) may return result directly, via asynch callbacks or rely on Observer pattern.
-* Boundaries never call other Boundaries: communication should always happen through the Actors controlling particular Boundaries.
-* Actor never calls Boundaries it's not primarily concerned with: for example, AdminPanelMediator should never call Dashboard view, but only invoke a method on DashboardMediator instead.
+* Boundaries (i.e. non-Actors) do not call Actors directly: Views only dispatch ViewEvents, others (if ever any) may return result directly, via asynch callbacks or rely on Observer pattern.
+* Boundaries do not call other Boundaries: communication should always happen through the Actors controlling particular Boundaries.
+* Actor never calls Boundaries it's not concerned with: for example, AdminPanelMediator should never call Dashboard view, but only invoke a method on DashboardMediator instead.
  
 Proper logic separation within isolated Actors is a key to keep system maintanable. When it feels like an Actor has overgrown in size and manages to much on it's own, consider dividing and extracting responsibility across other Actors, specifically creating new Controllers isolated behind well-defined interfaces.
 
