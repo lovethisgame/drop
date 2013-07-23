@@ -92,24 +92,22 @@ Actors never communicate directly, *except for the single case explained below f
 This approach decoulpes Actors and facades implementation complexity behind the contracts defined by communication interfaces. Following `Context` methods can be used to resolve the Actors:
 * `.instanceOf (type : Class) : IConcernedActor` - finds one and only one Actor instance of the specified interface, fails with Error if more than 1 Actors found. Singletone communication interface should be supplied as an argument.
 * `.call (type : Class, callback : Function) : void` - executes supplied callback function, consequently passing every Actor of the specified interface as an argument.
-* `.call (type : Class, args : Array) : void` - executes every function found within every Actor of the specified interface with the specified arguments list. A shortcut version of the above.
+* `.call (type : Class, args : Array) : void` - executes every function found within every Actor of the specified interface with the specified arguments list.
 
 Methods explained above are also available on Actors themselves, so you will normally never call a Context directly, but invoke code similar to:
 
 ```actionscript
     // some code within an Actor...
-    IPoolManager(super.instanceOf(IPoolManager)).managePool(3);
-    super.call(IOnSomethingHappened, function (a : IOnSomethingHappened) : void
+    IPoolManager(instanceOf(IPoolManager)).managePool(3);
+    call(IOnSomethingHappened, function (a : IOnSomethingHappened) : void
             { a.onSomethingHappened("Pool Manager was asked to manage a pool of 3 items"); });                
 ```
 
-Using an arguments shortcut syntax, one of the calls above can be simplified to:
+Using an arguments shortcut syntax, second call above can be simplified to:
 
 ```actionscript
-    super.call(IOnSomethingHappened, ["Pool Manager was asked to manage a pool of 3 items"]);                
+    call(IOnSomethingHappened, ["Pool Manager was asked to manage a pool of 3 items"]);                
 ```
-
-Keyword `super` above is normally dropped, and is included here for clarity.
  
  
 ### The appname/commons directory
