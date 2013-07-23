@@ -90,10 +90,10 @@ When created, Actor instances are bound to a single `Context` where they reside 
 Actors never communicate directly, *except for the single case explained below for Mediators*. Instead they resolve each other via `Context` supplying specific Actor interface defined in `appname/actors` package they want to find and then invoke required methods on returned instance(s).
 
 This approach decoulpes Actors and facades implementation complexity behind the contracts defined by communication interfaces. Following `Context` methods can be used to resolve the Actors:
-* `.instanceOf (type : Class) : IConcernedActor` - finds one and only one Actor instance of the specified interface, fails with Error if more than 1 Actors found. Singletone communication interface should be supplied as an argument.
-* `.call (type : Class, callback : Function) : void` - executes supplied callback function, consequently passing every Actor of the specified interface as an argument.
+* `.call (type : Class) : void` - executes every method on actors of a given type supplying no arguments.
 * `.call (type : Class, args : Array) : void` - executes every function found within every Actor of the specified interface with the specified arguments list.
-* `.call (type : Class) : void` - similar to the one above, but no parameters passed to notification interface.
+* `.call (type : Class, callback : Function) : void` - executes supplied callback function, consequently passing every Actor of the specified interface as an argument. 
+* `.instanceOf (type : Class) : IConcernedActor` - finds one and only one Actor instance of the specified interface, fails with Error if more than 1 Actors found. Singletone communication interface should be supplied as an argument.
 
 Methods explained above are also available on Actors themselves, so you will normally never call a Context directly, but invoke code similar to:
 
@@ -102,12 +102,16 @@ Methods explained above are also available on Actors themselves, so you will nor
     IPoolManager(instanceOf(IPoolManager)).managePool(3);
     call(IOnSomethingHappened, function (a : IOnSomethingHappened) : void
             { a.onSomethingHappened("Pool Manager was asked to manage a pool of 3 items"); });                
+    call(IOnPoolUpdated, function (a : IOnPoolUpdated) : void
+            { a.onPoolUpdated(); });                
 ```
 
-Using an arguments shortcut syntax, second call above can be simplified to:
+Using shortcut syntax, calls can be shortened to:
 
 ```actionscript
+    IPoolManager(instanceOf(IPoolManager)).managePool(3);
     call(IOnSomethingHappened, ["Pool Manager was asked to manage a pool of 3 items"]);                
+    call(IOnPoolUpdated);
 ```
  
  
@@ -310,6 +314,8 @@ public class ExampleApplicationMediator
 }
 ```
 
+Notice an `IOnApplicationReady` is dispatched at the end, notifying all concerned Actors that application framework is technically initialized, so every Actor can proceed with tweaking the views, stubs, domain it controls and call other Actors that created and available on Context.
+
 Example of application initialization can be found in [ApplicationView](../drop-as3-example/src/main/flex/example/view/ExampleApplication.mxml) and [ApplicationMediator](../drop-as3-example/src/main/flex/example/view/ExampleApplicationMediator.as).
 
 
@@ -325,17 +331,73 @@ High level steps include:
 - Define Mediators to handle views, Services and Value Objects for domain, Controllers for business logic;
 - Wire actors together via Interfaces.
 
-Whatever architecture is followed, it must be made sure every Actor is only concerned with the aspect it's type designed to handle, and the actors communicate in decoupled manner via well-defined communication interfaces.
+Whatever architecture is followed, it must be made sure:
+* every Actor is only concerned with the aspect it's type designed to handle,
+* actors communicate in decoupled manner via well-defined communication interfaces.
 
 
 ## Tips and Best Practices
 
-todo: group methods in communication interfaces; define AppMediator, AppController, AppService and AppProxy; do not call Actors from Boundaries; do not call Boundaries from Boundaries; do not call Boundaries that do not belong to an Actor from that Actor; use sophisticated IDE; write proxy-getters; Multicore projects; Services class.
+### Isolate boundary classes
 
-> **tip:** Generally it is a good idea to dispatch IOnApplicationReady notification in a way shown above once all Actors created and execute all initial data retrieving, view preparing and internal processes launch within listeners in a safe manner, rather than in Actor contstructors.
+do not call Actors from Boundaries; do not call Boundaries from Boundaries; do not call Boundaries that do not belong to an Actor from that Actor;
+
+
+### Use proxy getters
+
+write proxy-getters;
+
+
+### Define context-aware Actor types
+
+define AppMediator, AppController, AppService and AppProxy;
+
+
+### Group Notification methods
+
+group methods in communication interfaces;
+
+
+### Writing multicore Apps
+
+define multiple Contexts
+
+
+### Group Services together
+
+group services in a one static class for easy access, ommit service singetone interfaces
+
+
+### Define domain stubs
+
+define domain stubs within Services
+
+
+### Use sophisticated IDE
+
+use sophisticated IDE that support navigation within classes hierarchy
+
+
+### Rely on Notification interfaces where possible
 
 > **tip:** Generally it is adviced to rely on notification interfaces versus singletone ones where possible as they allow for better loose coupling.
 
+
+### Perform initialization on IOnApplicationReady
+
+> **tip:** Generally it is a good idea to dispatch IOnApplicationReady notification in a way shown above once all Actors created and execute all initial data retrieving, view preparing and internal processes launch within listeners in a safe manner, rather than in Actor contstructors.
+
+
+### Extract complexity into Controllers
+
 > **tip:** Strictly, Controllers are not always required as Mediators and Services (see below) can and should contain application logic related to presentation and model layers. Use Controllers to decouple and manage the non-presentation and non-model related logic, control a system aspect or orchestrate other Actors via their interfaces.
 
+
+### Rely on direct Service Response where possible
+
 > **tip:** Services and Proxies may use direct response mechanics via IOn interface or indirect notification broadcasting via IOn interface, whichever preferred and consistent with an approach chosen by development team.
+
+
+### General notice
+
+maintain code regularly, share the code state responsibility within team, stick to chosen practices
