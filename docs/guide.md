@@ -337,12 +337,16 @@ Whatever architecture is followed, it must be made sure:
 
 ## Tips and Best Practices
 
-##### Isolate boundary classes
+**Divide and Isolate everything**
 
-do not call Actors from Boundaries; do not call Boundaries from Boundaries; do not call Boundaries that do not belong to an Actor from that Actor;
+Care should be taken to make sure these rules are followed:
+* Actors never called from Boundaries (i.e. non-Actors): Views only dispatch ViewEvents, others (if ever any) may return result directly, via asynch callbacks or rely on Observer pattern.
+* Boundaries never call other Boundaries: communication should always happen through the Actors controlling particular Boundaries.
+* Actor never calls Boundaries it's not primarily concerned with: for example, AdminPanelMediator should never call Dashboard view, but only invoke a method on DashboardMediator instead.
+ 
+Proper logic separation within isolated Actors is a key to keep system maintanable. When it feels like an Actor has overgrown in size and manages to much on it's own, consider dividing and extracting responsibility across other Actors, specifically creating new Controllers isolated behind well-defined interfaces.
 
-
-##### Use proxy getters
+**Use proxy getters**
 
 write proxy-getters;
 
@@ -385,11 +389,6 @@ use sophisticated IDE that support navigation within classes hierarchy
 ### Perform Actors initialization on IOnApplicationReady
 
 > **tip:** Generally it is a good idea to dispatch IOnApplicationReady notification in a way shown above once all Actors created and execute all initial data retrieving, view preparing and internal processes launch within listeners in a safe manner, rather than in Actor contstructors.
-
-
-### Extract complexity into Controllers
-
-> **tip:** Strictly, Controllers are not always required as Mediators and Services (see below) can and should contain application logic related to presentation and model layers. Use Controllers to decouple and manage the non-presentation and non-model related logic, control a system aspect or orchestrate other Actors via their interfaces.
 
 
 ### Rely on direct Service Response where possible
