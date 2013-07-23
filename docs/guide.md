@@ -93,6 +93,7 @@ This approach decoulpes Actors and facades implementation complexity behind the 
 * `.instanceOf (type : Class) : IConcernedActor` - finds one and only one Actor instance of the specified interface, fails with Error if more than 1 Actors found. Singletone communication interface should be supplied as an argument.
 * `.call (type : Class, callback : Function) : void` - executes supplied callback function, consequently passing every Actor of the specified interface as an argument.
 * `.call (type : Class, args : Array) : void` - executes every function found within every Actor of the specified interface with the specified arguments list.
+* `.call (type : Class) : void` - similar to the one above, but no parameters passed to notification interface.
 
 Methods explained above are also available on Actors themselves, so you will normally never call a Context directly, but invoke code similar to:
 
@@ -261,14 +262,14 @@ View Event dispatching example can be seen in a [HerdPanel.mxml](../drop-as3-exa
 
 ## App Initialization
 
-todo: update the following chapter
-
-Once [ApplicationView](../drop-as3-example/src/main/flex/example/view/ExampleApplication.mxml) created, an [ApplicationMediator](../drop-as3-example/src/main/flex/example/view/ExampleApplicationMediator.as) is initialized, which in turn creates all the system actors.
+Framework initialization usually happens within the single Application Mediator that is constructed by Application view once it's creation complete. For instance:
 
 ```actionscript
 <?xml version="1.0" encoding="utf-8"?>
 <s:Application xmlns:s="library://ns.adobe.com/flex/spark"
                xmlns:fx="http://ns.adobe.com/mxml/2009"
+               xmlns:dash="example.view.dash"
+               xmlns:admin="example.view.admin"
                creationComplete="creationCompleteHandler(event)">
     <fx:Script><![CDATA[
         import mx.events.FlexEvent;
@@ -277,11 +278,12 @@ Once [ApplicationView](../drop-as3-example/src/main/flex/example/view/ExampleApp
             new ExampleApplicationMediator(this);
         }
     ]]></fx:Script>
-    <!-- view components here ... -->
+    <dash:Dashboard id="dashboard"/>
+    <admin:AdminPanel id="adminPanel"/>
 </s:Application>
 ```
 
-And Application Mediator: 
+Application Mediator then initializes Services, Controllers and Mediators for child components. Child Mediators may initialize Mediators for their children and so on. This way a hierarchy of Mediators created. For example:
 
 ```actionscript
 public class ExampleApplicationMediator
@@ -292,40 +294,45 @@ public class ExampleApplicationMediator
         super(GlobalContext.instance, view);
 
         /* initializing model layer */
-        new WeatherService();
+        new SsoService();
+        new DashboardService();
 
         /* initializing controller layer */
-        new Shepherd();
+        new PortletsPool();
 
-        /* initializing mediators for included components */
-        new HerdPanelMediator(view.herdPanel);
-        new MessagePanelMediator(view.messagePanel);
+        /* initializing mediators for child components */
+        new DashboardMediator(view.dashboard);
+        new AdminPanelMediator(view.adminPanel);
 
         /* once actors initialized, sending the ready notification */
-        invoke(IOnApplicationReady, function (a : IOnApplicationReady) : void
-                { a.onApplicationReady(); });
+        call(IOnApplicationReady);
     }
 }
 ```
 
-Mediators initialization happens hierarchically with parent Mediators initializing Mediators for the child views.
-
-> **tip:** Generally it is a good idea to dispatch IOnApplicationReady notification in a way shown above once all Actors created and execute all initial data retrieving, view preparing and internal processes launch within listeners in a safe manner, rather than in Actor contstructors.
+Example of application initialization can be found in [ApplicationView](../drop-as3-example/src/main/flex/example/view/ExampleApplication.mxml) and [ApplicationMediator](../drop-as3-example/src/main/flex/example/view/ExampleApplicationMediator.as).
 
 
-## How to use
-
-- Get familiar with the framework structure by going through the simple drop-as3-example project.
-- Checkout and include the sources of a drop-as3 project.
-- Have fun playing, changing and creating!
+## Framework Usage
 
 Drop is designed for modification and extension. For a particular project it might be decided to introduce additional or modified Actor types structure.
 
+High level steps include:
+
+- Include the framework sources into your (new) project;
+- Create a single GlobalContext class;
+- Design and define Singletone and Notification interfaces
+- Define Mediators to handle views, Services and Value Objects for domain, Controllers for business logic;
+- Wire actors together via Interfaces.
+
 Whatever architecture is followed, it must be made sure every Actor is only concerned with the aspect it's type designed to handle, and the actors communicate in decoupled manner via well-defined communication interfaces.
 
-## Best Practices
 
-todo: group methods in communication interfaces; define AppMediator, AppController, AppService and AppProxy; do not call Actors from Boundaries; do not call Boundaries from Boundaries; do not call Boundaries that do not belong to an Actor from that Actor; use sophisticated IDE; write proxy-getters; Multicore projects.
+## Tips and Best Practices
+
+todo: group methods in communication interfaces; define AppMediator, AppController, AppService and AppProxy; do not call Actors from Boundaries; do not call Boundaries from Boundaries; do not call Boundaries that do not belong to an Actor from that Actor; use sophisticated IDE; write proxy-getters; Multicore projects; Services class.
+
+> **tip:** Generally it is a good idea to dispatch IOnApplicationReady notification in a way shown above once all Actors created and execute all initial data retrieving, view preparing and internal processes launch within listeners in a safe manner, rather than in Actor contstructors.
 
 > **tip:** Generally it is adviced to rely on notification interfaces versus singletone ones where possible as they allow for better loose coupling.
 
