@@ -66,7 +66,7 @@ package org.dropframework.core.actors
 
         public function remove (actor : IConcernedActor) : void
         {
-            _context.register(actor);
+            _context.remove(actor);
         }
 
 
