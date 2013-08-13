@@ -16,7 +16,7 @@
 package org.dropframework.core.contexts
 {
 
-    import org.dropframework.core.actors.IConcernedActor;
+    import org.dropframework.core.actors.IActor;
 
 
     /**
@@ -31,7 +31,7 @@ package org.dropframework.core.contexts
          *
          * @param actor actor to register.
          * */
-        function register (actor : IConcernedActor) : void;
+        function register (actor : IActor) : void;
 
 
         /**
@@ -39,7 +39,7 @@ package org.dropframework.core.contexts
          *
          * @param actor actor to remove.
          * */
-        function remove (actor : IConcernedActor) : void;
+        function remove (actor : IActor) : void;
 
 
         /**
@@ -50,7 +50,7 @@ package org.dropframework.core.contexts
          * @throws org.dropframework.core.commons.DropFrameworkError - if more than one controller found for the
          * specified locator.
          * */
-        function instanceOf (type : Class) : IConcernedActor /* <type> */;
+        function instanceOf (type : Class) : IActor /* <type> */;
 
 
         /**

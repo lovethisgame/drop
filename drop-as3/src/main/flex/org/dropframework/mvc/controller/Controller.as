@@ -28,7 +28,8 @@ package org.dropframework.mvc.controller
      *
      * @author jdanilov
      * */
-    public class Controller extends ContextAwareActor
+    public class Controller
+            extends ContextAwareActor
     {
         /**
          * Creates new Controller. Automatically registers itself in the context.

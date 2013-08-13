@@ -7,7 +7,7 @@ package example.view.herd
     import example.model.vos.Weather;
 
     import org.dropframework.mvc.view.Mediator;
-    import org.dropframework.mvc.view.ViewEvent;
+    import org.dropframework.mvc.commons.events.ViewEvent;
 
     public class HerdPanelMediator
         extends Mediator
@@ -18,8 +18,8 @@ package example.view.herd
 
             /* handles the add sheep button click from the view,
                and delegates execution to sheep herd controller */
-            adapter.onActions(
-                    [HerdPanel.A_ADD_SHEEP_CLICKED],
+            adapter.on(
+                    HerdPanel.A_ADD_SHEEP_CLICKED,
                     function (event : ViewEvent) : void
                     {
                         sheepHerdController.addSheep();
@@ -27,8 +27,8 @@ package example.view.herd
 
             /* handles the weather change button click from the view,
                invokes remote measureWeather method and notifies actors on weather change */
-            adapter.onActions(
-                    [HerdPanel.A_CHANGE_WEATHER_CLICKED],
+            adapter.on(
+                    HerdPanel.A_CHANGE_WEATHER_CLICKED,
                     function (event : ViewEvent) : void
                     {
                         weatherService.measureWeather(

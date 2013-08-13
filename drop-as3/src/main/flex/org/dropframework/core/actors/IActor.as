@@ -13,22 +13,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.dropframework.mvc.commons
+package org.dropframework.core.actors
 {
-    import flash.display.DisplayObject;
-
 
     /**
-     * Wrapping adapter over the DisplayObject which provides on demand events listening and calls delaying
-     * functionality.
+     * Drop Actor marker interface.
+     *
+     * Only IActor instances can be registered in the Drop Context (IContext interface).
+     *
+     * Designed to be extended by custom system actor types, for instance Mediator, Model, Business, etc. defining
+     * the areas of responsibility (Concerns) in the system.
      *
      * @author jdanilov
      * */
-    public interface IViewAdapter extends ICreationGuard, IViewEventsListener, IDestroyable
+    public interface IActor
     {
-        /**
-         * Returns the DisplayObject wrapped by the Adapter.
-         * */
-        function get view () : DisplayObject;
+        // implementations may provide specific methods
     }
 }

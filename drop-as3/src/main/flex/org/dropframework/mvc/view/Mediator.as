@@ -19,9 +19,11 @@ package org.dropframework.mvc.view
     import flash.display.DisplayObject;
 
     import org.dropframework.core.contexts.IContext;
-    import org.dropframework.core.commons.DropFrameworkError;
     import org.dropframework.core.actors.ContextAwareActor;
-    import org.dropframework.mvc.commons.IViewAdapter;
+    import org.dropframework.mvc.commons.adapter.IViewAdapter;
+    import org.dropframework.mvc.commons.adapter.ViewAdapter;
+    import org.dropframework.mvc.commons.creation.CreationGuard;
+    import org.dropframework.mvc.commons.creation.ICreationGuard;
 
 
     /**
@@ -34,9 +36,11 @@ package org.dropframework.mvc.view
      *
      * @author jdanilov
      * */
-    public class Mediator extends ContextAwareActor
+    public class Mediator
+            extends ContextAwareActor
     {
         private var _adapter : IViewAdapter;
+        private var _guard   : ICreationGuard;
 
 
         /** Mediator's view adapter. Non null. */
@@ -46,23 +50,62 @@ package org.dropframework.mvc.view
         }
 
 
+        /** Mediator's view creation guard. Non null. */
+        protected function get guard () : ICreationGuard
+        {
+            return _guard;
+        }
+
+
 
         /**
          * Creates new Mediator for a given display object. Automatically registers itself in the context.
          *
          * @param context - context to be used by the controller.
-         * @param displayObject - displayObject to be used by the controller.
-         * @throws org.dropframework.core.commons.DropFrameworkError if displayObject is null.
+         * @param view - displayObject to be used by the controller.
          * */
         public function Mediator
-                (context : IContext, displayObject : DisplayObject)
+                (context : IContext, view : DisplayObject)
         {
             super(context);
+            mediate(view);
+        }
 
-            if (displayObject == null)
-                throw new DropFrameworkError("Supplied displayObject can not be null");
 
-            this._adapter = new ViewAdapter(displayObject);
+        /**
+         * Switches Mediator to mediate over a new View.
+         *
+         * If new View is the same as current one, nothing happens.
+         *
+         * ViewAdapter will be updated automatically meaning all view listeners preserved but re-directed to a new View
+         * instance. CreationGuard however will be cleaned off and re-initialized so the queue of delayed calls (if any)
+         * for the previous View will never be executed.
+         *
+         * If supplied object is null, Mediator stops mediating any View.
+         *
+         * @param view - a View to mediate over.
+         */
+        protected function mediate (view : DisplayObject) : void
+        {
+            if (_adapter)
+            {
+                if (_adapter.view == view)
+                    return;
+                _adapter.view = view;
+            }
+
+            if (_guard)
+            {
+                if (_guard.view == view)
+                    return;
+                _guard.view = view;
+            }
+
+            if (view)
+            {
+                _adapter = new ViewAdapter(view);
+                _guard = new CreationGuard(view);
+            }
         }
     }
 }

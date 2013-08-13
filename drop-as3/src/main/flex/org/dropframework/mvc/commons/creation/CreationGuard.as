@@ -13,15 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.dropframework.mvc.view
+package org.dropframework.mvc.commons.creation
 {
+
+    import flash.display.DisplayObject;
 
     import mx.core.UIComponent;
     import mx.events.FlexEvent;
-
-    import org.dropframework.mvc.commons.ICreationGuard;
-
-    import org.dropframework.mvc.commons.IDestroyable;
 
 
     /**
@@ -31,15 +29,16 @@ package org.dropframework.mvc.view
      *
      * @author jdanilov
      */
-    public class CreationGuard implements ICreationGuard, IDestroyable
+    public class CreationGuard
+            implements ICreationGuard
     {
-        /** Object wrapped. */
-        protected var object : Object;
+        /** Wrapped view */
+        protected var _view : DisplayObject;
 
-        /** True if the object has been created so far. */
-        protected var _objectCreated : Boolean = false;
+        /** True if the object has been created */
+        protected var _viewCreated : Boolean = false;
 
-        /** Array of delayed calls. */
+        /** Array of delayed calls */
         protected var delayedCalls : Vector.<Object> = new Vector.<Object>();
 
 
@@ -47,40 +46,67 @@ package org.dropframework.mvc.view
         /**
          * Creates guard for the object supplied.
          *
-         * @param object UIComponent or Object to guard. If UIComponent is supplied, it supposed to be created when the
-         * CREATION_COMPLETE event is thrown on it. If any other type is supplied, the object is supposed to be already
-         * created. If null supplied the object is considered to be never created.
+         * @param view UIComponent to guard. View is supposed to be created once it dispatches CREATION_COMPLETE event.
          */
-        public function CreationGuard (object : Object)
+        public function CreationGuard (view : DisplayObject)
         {
-            this.object = object;
-
-            if (object == null)
-            {
-                _objectCreated = false;
-            }
-            else if (object is UIComponent && !(object as UIComponent).initialized)
-            {
-                (object as UIComponent).addEventListener
-                        (FlexEvent.CREATION_COMPLETE, ccHandler, false, -1);
-            }
-            else
-            {
-                _objectCreated = true;
-            }
+            this.view = view;
         }
 
 
 
-        public function get isObjectCreated () : Boolean
+        public function set view (value : DisplayObject) : void
         {
-            return _objectCreated;
+            if (this._view)
+            {
+                // first, clean off all delayed calls for the current object
+                cleanDelayedCalls();
+                if (this._view is UIComponent && !(this._view as UIComponent).initialized)
+                {
+                    // drop the creation complete listener
+                    (this._view as DisplayObject).removeEventListener
+                            (FlexEvent.CREATION_COMPLETE, ccHandler);
+                }
+            }
+
+            this._view = value;
+            if (value == null)
+            {
+                // consider the object not created if it's null
+                _viewCreated = false;
+            }
+            else
+            {
+                if (value is UIComponent && !(value as UIComponent).initialized)
+                {
+                    // listener for creation complete on UIComponent
+                    (value as UIComponent).addEventListener
+                            (FlexEvent.CREATION_COMPLETE, ccHandler, false, -1);
+                }
+                else
+                {
+                    // consider object created already
+                    _viewCreated = true;
+                }
+            }
+        }
+
+
+        public function get view () : DisplayObject
+        {
+            return _view;
+        }
+
+
+        public function get isViewCreated () : Boolean
+        {
+            return _viewCreated;
         }
 
 
         public function callOnceCreated (f : Function, args : Array = null) : void
         {
-            if (_objectCreated)
+            if (_viewCreated)
             {
                 f.apply(args);
             }
@@ -113,22 +139,6 @@ package org.dropframework.mvc.view
         }
 
 
-        public function get isDestroyed () : Boolean
-        {
-            return object == null;
-        }
-
-
-        public function destroy () : void
-        {
-            if (isDestroyed)
-                return;
-
-            cleanDelayedCalls();
-            object = null;
-        }
-
-
 
         /**
          * Default function invoked on creation complete event of the UIComponent. Marks component as created and
@@ -138,16 +148,18 @@ package org.dropframework.mvc.view
          */
         protected function ccHandler (event : FlexEvent) : void
         {
-            _objectCreated = true;
-            if (isDestroyed)
+            _viewCreated = true;
+            if (_view == null)
             {
                 delayedCalls = null;
                 return;
             }
 
-            (object as UIComponent).removeEventListener
+            // drop the creation complete listener
+            (_view as UIComponent).removeEventListener
                     (FlexEvent.CREATION_COMPLETE, ccHandler);
 
+            // call every delayed function in order
             for each (var call : Object in delayedCalls)
             {
                 call.f.apply(call.args);

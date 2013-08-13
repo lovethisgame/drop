@@ -29,7 +29,8 @@ package org.dropframework.mvc.model
      *
      * @author jdanilov
      * */
-    public class Proxy extends ContextAwareActor
+    public class Proxy
+            extends ContextAwareActor
     {
         private var _delegate : Object;
 
