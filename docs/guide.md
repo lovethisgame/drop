@@ -90,23 +90,28 @@ When created, Actor instances are bound to a single `Context` where they reside 
 Actors never communicate directly, *except for the single case explained below for Mediators*. Instead they resolve each other via `Context` supplying specific Actor interface defined in `appname/actors` package they want to find and then invoke required methods on returned instance(s).
 
 This approach decoulpes Actors and facades implementation complexity behind the contracts defined by communication interfaces. Following `Context` methods can be used to resolve the Actors:
-* `.instanceOf (type : Class) : IConcernedActor` - finds one and only one Actor instance of the specified interface, fails with Error if more than 1 Actors found. Singletone communication interface should be supplied as an argument.
-* `.call (type : Class, callback : Function) : void` - executes supplied callback function, consequently passing every Actor of the specified interface as an argument.
+* `.call (type : Class) : void` - executes every method on actors of a given type supplying no arguments.
 * `.call (type : Class, args : Array) : void` - executes every function found within every Actor of the specified interface with the specified arguments list.
+* `.call (type : Class, callback : Function) : void` - executes supplied callback function, consequently passing every Actor of the specified interface as an argument. 
+* `.instanceOf (type : Class) : IConcernedActor` - finds one and only one Actor instance of the specified interface, fails with Error if more than 1 Actors found. Singletone communication interface should be supplied as an argument.
 
 Methods explained above are also available on Actors themselves, so you will normally never call a Context directly, but invoke code similar to:
 
 ```actionscript
-    // some code within an Actor...
-    IPoolManager(instanceOf(IPoolManager)).managePool(3);
-    call(IOnSomethingHappened, function (a : IOnSomethingHappened) : void
-            { a.onSomethingHappened("Pool Manager was asked to manage a pool of 3 items"); });                
+// some code within an Actor...
+IPoolManager(instanceOf(IPoolManager)).managePool(3);
+call(IOnSomethingHappened, function (a : IOnSomethingHappened) : void
+        { a.onSomethingHappened("Pool Manager was asked to manage a pool of 3 items"); });                
+call(IOnPoolUpdated, function (a : IOnPoolUpdated) : void
+        { a.onPoolUpdated(); });                
 ```
 
-Using an arguments shortcut syntax, second call above can be simplified to:
+Given there is a single method per Notification interface, a shortcut syntax can be used:
 
 ```actionscript
-    call(IOnSomethingHappened, ["Pool Manager was asked to manage a pool of 3 items"]);                
+IPoolManager(instanceOf(IPoolManager)).managePool(3);
+call(IOnSomethingHappened, ["Pool Manager was asked to manage a pool of 3 items"]);                
+call(IOnPoolUpdated);
 ```
  
  
@@ -261,14 +266,14 @@ View Event dispatching example can be seen in a [HerdPanel.mxml](../drop-as3-exa
 
 ## App Initialization
 
-todo: update the following chapter
-
-Once [ApplicationView](../drop-as3-example/src/main/flex/example/view/ExampleApplication.mxml) created, an [ApplicationMediator](../drop-as3-example/src/main/flex/example/view/ExampleApplicationMediator.as) is initialized, which in turn creates all the system actors.
+Framework initialization usually happens within the single Application Mediator that is constructed by Application view once it's creation complete. For instance:
 
 ```actionscript
 <?xml version="1.0" encoding="utf-8"?>
 <s:Application xmlns:s="library://ns.adobe.com/flex/spark"
                xmlns:fx="http://ns.adobe.com/mxml/2009"
+               xmlns:dash="example.view.dash"
+               xmlns:admin="example.view.admin"
                creationComplete="creationCompleteHandler(event)">
     <fx:Script><![CDATA[
         import mx.events.FlexEvent;
@@ -277,11 +282,12 @@ Once [ApplicationView](../drop-as3-example/src/main/flex/example/view/ExampleApp
             new ExampleApplicationMediator(this);
         }
     ]]></fx:Script>
-    <!-- view components here ... -->
+    <dash:Dashboard id="dashboard"/>
+    <admin:AdminPanel id="adminPanel"/>
 </s:Application>
 ```
 
-And Application Mediator: 
+Application Mediator then initializes Services, Controllers and Mediators for child components. Child Mediators may initialize Mediators for their children and so on. This way a hierarchy of Mediators created. For example:
 
 ```actionscript
 public class ExampleApplicationMediator
@@ -292,43 +298,194 @@ public class ExampleApplicationMediator
         super(GlobalContext.instance, view);
 
         /* initializing model layer */
-        new WeatherService();
+        new SsoService();
+        new DashboardService();
 
         /* initializing controller layer */
-        new Shepherd();
+        new PortletsPool();
 
-        /* initializing mediators for included components */
-        new HerdPanelMediator(view.herdPanel);
-        new MessagePanelMediator(view.messagePanel);
+        /* initializing mediators for child components */
+        new DashboardMediator(view.dashboard);
+        new AdminPanelMediator(view.adminPanel);
 
         /* once actors initialized, sending the ready notification */
-        invoke(IOnApplicationReady, function (a : IOnApplicationReady) : void
-                { a.onApplicationReady(); });
+        call(IOnApplicationReady);
     }
 }
 ```
 
-Mediators initialization happens hierarchically with parent Mediators initializing Mediators for the child views.
+Notice an `IOnApplicationReady` is dispatched at the end, notifying all concerned Actors that application framework is technically initialized, so every Actor can proceed with tweaking the views, stubs, domain it controls and call other Actors that created and available on Context.
 
-> **tip:** Generally it is a good idea to dispatch IOnApplicationReady notification in a way shown above once all Actors created and execute all initial data retrieving, view preparing and internal processes launch within listeners in a safe manner, rather than in Actor contstructors.
+Example of application initialization can be found in [ApplicationView](../drop-as3-example/src/main/flex/example/view/ExampleApplication.mxml) and [ApplicationMediator](../drop-as3-example/src/main/flex/example/view/ExampleApplicationMediator.as).
 
 
-## How to use
+## Framework Usage
 
-- Get familiar with the framework structure by going through the simple drop-as3-example project.
-- Checkout and include the sources of a drop-as3 project.
-- Have fun playing, changing and creating!
+Steps to start using the framework:
 
-Drop is designed for modification and extension. For a particular project it might be decided to introduce additional or modified Actor types structure.
+* Include the framework sources into your (new) project;
+* Create a single GlobalContext class;
+* Design and define Singletone and Notification interfaces
+* Define Mediators to handle views, Services and Value Objects for domain, Controllers for business logic;
+* Wire actors together via Interfaces.
 
-Whatever architecture is followed, it must be made sure every Actor is only concerned with the aspect it's type designed to handle, and the actors communicate in decoupled manner via well-defined communication interfaces.
+Whatever architecture is followed, it must be made sure:
 
-## Best Practices
+* every Actor is only concerned with the aspect it's type designed to handle,
+* actors communicate in decoupled manner via well-defined communication interfaces.
 
-todo: group methods in communication interfaces; define AppMediator, AppController, AppService and AppProxy; do not call Actors from Boundaries; do not call Boundaries from Boundaries; do not call Boundaries that do not belong to an Actor from that Actor; use sophisticated IDE; write proxy-getters; Multicore projects.
 
-> **tip:** Generally it is adviced to rely on notification interfaces versus singletone ones where possible as they allow for better loose coupling.
+## Tips and Best Practices
 
-> **tip:** Strictly, Controllers are not always required as Mediators and Services (see below) can and should contain application logic related to presentation and model layers. Use Controllers to decouple and manage the non-presentation and non-model related logic, control a system aspect or orchestrate other Actors via their interfaces.
+**Divide and Isolate everything**
 
-> **tip:** Services and Proxies may use direct response mechanics via IOn interface or indirect notification broadcasting via IOn interface, whichever preferred and consistent with an approach chosen by development team.
+Care should be taken to make sure these rules are followed:
+* Boundaries (i.e. non-Actors) do not call Actors directly: Views only dispatch ViewEvents, others (if ever any) may return result directly, via asynch callbacks or rely on Observer pattern.
+* Boundaries do not call other Boundaries: communication should always happen through the Actors controlling particular Boundaries.
+* Actor never calls Boundaries it's not concerned with: for example, AdminPanelMediator should never call Dashboard view, but only invoke a method on DashboardMediator instead.
+ 
+Proper logic separation within isolated Actors is a key to keep system maintanable. When it feels like an Actor has overgrown in size and manages to much on it's own, consider dividing and extracting responsibility across other Actors, specifically creating new Controllers isolated behind well-defined interfaces.
+
+**Use proxy getters**
+
+When coding an Actor that deals with other Interfaces or a Mediator that modifies a View, it comes handy to define proxy getters that return typed objects. So instead of casting the return object every time:
+
+```actionscript
+HelloView(adapter.view).message = "Hello!"
+IWakeUpController(instanceOf(IWakeUpController)).wakeUp();
+```
+
+define two getters:
+
+```actionscript
+private function get wakeUpController() : IWakeUpController
+{
+    return instanceOf(IWakeUpController) as IWakeUpController;
+}
+ 
+private function get helloView() : HelloView
+{
+    return adapter.view as HelloView;
+}
+```
+
+and call more readable and concise instructions:
+
+```actionscript
+helloView.message = "Hello!"
+wakeUpController.wakeUp();
+```
+
+
+**Define context-aware Actor types**
+
+Avoid passing the same GlobalContext instance to the parent Actor type within constructor over again for every Actor like in here:
+
+```actionscript
+public function ServiceName ()
+{
+    super(GlobalContext.instance);
+}
+```
+
+by defining <AppName>Mediator, <AppName>Controller, <AppName>Service and <AppName>Proxy:
+
+```actionscript
+public class MyAppService
+    extends Service    
+{
+    public function MyAppService ()
+    {
+        super(GlobalContext.instance);
+    }
+}
+```
+
+and extending those directly:
+
+```actionscript
+public class SomeService
+    extends MyAppService    
+{
+    // code goes here
+}
+```
+
+
+**Group Notification methods**
+
+Notification methods can be grouped within a single Notification interface if logically connected, for example: 
+
+```actionscript
+public class IOnNetworkStatusChanged
+{
+   function onNetworkFound (networkName : String) : void;
+   function onNetworkLost () : void;
+}
+```
+
+Downside is invoking a concise `call(IOnNetworkStatusChanged)` syntax will fail as will execute every method on an Interface. Use full syntax instead:
+
+```actionscript
+call(IOnNetworkStatusChanged,
+        function (a : IOnNetworkStatusChanged) : void { a.onNetworkLost(); });
+```
+
+
+**Writing multicore Apps**
+
+A difference between a single core and multicore applications in Drop is in a number of Contexts and Interface sets. Every Application Module should simply define and use it's own Context (optional) and Communication Interfaces package (adviced).
+
+Should Modules package into separate SWC libraries, it comes handy to have one shared cross library with Communication Interfaces (Singletones and Notifications) shared across Modules.
+
+
+**Group Services together**
+
+Quite often an Application fetches most of it's data from the remote server objects such as HTTP URLs, Java Endpoints, Servlets, and so on. In that case Model layer becomes rather thin, redirecting requests either to local stubs or remote objects.
+
+For simplicity reasons it is adviced to use one common class with static Services / Proxies instances, called Model. For example:
+
+```actionscript
+public class Model
+{
+    public static const sso : SsoService = new SsoService();
+    public static const dashboard : DashboardService = new DashboardService();
+    
+    public function Model (lock : Lock) { }
+}
+
+class InstanceLock { }
+```
+
+Service and Proxy interfaces are not necessary as Actors called directly:
+
+```actionscript
+Model.sso.signIn(username, passwordHash, callback);
+Model.dashboard.dropAllPortlets(callback);
+```
+
+This is only applicable if Model layer is thin and completely isolated from the business logic, serving only as a gateway to Domain hosted separately.
+
+Also, Services and Proxies may use direct response mechanics (as shown above) or indirect Notification broadcasting via IOn interface, whichever preferred and consistent with an approach chosen by development team. It is adviced though to rely on a simplest direct responce while possible thus reducing amount of requried Notification interfaces.
+
+
+**Rely on Notification interfaces where possible**
+
+Generally it is adviced to rely on Notification interfaces versus Singletone ones where possible as they allow for better loose coupling.
+
+
+**Use sophisticated IDE**
+
+Modern IDEs with embedded Flex and ActionScript support allow to quickly navigate between Communication Interfaces, Actors that implement them and Actors that call them. This common feature is very handy and saves great amount of time.
+
+
+**Perform Actors initialization on IOnApplicationReady**
+
+It is a good idea to dispatch IOnApplicationReady Notification once all Actors created within main Application Mediator. Initial data retrieving, View preparing and kicking off internal processes is then safely handled within listeners, as all necessary Actors created at a time of invocation.
+
+
+**General tips**
+
+There is no framework or technology that will ensure full code stability, maintainability and bug-safety. Thus it is important to dicuss, agree and stick with the choosen strict consistent approach and practices within the team on a particular project and follow it as much as possible.
+
+Regularly maintaining and sharing the responsibility for code readability, simplicity and safety is a strong requirement regardless of a framework choosen on a mid to long term projects.
