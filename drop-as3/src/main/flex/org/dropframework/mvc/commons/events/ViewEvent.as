@@ -13,14 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.dropframework.mvc.view
+package org.dropframework.mvc.commons.events
 {
 
     import flash.events.Event;
 
 
     /**
-     * Dynamic event, dispatched by View routed to Mediator via ViewEventsListener.
+     * Dynamic event, dispatched by View routed to Mediator via ViewAdapter.
      *
      * Event has only one type - ACTION, and is always created with this type in place. To differentiate events an
      * actionName field is used instead. This field is always supplied via constructor or static factory methods.
@@ -30,7 +30,7 @@ package org.dropframework.mvc.view
     public dynamic class ViewEvent extends Event
     {
         public static const ACTION : String
-                = "org.dropframework.mvc.view.ViewEvent.ACTION";
+                = "org.dropframework.mvc.commons.events.ViewEvent.ACTION";
 
 
         private static var uniqueId : uint = 0;
@@ -154,9 +154,9 @@ package org.dropframework.mvc.view
         public static function uniqueName (actionName : String = null) : String
         {
             if (actionName == null)
-                return uniqueId++ + ":UNKNOWN";
+                return String(uniqueId++);
 
-            return uniqueId++ + ":" + actionName;
+            return actionName + ":" + uniqueId++;
         }
     }
 }

@@ -21,7 +21,7 @@ package org.dropframework.core.actors
 
 
     /**
-     * Simple implementation of the IConcernedActor interface which requires the context to be supplied as a constructor
+     * Simple implementation of the IActor interface which requires the context to be supplied as a constructor
      * argument, thus providing context related capabilities within the controller.
      *
      * Designed for extension by subclasses. Extended by MVC's classes: Model, Mediator and Controller.
@@ -29,7 +29,7 @@ package org.dropframework.core.actors
      * @author jdanilov
      * */
     public class ContextAwareActor
-        implements IConcernedActor, IContext
+        implements IActor, IContext
     {
         private var _context : IContext;
 
@@ -58,19 +58,19 @@ package org.dropframework.core.actors
         }
 
 
-        public function register (actor : IConcernedActor) : void
+        public function register (actor : IActor) : void
         {
             _context.register(actor);
         }
 
 
-        public function remove (actor : IConcernedActor) : void
+        public function remove (actor : IActor) : void
         {
             _context.remove(actor);
         }
 
 
-        public function instanceOf (type : Class) : IConcernedActor
+        public function instanceOf (type : Class) : IActor
         {
             return _context.instanceOf(type);
         }

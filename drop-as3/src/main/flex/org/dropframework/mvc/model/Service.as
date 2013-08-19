@@ -12,7 +12,8 @@ package org.dropframework.mvc.model
      *
      * @author jdanilov
      * */
-    public class Service extends ContextAwareActor
+    public class Service
+            extends ContextAwareActor
     {
         /**
          * Creates new Service. Automatically registers itself in the context.

@@ -238,8 +238,8 @@ public class HelloGroupMediator
     public function HelloGroupMediator(view : HelloGroup)
     {
         super(GlobalContext.instance, view);
-        adapter.onActions(
-                [HelloGroup.A_SAY_HELLO_CLICKED],
+        adapter.on(
+                HelloGroup.A_SAY_HELLO_CLICKED,
                 function (event : ViewEvent) : void
                 {
                     helloView.message = "Hello!"

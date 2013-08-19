@@ -13,29 +13,44 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.dropframework.mvc.commons
+package org.dropframework.mvc.commons.creation
 {
+    import flash.display.DisplayObject;
+
 
     /**
-     * Guard proxy which delays all requests to the wrapped object until it's fully created to process the calls.
+     * Guard proxy which delays all requests to the wrapped view until it's fully created to process the calls.
      *
      * @author jdanilov
      */
     public interface ICreationGuard
     {
+
         /**
-         * Returns true if the guarded object has been created.
+         * Applies the given DisplayObject as a view to wrap.
+         */
+        function set view (value : DisplayObject) : void;
+
+
+        /**
+         * Returns the DisplayObject wrapped by the CreationGuard.
+         * */
+        function get view () : DisplayObject;
+
+
+        /**
+         * Returns true if the guarded view has been created.
          *
          * @result true if the object has been created.
          * */
-        function get isObjectCreated () : Boolean;
+        function get isViewCreated () : Boolean;
 
 
         /**
          * Calls function f with specified list of arguments once the guarded object is created. Call processed
-         * immediately if the guarded object already created.
+         * immediately if the guarded view already created.
          *
-         * @param f function to be invoked once the guarded object created.
+         * @param f function to be invoked once the guarded view created.
          * @param args array of arguments to be passed to the function. If null, function will be called with no
          * arguments.
          */
@@ -46,8 +61,7 @@ package org.dropframework.mvc.commons
          * Cleans delayed calls for the specified function f.
          *
          * @param f function, calls to which to be removed from the delayed calls queue. If null passed all calls will
-         * be removed. If object has been created, invoking this method will have no effect as all calls will be
-         * processed already.
+         * be removed.
          * */
         function cleanDelayedCalls (f : Function = null) : void;
     }

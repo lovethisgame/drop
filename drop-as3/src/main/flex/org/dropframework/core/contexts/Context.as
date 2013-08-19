@@ -18,7 +18,7 @@ package org.dropframework.core.contexts
 
     import flash.utils.describeType;
 
-    import org.dropframework.core.actors.IConcernedActor;
+    import org.dropframework.core.actors.IActor;
     import org.dropframework.core.commons.DropFrameworkError;
 
 
@@ -31,7 +31,7 @@ package org.dropframework.core.contexts
      * */
     public class Context implements IContext
     {
-        protected var actors        : Vector.<IConcernedActor>;
+        protected var actors        : Vector.<IActor>;
         protected var actorsMapping : Vector.<Entry>;
 
 
@@ -40,13 +40,13 @@ package org.dropframework.core.contexts
          */
         public function Context () : void
         {
-            this.actors        = new Vector.<IConcernedActor>();
+            this.actors        = new Vector.<IActor>();
             this.actorsMapping = new Vector.<Entry>();
         }
 
 
 
-        public function register (actor : IConcernedActor) : void
+        public function register (actor : IActor) : void
         {
             // actor can not be added twice
             if (actors.indexOf(actor) != -1)
@@ -64,7 +64,7 @@ package org.dropframework.core.contexts
         }
 
 
-        public function remove (actor : IConcernedActor) : void
+        public function remove (actor : IActor) : void
         {
             var index : int = actors.indexOf(actor);
 
@@ -115,7 +115,7 @@ package org.dropframework.core.contexts
         }
 
 
-        public function instanceOf (type : Class) : IConcernedActor /* of type */
+        public function instanceOf (type : Class) : IActor /* of type */
         {
             var result : Array = arrayOf(type);
 
@@ -125,7 +125,7 @@ package org.dropframework.core.contexts
             if (result.length > 1)
                 throw new DropFrameworkError("More than one Actor found for type '" + type + "'");
 
-            return result[0] as IConcernedActor;
+            return result[0] as IActor;
         }
 
 
@@ -142,7 +142,7 @@ package org.dropframework.core.contexts
 
             // if mapping not found we aggregate all actors of the same type...
             var result : Array = [];
-            for each (var c : IConcernedActor in actors)
+            for each (var c : IActor in actors)
             {
                 if (c is type)
                 {
