@@ -29,7 +29,7 @@
         <flexunit.version>4.1.0-8</flexunit.version>
         <flex.debug>true</flex.debug>
     </properties>
-	
+
 
     <dependencies>
         <dependency>
@@ -38,20 +38,19 @@
             <version>${flex.sdk.version}</version>
             <type>pom</type>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>com.adobe.flexunit</groupId>
             <artifactId>flexunit</artifactId>
             <version>${flexunit.version}</version>
             <type>swc</type>
-            <classifier>flex</classifier>
             <scope>test</scope>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
 
     <build>
         <sourceDirectory>src/main/flex</sourceDirectory>
-        <testSourceDirectory>src/test/flex</testSourceDirectory>
+        <!--<testSourceDirectory>src/test/flex</testSourceDirectory>-->
         <finalName>${project.artifactId}</finalName>
 
         <plugins>
