@@ -16,9 +16,9 @@
 package org.dropframework.core.contexts
 {
 
-import flash.utils.describeType;
+    import flash.utils.describeType;
 
-import org.dropframework.core.actors.IConcernedActor;
+    import org.dropframework.core.actors.IConcernedActor;
     import org.dropframework.core.commons.DropFrameworkError;
 
 

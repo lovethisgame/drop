@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+    I. Unit Testing: drop-as3.pom assumes you have installed FlexUnit 4.1 from
+    http://www.flexunit.org/?page_id=14 (not available currently on public repos) via command:
+    > mvn install:install-file
+        -Dfile=flexunit-4.1.0-8-flex_4.1.0.16076.swc
+        -DgroupId=com.adobe.flexunit
+        -DartifactId=flexunit
+        -Dversion=4.1.0-8
+        -Dpackaging=swc
+    If not, drop the testSourceDirectory and flexunit dependency declarations.
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -15,6 +26,7 @@
 	
     <properties>
         <flex.sdk.version>4.6.b.23201</flex.sdk.version>
+        <flexunit.version>4.1.0-8</flexunit.version>
         <flex.debug>true</flex.debug>
     </properties>
 	
@@ -26,12 +38,21 @@
             <version>${flex.sdk.version}</version>
             <type>pom</type>
         </dependency>
+        <dependency>
+            <groupId>com.adobe.flexunit</groupId>
+            <artifactId>flexunit</artifactId>
+            <version>${flexunit.version}</version>
+            <type>swc</type>
+            <classifier>flex</classifier>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 
     <build>
         <sourceDirectory>src/main/flex</sourceDirectory>
-        <finalName>${artifactId}</finalName>
+        <testSourceDirectory>src/test/flex</testSourceDirectory>
+        <finalName>${project.artifactId}</finalName>
 
         <plugins>
 
@@ -52,7 +73,7 @@
 
         </plugins>
     </build>
-	
+
 
     <pluginRepositories>
         <pluginRepository>
