@@ -104,6 +104,12 @@ package org.dropframework.core.contexts
             }
             else
             {
+                // convert to array if necessary
+                if (callbackOrArgs && !(callbackOrArgs is Array) )
+                {
+                    callbackOrArgs = [callbackOrArgs];
+                }
+
                 var xml : XML = describeType(type);
                 var list : XMLList = xml.factory.method;
                 var names : Vector.<String> = new Vector.<String>();

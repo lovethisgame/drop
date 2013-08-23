@@ -20,6 +20,15 @@ package org.dropframework.core.contexts
     import org.dropframework.mvc.controller.Controller;
     import org.flexunit.asserts.*;
 
+    import sandboxes.tiny.actors.notifications.IOnExtendedEvent;
+    import sandboxes.tiny.actors.notifications.IOnParameterizedEvent;
+
+    import sandboxes.tiny.actors.notifications.IOnSimpleEvent;
+
+    import sandboxes.tiny.controller.EventListener;
+
+    import sandboxes.tiny.controller.EventListener;
+
     import sandboxes.tiny.controller.SomeController;
     import sandboxes.tiny.actors.singletones.ISomeController;
 
@@ -83,6 +92,26 @@ package org.dropframework.core.contexts
             context.remove(c);
             assertEquals(1, SomeController.instances);
             assertNull(context.instanceOf(ISomeController));
+
+            context.remove(c);
+            new SomeController(context);
+            new SomeController(context);
+            context.remove(c);
+            assertEquals(3, SomeController.instances);
+            assertEquals(2, context.arrayOf(ISomeController).length);
+
+            var d : IActor = new SomeController(context);
+            context.register(c);
+            assertEquals(4, SomeController.instances);
+            assertEquals(4, context.arrayOf(ISomeController).length);
+
+            context.remove(c);
+            assertEquals(4, SomeController.instances);
+            assertEquals(3, context.arrayOf(ISomeController).length);
+
+            context.remove(d);
+            assertEquals(4, SomeController.instances);
+            assertEquals(2, context.arrayOf(ISomeController).length);
         }
 
 
@@ -96,6 +125,16 @@ package org.dropframework.core.contexts
             context.removeAll();
             assertEquals(1, SomeController.instances);
             assertNull(context.instanceOf(ISomeController));
+
+            new SomeController(context);
+            new SomeController(context);
+            context.register(c);
+            assertEquals(3, SomeController.instances);
+            assertEquals(3, context.arrayOf(ISomeController).length);
+
+            context.removeAll();
+            assertEquals(3, SomeController.instances);
+            assertEquals(0, context.arrayOf(ISomeController).length);
         }
 
 
@@ -133,7 +172,58 @@ package org.dropframework.core.contexts
         [Test]
         public function testCall() : void
         {
-            // todo: add tests
+            var a : EventListener = new EventListener(context);
+            var b : EventListener = new EventListener(context);
+            assertEquals(a.eventCount, 0);
+            assertEquals(b.eventCount, 0);
+
+            context.call(IOnSimpleEvent);
+            assertEquals(a.eventCount, 1);
+            assertEquals(b.eventCount, 1);
+
+            context.call(IOnExtendedEvent);
+            assertEquals(a.eventCount, 2);
+            assertEquals(b.eventCount, 2);
+
+            context.call(IOnParameterizedEvent, "value");
+            assertEquals(a.eventCount, 4);
+            assertEquals(b.eventCount, 4);
+
+            context.call(IOnSimpleEvent,
+                    function (a : IOnSimpleEvent) : void { a.onSimpleEvent(); });
+            assertEquals(a.eventCount, 5);
+            assertEquals(b.eventCount, 5);
+
+            context.call(IOnExtendedEvent,
+                    function (a : IOnExtendedEvent) : void { a.onSimpleEvent(); a.onExtendedEvent(); });
+            assertEquals(a.eventCount, 7);
+            assertEquals(b.eventCount, 7);
+
+            context.call(IOnExtendedEvent,
+                    function (a : IOnParameterizedEvent) : void { a.onParameterizedEvent1("value"); });
+            assertEquals(a.eventCount, 8);
+            assertEquals(b.eventCount, 8);
+
+            context.call(IOnParameterizedEvent, ["value"]);
+            assertEquals(a.eventCount, 10);
+            assertEquals(b.eventCount, 10);
+
+            context.remove(a);
+            context.call(IOnSimpleEvent);
+            assertEquals(a.eventCount, 10);
+            assertEquals(b.eventCount, 11);
+
+            context.remove(b);
+            context.call(IOnSimpleEvent);
+            assertEquals(a.eventCount, 10);
+            assertEquals(b.eventCount, 11);
+
+            context.register(a);
+            context.call(IOnSimpleEvent);
+            assertEquals(a.eventCount, 11);
+            assertEquals(b.eventCount, 11);
+
+
         }
     }
 }
