@@ -73,13 +73,13 @@ package org.dropframework.core.contexts
                 return;
 
             // we remove an actor, and update types mapping straight ahead
-            actors = actors.splice(index, 1);
+            actors.splice(index, 1);
             for each (var entry : Entry in actorsMapping)
             {
                 if (actor is entry.type)
                 {
-                    entry.actors =
-                            (entry.actors as Array).splice((entry.actors as Array).indexOf(actor), 1);
+                    var eActors : Array = entry.actors as Array;
+                    eActors.splice(eActors.indexOf(actor), 1);
                 }
             }
         }

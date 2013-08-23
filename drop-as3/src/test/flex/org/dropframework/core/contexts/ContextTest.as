@@ -16,6 +16,7 @@
 package org.dropframework.core.contexts
 {
 
+    import org.dropframework.core.actors.IActor;
     import org.dropframework.mvc.controller.Controller;
     import org.flexunit.asserts.*;
 
@@ -75,14 +76,26 @@ package org.dropframework.core.contexts
         [Test]
         public function testRemove() : void
         {
-            // todo: add tests
+            var c : IActor = new SomeController(context);
+            assertEquals(1, SomeController.instances);
+            assertNotNull(context.instanceOf(ISomeController));
+
+            context.remove(c);
+            assertEquals(1, SomeController.instances);
+            assertNull(context.instanceOf(ISomeController));
         }
 
 
         [Test]
         public function testRemoveAll() : void
         {
-            // todo: add tests
+            var c : IActor = new SomeController(context);
+            assertEquals(1, SomeController.instances);
+            assertNotNull(context.instanceOf(ISomeController));
+
+            context.removeAll();
+            assertEquals(1, SomeController.instances);
+            assertNull(context.instanceOf(ISomeController));
         }
 
 
