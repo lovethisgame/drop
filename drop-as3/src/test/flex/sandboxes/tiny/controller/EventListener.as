@@ -52,5 +52,11 @@ package sandboxes.tiny.controller
         {
             _eventCount++;
         }
+
+
+        public function onParameterizedEvent3(param:String, additionalParam:String):void
+        {
+            _eventCount++;
+        }
     }
 }

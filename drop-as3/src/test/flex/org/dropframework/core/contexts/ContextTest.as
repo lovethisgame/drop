@@ -223,7 +223,10 @@ package org.dropframework.core.contexts
             assertEquals(a.eventCount, 11);
             assertEquals(b.eventCount, 11);
 
-
+            context.register(b);
+            context.call(IOnParameterizedEvent, ["value", "some-other-value"]);
+            assertEquals(a.eventCount, 12);
+            assertEquals(b.eventCount, 12);
         }
     }
 }

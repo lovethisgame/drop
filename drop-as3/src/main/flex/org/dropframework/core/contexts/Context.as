@@ -119,8 +119,11 @@ package org.dropframework.core.contexts
                 }
                 for each (var name : String in names)
                 {
+                    var argsCount : int = (callbackOrArgs != null) ? callbackOrArgs.length : 0;
                     for each (c in arrayOf(type))
                     {
+                        if (c[name].length != argsCount)
+                            continue;
                         c[name].apply(null, callbackOrArgs);
                     }
                 }
