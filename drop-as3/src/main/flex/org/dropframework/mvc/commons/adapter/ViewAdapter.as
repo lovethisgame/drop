@@ -81,7 +81,7 @@ package org.dropframework.mvc.commons.adapter
 
             if (actionNames is Array)
             {
-                for (var i : int = 0; i < Array(actionNames).length; i++)
+                for (var i : int = 0; i < (actionNames as Array).length; i++)
                 {
                     actionsNames.push(actionNames[i]);
                     actionsListeners.push(listener);
@@ -115,7 +115,7 @@ package org.dropframework.mvc.commons.adapter
             if (!(event is ViewEvent) || !this._view)
                 return;
 
-            // first trying to resolve a registered listener
+            // first attempting to resolve a registered listener
             var found : Boolean = false;
             for (var i : int = 0; i < actionsNames.length; i++)
             {
@@ -127,7 +127,7 @@ package org.dropframework.mvc.commons.adapter
             }
 
             // if nothing registered for the action name an unmapped listener will be called
-            if (!found && unmappedActionListener)
+            if (!found && unmappedActionListener != null)
             {
                 unmappedActionListener(event);
             }

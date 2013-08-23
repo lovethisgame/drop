@@ -70,6 +70,12 @@ package org.dropframework.core.actors
         }
 
 
+        public function removeAll () : void
+        {
+            _context.removeAll();
+        }
+
+
         public function instanceOf (type : Class) : IActor
         {
             return _context.instanceOf(type);

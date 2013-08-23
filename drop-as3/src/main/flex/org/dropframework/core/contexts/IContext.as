@@ -43,6 +43,12 @@ package org.dropframework.core.contexts
 
 
         /**
+         * Removes all actors, cleaning off the context. Context may be reused afterwards.
+         */
+        function removeAll () : void;
+
+
+        /**
          * Returns an actor referenced by a given type if exists.
          *
          * @param type - String/Class to lookup service instance by.

@@ -16,8 +16,12 @@
 package org.dropframework.core.contexts
 {
 
+    import org.dropframework.mvc.controller.Controller;
     import org.flexunit.asserts.*;
 
+    import sandboxes.tiny.controller.impl.SomeController;
+
+    import sandboxes.tiny.controller.singletones.ISomeController;
 
     public class ContextTest
     {
@@ -28,7 +32,6 @@ package org.dropframework.core.contexts
         public function beforeTest() : void
         {
             context = new Context();
-            // todo: pre-initialize context with some actors
         }
 
         [After]
@@ -41,12 +44,24 @@ package org.dropframework.core.contexts
         [Test]
         public function testRegister() : void
         {
-            // todo: add tests
+            assertNull(context.instanceOf(ISomeController));
+            var controller : Controller = new SomeController(context);
+            assertNotNull(context.instanceOf(ISomeController));
+            context.register(controller);
+            assertNotNull(context.instanceOf(ISomeController));
+            assertEquals(SomeController.instances, 1);
         }
 
 
         [Test]
         public function testRemove() : void
+        {
+            // todo: add tests
+        }
+
+
+        [Test]
+        public function testRemoveAll() : void
         {
             // todo: add tests
         }

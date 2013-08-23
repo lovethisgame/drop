@@ -56,7 +56,7 @@ package org.dropframework.core.contexts
             actors.push(actor);
             for each (var entry : Entry in actorsMapping)
             {
-                if (actor is entry.type as Class)
+                if (actor is entry.type)
                 {
                     entry.actors.push(actor);
                 }
@@ -82,6 +82,13 @@ package org.dropframework.core.contexts
                             (entry.actors as Array).splice((entry.actors as Array).indexOf(actor), 1);
                 }
             }
+        }
+
+
+        public function removeAll () : void
+        {
+            actors = new Vector.<IActor>();
+            actorsMapping = new Vector.<Entry>();
         }
 
 
