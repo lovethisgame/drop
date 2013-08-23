@@ -82,6 +82,12 @@ package org.dropframework.core.actors
         }
 
 
+        public function arrayOf (type : Class) : Array
+        {
+            return _context.arrayOf(type);
+        }
+
+
         public function call (targetType : Class, callbackOrArgs : Object = null) : void
         {
             return _context.call(targetType, callbackOrArgs);

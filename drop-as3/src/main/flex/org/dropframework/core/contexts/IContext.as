@@ -60,6 +60,16 @@ package org.dropframework.core.contexts
 
 
         /**
+         * Returns an array of actors referenced by a given type. Avoid using this method should you need to call
+         * a function on every actors of a given type. Use 'call' method instead.
+         *
+         * @param type - String/Class to lookup service instances by.
+         * @return an array of service instances for a given locator. Empty array will be returned if nothing found.
+         * */
+        function arrayOf (type : Class) : Array /* of type */
+
+
+        /**
          * Iterates over an array of the actors of targetType calling supplied callbackOrArgs function for the every
          * instance, passing instances one by one into the callbackOrArgs function as an argument. If no instances
          * found of a given type then callbackOrArgs won't be called.
@@ -67,9 +77,9 @@ package org.dropframework.core.contexts
          * @param type type to resolve actors by.
          * @param callbackOrArgs is either:<br/>
          * - a <code>function (actor : type) : *</code> called for every actor of a given type found in the context.<br/>
-         * - an array of parameters to apply to every function found on the given class type for every actor of the
+         * - an Array of parameters to apply to every function found on the given class type for every actor of the
          * given type found in the context.
          */
-        function call (type : Class, callbackOrArgs : Object /* (c : type) */ = null) : void;
+        function call (type : Class, callbackOrArgs : Object /* function (c : type) or Array*/ = null) : void;
     }
 }

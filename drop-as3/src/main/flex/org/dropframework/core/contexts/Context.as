@@ -136,7 +136,7 @@ package org.dropframework.core.contexts
         }
 
 
-        protected function arrayOf (type : Class) : Array /* <type> */
+        public function arrayOf (type : Class) : Array /* of type */
         {
             // we start looking for the type in the mapping
             for each (var entry : Entry in actorsMapping)

@@ -1,4 +1,4 @@
-package sandboxes.tiny.controller.singletones
+package sandboxes.tiny.actors.singletones
 {
     public interface ISomeController
     {

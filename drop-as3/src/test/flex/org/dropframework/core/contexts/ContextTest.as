@@ -19,9 +19,9 @@ package org.dropframework.core.contexts
     import org.dropframework.mvc.controller.Controller;
     import org.flexunit.asserts.*;
 
-    import sandboxes.tiny.controller.impl.SomeController;
+    import sandboxes.tiny.controller.SomeController;
+    import sandboxes.tiny.actors.singletones.ISomeController;
 
-    import sandboxes.tiny.controller.singletones.ISomeController;
 
     public class ContextTest
     {
@@ -32,6 +32,7 @@ package org.dropframework.core.contexts
         public function beforeTest() : void
         {
             context = new Context();
+            SomeController.resetInstances();
         }
 
         [After]
@@ -42,14 +43,32 @@ package org.dropframework.core.contexts
 
 
         [Test]
-        public function testRegister() : void
+        public function testEmptyOnStart() : void
         {
             assertNull(context.instanceOf(ISomeController));
+        }
+
+
+        [Test]
+        public function testRegistersOnce() : void
+        {
             var controller : Controller = new SomeController(context);
             assertNotNull(context.instanceOf(ISomeController));
+
             context.register(controller);
+            context.register(controller);
+            context.register(controller);
+
             assertNotNull(context.instanceOf(ISomeController));
-            assertEquals(SomeController.instances, 1);
+            assertEquals(1, SomeController.instances);
+        }
+
+
+        [Test]
+        public function testRegister() : void
+        {
+            new SomeController(context);
+            assertNotNull(context.instanceOf(ISomeController));
         }
 
 
@@ -67,10 +86,34 @@ package org.dropframework.core.contexts
         }
 
 
+        [Test(expects="org.dropframework.core.commons.DropFrameworkError")]
+        public function testInstanceOfMultipleReturn() : void
+        {
+            new SomeController(context);
+            new SomeController(context);
+            assertEquals(2, SomeController.instances);
+            context.instanceOf(ISomeController);
+        }
+
+
         [Test]
         public function testInstanceOf() : void
         {
-            // todo: add tests
+            new SomeController(context);
+            assertNotNull(context.instanceOf(ISomeController));
+            assertEquals("Hello Drop!", ISomeController(context.instanceOf(ISomeController)).doSomething("Drop"))
+        }
+
+
+        [Test]
+        public function testArrayOf() : void
+        {
+            assertEquals(context.arrayOf(ISomeController).length, 0);
+            for (var i : int = 0; i < 3; i++)
+            {
+                new SomeController(context);
+                assertEquals(SomeController.instances, context.arrayOf(ISomeController).length);
+            }
         }
 
 
