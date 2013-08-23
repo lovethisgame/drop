@@ -8,7 +8,7 @@ package sandboxes.tiny.controller
 
     import sandboxes.tiny.actors.notifications.IOnSimpleEvent;
 
-    public class EventListener
+    public class EventCounter
         extends Controller
         implements IOnSimpleEvent,
                    IOnExtendedEvent,
@@ -18,7 +18,7 @@ package sandboxes.tiny.controller
 
 
 
-        public function EventListener(context : IContext)
+        public function EventCounter(context : IContext)
         {
             super(context);
         }

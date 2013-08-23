@@ -25,9 +25,9 @@ package org.dropframework.core.contexts
 
     import sandboxes.tiny.actors.notifications.IOnSimpleEvent;
 
-    import sandboxes.tiny.controller.EventListener;
+    import sandboxes.tiny.controller.EventCounter;
 
-    import sandboxes.tiny.controller.EventListener;
+    import sandboxes.tiny.controller.EventCounter;
 
     import sandboxes.tiny.controller.SomeController;
     import sandboxes.tiny.actors.singletones.ISomeController;
@@ -172,8 +172,8 @@ package org.dropframework.core.contexts
         [Test]
         public function testCall() : void
         {
-            var a : EventListener = new EventListener(context);
-            var b : EventListener = new EventListener(context);
+            var a : EventCounter = new EventCounter(context);
+            var b : EventCounter = new EventCounter(context);
             assertEquals(a.eventCount, 0);
             assertEquals(b.eventCount, 0);
 
