@@ -144,7 +144,7 @@ appname               → application root
 <div class="highlight"><pre><span class="c1">// some code within an Actor...</span>
 <span class="nx">IPoolManager</span><span class="p">(</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">IPoolManager</span><span class="p">)).</span><span class="nx">managePool</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
 <span class="nx">call</span><span class="p">(</span><span class="nx">IOnSomethingHappened</span><span class="o">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">a</span> <span class="o">:</span> <span class="nx">IOnSomethingHappened</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
-        <span class="p">{</span> <span class="nx">a</span><span class="p">.</span><span class="nx">onSomethingHappened</span><span class="p">(</span><span class="s2">"Pool Manager was asked to manage a pool of 3 items"</span><span class="p">);</span> <span class="p">});</span>
+        <span class="p">{</span> <span class="nx">a</span><span class="p">.</span><span class="nx">onSomethingHappened</span><span class="p">(</span><span class="s2">"Pool now manages 3 items"</span><span class="p">);</span> <span class="p">});</span>
 <span class="nx">call</span><span class="p">(</span><span class="nx">IOnPoolUpdated</span><span class="o">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">a</span> <span class="o">:</span> <span class="nx">IOnPoolUpdated</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
         <span class="p">{</span> <span class="nx">a</span><span class="p">.</span><span class="nx">onPoolUpdated</span><span class="p">();</span> <span class="p">});</span>
 </pre></div>
@@ -152,7 +152,7 @@ appname               → application root
 <p>Given there is a single method per Notification interface, a shortcut syntax can be used:</p>
 
 <div class="highlight"><pre><span class="nx">IPoolManager</span><span class="p">(</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">IPoolManager</span><span class="p">)).</span><span class="nx">managePool</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
-<span class="nx">call</span><span class="p">(</span><span class="nx">IOnSomethingHappened</span><span class="o">,</span> <span class="p">[</span><span class="s2">"Pool Manager was asked to manage a pool of 3 items"</span><span class="p">]);</span>
+<span class="nx">call</span><span class="p">(</span><span class="nx">IOnSomethingHappened</span><span class="o">,</span> <span class="p">[</span><span class="s2">"Pool now manages 3 items"</span><span class="p">]);</span>
 <span class="nx">call</span><span class="p">(</span><span class="nx">IOnPoolUpdated</span><span class="p">);</span>
 </pre></div>
 
