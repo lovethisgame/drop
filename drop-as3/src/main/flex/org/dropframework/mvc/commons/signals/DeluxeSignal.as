@@ -83,7 +83,6 @@ package org.dropframework.mvc.commons.signals
 		}
 		
 		/** @inheritDoc */
-		//TODO: @throws
 		public function add(listener:Function):Function
 		{
 			return addWithPriority(listener)
@@ -167,8 +166,6 @@ package org.dropframework.mvc.commons.signals
 			var listener:Function;
 			if (listenerBoxes.length)
 			{
-				//TODO: investigate performance of various approaches
-				
 				for each (var listenerBox:Object in listenerBoxes)
 				{
 					listener = listenerBox.listener;

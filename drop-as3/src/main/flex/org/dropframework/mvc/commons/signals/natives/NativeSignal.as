@@ -70,14 +70,12 @@ package org.dropframework.mvc.commons.signals.natives
 		}
 		
 		/** @inheritDoc */
-		//TODO: @throws
 		public function add(listener:Function):Function
 		{
 			return addWithPriority(listener)
 		}
 		
 		/** @inheritDoc */
-		//TODO: @throws
 		public function addWithPriority(listener:Function, priority:int = 0):Function
 		{
 			registerListener(listener, false, priority);

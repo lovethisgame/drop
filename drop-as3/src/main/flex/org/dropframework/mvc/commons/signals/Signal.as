@@ -70,7 +70,6 @@ package org.dropframework.mvc.commons.signals
 		public function get numListeners():uint { return listeners.length; }
 		
 		/** @inheritDoc */
-		//TODO: @throws
 		public function add(listener:Function):Function
 		{
 			registerListener(listener);
