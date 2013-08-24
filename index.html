@@ -56,7 +56,7 @@ Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript on 
 <strong>Decoupling and Transparency</strong> - framework improves code clarity, transparency and maintainability by exposing internal system API into a set of interfaces used to reduce modules coupling and keep the big picture in one place, easily and quickly accessible;</li>
 <li>
 <strong>Minute Setup Time</strong> - speaks for itself.</li>
-</ul><p>Free, Opensource, Apache license. All the code samples below are taken from the <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex">drop-as3-example</a> module accessible within the GitHub repository.</p>
+</ul><p>Free, Opensource, Apache license.</p>
 
 <h2>
 <a name="architecture" class="anchor" href="#architecture"><span class="octicon octicon-link"></span></a>Architecture</h2>
@@ -96,7 +96,7 @@ appname               → application root
 <h3>
 <a name="the-appnameactors-directory" class="anchor" href="#the-appnameactors-directory"><span class="octicon octicon-link"></span></a>The appname/actors directory</h3>
 
-<p>The <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/actors">appname/actors</a> directory contains at least one Context class, usually named as <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/actors/GlobalContext.as">GlobalContext or Context</a> which represents as a ServiceLocator for resolving Actors; and in subpackages the Actor communication interfaces themselves. Actor interfaces are split into two groups:</p>
+<p>The <b>appname/actors</b> directory contains at least one Context class, usually named as <b>GlobalContext</b> or <b>Context</b> which represents as a ServiceLocator for resolving Actors; and in subpackages the Actor communication interfaces themselves. Actor interfaces are split into two groups:</p>
 
 <ul>
 <li>
@@ -119,18 +119,6 @@ appname               → application root
 <span class="p">}</span>
 </pre></div>
 
-<p>Example of Singletone interfaces:</p>
-
-<ul>
-<li>
-<a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/actors/singletones/ISheepHerdController.as">ISheepHerdController.as</a> </li>
-<li>
-<a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/actors/singletones/IWeatherService.as">IWeatherService.as</a> </li>
-</ul><p>And Notification interfaces:</p>
-
-<ul>
-<li><a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/actors/notifications/IOnSheepCountChanged.as">IOnSheepCountChanged.as</a></li>
-<li><a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/actors/notifications/IOnWeatherChanged.as">IOnWeatherChanged.as</a></li>
 </ul><p>When created, Actor instances are bound to a single <code>Context</code> where they reside and can be resolved for communication.</p>
 
 <h4>
@@ -144,11 +132,14 @@ appname               → application root
 <li>
 <code>.call (type : Class) : void</code> - executes every method on actors of a given type supplying no arguments.</li>
 <li>
-<code>.call (type : Class, args : Array) : void</code> - executes every function found within every Actor of the specified interface with the specified arguments list.</li>
+<code>.call (type : Class, args : Array) : void</code> - executes every function of a given arguments size found within every Actor of the specified interface supplying the specified arguments.</li>
 <li>
 <code>.call (type : Class, callback : Function) : void</code> - executes supplied callback function, consequently passing every Actor of the specified interface as an argument. </li>
 <li>
 <code>.instanceOf (type : Class) : IConcernedActor</code> - finds one and only one Actor instance of the specified interface, fails with Error if more than 1 Actors found. Singletone communication interface should be supplied as an argument.</li>
+<li>
+<code>.arrayOf (type : Class) : Array</code> - returns an array of Actors of specified type.</li>
+
 </ul><p>Methods explained above are also available on Actors themselves, so you will normally never call a Context directly, but invoke code similar to:</p>
 
 <div class="highlight"><pre><span class="c1">// some code within an Actor...</span>
@@ -169,7 +160,7 @@ appname               → application root
 <h3>
 <a name="the-appnamecommons-directory" class="anchor" href="#the-appnamecommons-directory"><span class="octicon octicon-link"></span></a>The appname/commons directory</h3>
 
-<p>The <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/commons">appname/commons</a> directory contains all components, abstractions, utilities and support modules that are:</p>
+<p>The <b>appname/commons</b> directory contains all components, abstractions, utilities and support modules that are:</p>
 
 <ul>
 <li>generic enough to be reused or means to be extended for the use;</li>
@@ -181,7 +172,7 @@ appname               → application root
 <h3>
 <a name="the-appnamecontroller-directory" class="anchor" href="#the-appnamecontroller-directory"><span class="octicon octicon-link"></span></a>The appname/controller directory</h3>
 
-<p>Controllers decouple the complex business logic and facade that behind Actor interfaces and may orchestrate other Actors such as Services and Mediators. Controllers are stored in <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/controller">appname/controller</a> directory and can form executable commands triggered via singletone or notification interfaces, various system managers, complex execution sequences or aspect controllers.</p>
+<p>Controllers decouple the complex business logic and facade that behind Actor interfaces and may orchestrate other Actors such as Services and Mediators. Controllers are stored in <b>appname/controller</b> directory and can form executable commands triggered via singletone or notification interfaces, various system managers, complex execution sequences or aspect controllers.</p>
 
 <p>Here is a simple Controller carcass:</p>
 
@@ -200,18 +191,16 @@ appname               → application root
 <span class="p">}</span>
 </pre></div>
 
-<p>See the <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/controller/Shepherd.as">Shepherd.as</a> as a controller example.</p>
-
 <h3>
 <a name="the-appnamemodel-directory" class="anchor" href="#the-appnamemodel-directory"><span class="octicon octicon-link"></span></a>The appname/model directory</h3>
 
-<p>Model layer defines Domain Objects and Domain API and located within <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/model">appname/model</a> directory. Framework allows to follow various practices to define the Model, such as Domain Driven Development approach, but in core restricts model classes present on a system to two meta-types:</p>
+<p>Model layer defines Domain Objects and Domain API and located within <b>appname/model</b> directory. Framework allows to follow various practices to define the Model, such as Domain Driven Development approach, but in core restricts model classes present on a system to two meta-types:</p>
 
 <ul>
 <li>
-<strong>data access objects</strong> - found in <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/model/services">appname/model/services</a>, these are services, proxies, data stubs, endpoint invokers etc. that provide a data feed or means to control and modify the domain data. Drop provides <code>Service</code> and <code>Proxy</code> Actor supertypes to incorporate those.</li>
+<strong>data access objects</strong> - found in <b>appname/model/services</b>, these are services, proxies, data stubs, endpoint invokers etc. that provide a data feed or means to control and modify the domain data. Drop provides <code>Service</code> and <code>Proxy</code> Actor supertypes to incorporate those.</li>
 <li>
-<strong>data transfer objects</strong> - found in <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/model/vos">appname/model/vos</a>, these are value objects and entities that represent the domain itself.</li>
+<strong>data transfer objects</strong> - found in <b>appname/model/vos</b>, these are value objects and entities that represent the domain itself.</li>
 </ul><p>Here is a simple Service carcass:</p>
 
 <div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nx">ServiceName</span>
@@ -231,12 +220,10 @@ appname               → application root
 
 <p>No application business or presentation logic handled within the Model layer. Controllers and Mediators should be used instead. However it is allowed for model Actors to perform CRUD, data normalization, caching, call redirection operations and so on.</p>
 
-<p>See the <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/model/services/WeatherService.as">WeatherService.as</a> as a Service example, and <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/model/vos/Weather.as">Weather.as</a> as a Value Object.</p>
-
 <h3>
 <a name="the-appnameview-directory" class="anchor" href="#the-appnameview-directory"><span class="octicon octicon-link"></span></a>The appname/view directory</h3>
 
-<p>The <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/view">appname/view</a> directory is where the hierarchy of visual elements and containers defined. It may contain 3 following types of classes:</p>
+<p>The <b>appname/view</b> directory is where the hierarchy of visual elements and containers defined. It may contain 3 following types of classes:</p>
 
 <ul>
 <li>
@@ -328,8 +315,6 @@ appname               → application root
 
 <p>ViewEvent may also contain parameters associated with the parent event, additional parameters gathered by the View and the parent event itself. Factory <code>ViewEvent.of</code> and <code>ViewEvent.ofContent</code> methods may be usefull to create ViewEvents in that case. </p>
 
-<p>View Event dispatching example can be seen in a <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/view/herd/HerdPanel.mxml">HerdPanel.mxml</a>, and listening in a <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/view/herd/HerdPanelMediator.as">HerdPanelMediator.mxml</a>.</p>
-
 <h2>
 <a name="app-initialization" class="anchor" href="#app-initialization"><span class="octicon octicon-link"></span></a>App Initialization</h2>
 
@@ -380,8 +365,6 @@ appname               → application root
 </pre></div>
 
 <p>Notice an <code>IOnApplicationReady</code> is dispatched at the end, notifying all concerned Actors that application framework is technically initialized, so every Actor can proceed with tweaking the views, stubs, domain it controls and call other Actors that created and available on Context.</p>
-
-<p>Example of application initialization can be found in <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/view/ExampleApplication.mxml">ApplicationView</a> and <a href="https://github.com/jdanilov/drop/tree/master/drop-as3-example/src/main/flex/example/view/ExampleApplicationMediator.as">ApplicationMediator</a>.</p>
 
 <h2>
 <a name="framework-usage" class="anchor" href="#framework-usage"><span class="octicon octicon-link"></span></a>Framework Usage</h2>
@@ -481,7 +464,7 @@ appname               → application root
 <span class="p">}</span>
 </pre></div>
 
-<p>Downside is invoking a concise <code>call(IOnNetworkStatusChanged)</code> syntax will fail as will execute every method on an Interface. Use full syntax instead:</p>
+<p>Use full call syntax here to specify which method to execute:</p>
 
 <div class="highlight"><pre><span class="nx">call</span><span class="p">(</span><span class="nx">IOnNetworkStatusChanged</span><span class="o">,</span>
         <span class="kd">function</span> <span class="p">(</span><span class="nx">a</span> <span class="o">:</span> <span class="nx">IOnNetworkStatusChanged</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span> <span class="p">{</span> <span class="nx">a</span><span class="p">.</span><span class="nx">onNetworkLost</span><span class="p">();</span> <span class="p">});</span>
