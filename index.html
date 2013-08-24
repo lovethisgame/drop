@@ -240,7 +240,7 @@ appname               → application root
 
 <ul>
 <li>include other views;</li>
-<li>broadcast events of special type <code>ViewEvent</code> caught by Mediators;</li>
+<li>define signals caught by Mediators;</li>
 <li>expose public methods to set properties or apply data providers.</li>
 </ul>
 </li>
@@ -256,64 +256,11 @@ appname               → application root
 
 <p>View may expose a set of public methods available for Mediator to call, such as <code>set dataProvider</code>, thus defining it's outter interface. Mediator call these methods to set View properties, state, data provider, etc.</p>
 
-<p>View also generate events, such as on creation complete, mouse clicks, scroll position change, and so on. Framework follows <em>One Event Type for All</em> approach, thus by convention View is required to re-dispatch an event as an object of a special dynamic type <code>ViewEvent</code>.</p>
+<p>View also generates events converted into signals, such as on creation complete, mouse clicks, scroll position change, and so on. Framework uses as3-signals v0.8 library to handle signals.</p>
 
-<p>Every ViewEvent has an <code>actionName</code>. Being dispatched ViewEvents are intercepted by a helper instance called <code>adapter</code> found within every Mediator, and a particular Mediator listener function for a given <code>actionName</code> is invoked.</p>
+<p>Refer to <a href="http://www.developria.com/2010/10/an-introduction-to-as3-signals.html">An Introduction to as3 signals</a> for more infomration.</p>
 
-<p>Here is an example of a HelloGroup View that defines <code>set message</code> method and a ViewEvent dispatched on Button click:</p>
 
-<div class="highlight"><pre><span class="o">&lt;</span><span class="nx">s</span><span class="o">:</span><span class="nx">VGroup</span> <span class="nx">xmlns</span><span class="o">:</span><span class="nx">fx</span><span class="o">=</span><span class="s2">"http://ns.adobe.com/mxml/2009"</span>
-          <span class="nx">xmlns</span><span class="o">:</span><span class="nx">s</span><span class="o">=</span><span class="s2">"library://ns.adobe.com/flex/spark"</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="nx">fx</span><span class="o">:</span><span class="nx">Script</span><span class="o">&gt;&lt;!</span><span class="p">[</span><span class="nx">CDATA</span><span class="p">[</span>
-        <span class="kd">public</span> <span class="kd">static</span> <span class="kd">const</span> <span class="nx">A_SAY_HELLO_CLICKED</span> <span class="o">:</span> <span class="nb">String</span>
-               <span class="o">=</span> <span class="nx">ViewEvent</span><span class="p">.</span><span class="nx">uniqueName</span><span class="p">(</span><span class="s2">"A_SAY_HELLO_CLICKED"</span><span class="p">);</span>
-
-        <span class="kd">public</span> <span class="kd">function</span> <span class="kd">set</span> <span class="nx">message</span> <span class="p">(</span><span class="nx">value</span> <span class="o">:</span> <span class="nb">String</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
-        <span class="p">{</span>
-            <span class="nx">messageLabel</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span> <span class="nx">value</span><span class="o">;</span>
-        <span class="p">}</span>
-
-        <span class="kd">private</span> <span class="kd">function</span> <span class="nx">sayHelloButton_clickHandler</span> <span class="p">(</span><span class="nx">event</span> <span class="o">:</span> <span class="nb">MouseEvent</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
-        <span class="p">{</span>
-            <span class="nx">dispatchEvent</span><span class="p">(</span><span class="nx">ViewEvent</span><span class="p">.</span><span class="nx">of</span><span class="p">(</span><span class="nx">A_SAY_HELLO_CLICKED</span><span class="o">,</span> <span class="nx">event</span><span class="p">));</span>
-        <span class="p">}</span>
-    <span class="p">]]</span><span class="o">&gt;&lt;/</span><span class="nx">fx</span><span class="o">:</span><span class="nx">Script</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="nx">s</span><span class="o">:</span><span class="nx">Label</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"messageLabel"</span><span class="o">/&gt;</span>
-    <span class="o">&lt;</span><span class="nx">s</span><span class="o">:</span><span class="nx">Button</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"sayHelloButton"</span> <span class="nx">label</span><span class="o">=</span><span class="s2">"Say Hello"</span>
-              <span class="nx">click</span><span class="o">=</span><span class="s2">"sayHelloButton_clickHandler(event)"</span><span class="o">/&gt;</span>
-<span class="o">&lt;/</span><span class="nx">s</span><span class="o">:</span><span class="nx">VGroup</span><span class="o">&gt;</span>
-</pre></div>
-
-<p>Notice ViewEvent action name starts with <code>A_</code> prefix and a <code>uniqueName</code> method may be used to ensure that the name is unique. Below is a Mediator that manages HelloView:</p>
-
-<div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nx">HelloGroupMediator</span>
-        <span class="kd">extends</span> <span class="nx">Mediator</span>
-<span class="p">{</span>
-    <span class="kd">public</span> <span class="kd">function</span> <span class="nx">HelloGroupMediator</span><span class="p">(</span><span class="nx">view</span> <span class="o">:</span> <span class="nx">HelloGroup</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="kd">super</span><span class="p">(</span><span class="nx">GlobalContext</span><span class="p">.</span><span class="nx">instance</span><span class="o">,</span> <span class="nx">view</span><span class="p">);</span>
-        <span class="nx">adapter</span><span class="p">.</span><span class="nx">onActions</span><span class="p">(</span>
-                <span class="p">[</span><span class="nx">HelloGroup</span><span class="p">.</span><span class="nx">A_SAY_HELLO_CLICKED</span><span class="p">]</span><span class="o">,</span>
-                <span class="kd">function</span> <span class="p">(</span><span class="nx">event</span> <span class="o">:</span> <span class="nx">ViewEvent</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
-                <span class="p">{</span>
-                    <span class="nx">helloView</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s2">"Hello!"</span>
-                    <span class="nx">wakeUpController</span><span class="p">.</span><span class="nx">wakeUp</span><span class="p">();</span>
-                <span class="p">});</span>
-    <span class="p">}</span>
-
-    <span class="kd">private</span> <span class="kd">function</span> <span class="kd">get</span> <span class="nx">wakeUpController</span><span class="p">()</span> <span class="o">:</span> <span class="nx">IWakeUpController</span>
-    <span class="p">{</span>
-        <span class="k">return</span> <span class="nx">instanceOf</span><span class="p">(</span><span class="nx">IWakeUpController</span><span class="p">)</span> <span class="nx">as</span> <span class="nx">IWakeUpController</span><span class="o">;</span>
-    <span class="p">}</span>
-
-    <span class="kd">private</span> <span class="kd">function</span> <span class="kd">get</span> <span class="nx">helloView</span><span class="p">()</span> <span class="o">:</span> <span class="nx">HelloView</span>
-    <span class="p">{</span>
-        <span class="k">return</span> <span class="nx">adapter</span><span class="p">.</span><span class="nx">view</span> <span class="nx">as</span> <span class="nx">HelloView</span><span class="o">;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-
-<p>ViewEvent may also contain parameters associated with the parent event, additional parameters gathered by the View and the parent event itself. Factory <code>ViewEvent.of</code> and <code>ViewEvent.ofContent</code> methods may be usefull to create ViewEvents in that case. </p>
 
 <h2>
 <a name="app-initialization" class="anchor" href="#app-initialization"><span class="octicon octicon-link"></span></a>App Initialization</h2>
