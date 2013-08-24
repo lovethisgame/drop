@@ -178,7 +178,7 @@ When deciding on where a particular code should go, View or Mediator, keep in mi
 * Every View should be as logic unaware and thin as possible, delegating all the business to Mediators. 
 * Views should know nothing on Mediators they're assigned to, be totally separate from the system, and may only:
  - include other views;
- - broadcast events of special type `ViewEvent` caught by Mediators;
+ - define signals caught by Mediators;
  - expose public methods to set properties or apply data providers.
 * In turn, every Mediator must:
  - perform a business logic only of a single View it has been assigned to;
@@ -189,36 +189,30 @@ When deciding on where a particular code should go, View or Mediator, keep in mi
 
 View may expose a set of public methods available for Mediator to call, such as `set dataProvider`, thus defining it's outter interface. Mediator call these methods to set View properties, state, data provider, etc.
 
-View also generate events, such as on creation complete, mouse clicks, scroll position change, and so on. Framework follows *One Event Type for All* approach, thus by convention View is required to re-dispatch an event as an object of a special dynamic type `ViewEvent`.
+View also generates events converted into signals, such as on creation complete, mouse clicks, scroll position change, and so on. Framework uses as3-signals v0.8 library to handle signals.
 
-Every ViewEvent has an `actionName`. Being dispatched ViewEvents are intercepted by a helper instance called `adapter` found within every Mediator, and a particular Mediator listener function for a given `actionName` is invoked.
-
-Here is an example of a HelloGroup View that defines `set message` method and a ViewEvent dispatched on Button click:
+Here is an example of a HelloGroup View that defines `set message` method and a signal dispatched on Button click:
 
 ```actionscript
 <s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
           xmlns:s="library://ns.adobe.com/flex/spark">
     <fx:Script><![CDATA[
-        public static const A_SAY_HELLO_CLICKED : String
-               = ViewEvent.uniqueName("A_SAY_HELLO_CLICKED");
-              
+        import org.dropframework.mvc.commons.signals.simple.Signal;
+        
+        public const sayHelloButton_clicked : Signal = new Signal();
+    
         public function set message (value : String) : void
         {
             messageLabel.text = value;
         }
-              
-        private function sayHelloButton_clickHandler (event : MouseEvent) : void
-        {
-            dispatchEvent(ViewEvent.of(A_SAY_HELLO_CLICKED, event));
-        }
     ]]></fx:Script>
     <s:Label id="messageLabel"/>
     <s:Button id="sayHelloButton" label="Say Hello"
-              click="sayHelloButton_clickHandler(event)"/>
+              click="sayHelloButton_clicked.dispatch()"/>
 </s:VGroup>
 ```
 
-Notice ViewEvent action name starts with `A_` prefix and a `uniqueName` method may be used to ensure that the name is unique. Below is a Mediator that manages HelloView:
+Below is a Mediator that manages HelloView:
 
 ```actionscript
 public class HelloGroupMediator
@@ -227,9 +221,8 @@ public class HelloGroupMediator
     public function HelloGroupMediator(view : HelloGroup)
     {
         super(GlobalContext.instance, view);
-        adapter.on(
-                HelloGroup.A_SAY_HELLO_CLICKED,
-                function (event : ViewEvent) : void
+        view.sayHelloButton_clicked.add
+                function () : void
                 {
                     helloView.message = "Hello!"
                     wakeUpController.wakeUp();
@@ -248,7 +241,7 @@ public class HelloGroupMediator
 }
 ```
 
-ViewEvent may also contain parameters associated with the parent event, additional parameters gathered by the View and the parent event itself. Factory `ViewEvent.of` and `ViewEvent.ofContent` methods may be usefull to create ViewEvents in that case. 
+Refer to http://www.developria.com/2010/10/an-introduction-to-as3-signals.html for more infomration on signals.
 
 
 ## App Initialization
