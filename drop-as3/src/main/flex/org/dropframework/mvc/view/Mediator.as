@@ -20,8 +20,8 @@ package org.dropframework.mvc.view
 
     import org.dropframework.core.contexts.IContext;
     import org.dropframework.core.actors.ContextAwareActor;
-    import org.dropframework.mvc.commons.creation.CreationGuard;
-    import org.dropframework.mvc.commons.creation.ICreationGuard;
+    import org.dropframework.mvc.commons.guards.CreationGuard;
+    import org.dropframework.mvc.commons.guards.ICreationGuard;
 
 
     /**
