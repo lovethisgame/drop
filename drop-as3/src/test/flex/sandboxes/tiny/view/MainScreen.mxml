@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+          xmlns:s="library://ns.adobe.com/flex/spark" gap="15">
+
+    <fx:Script>
+        <![CDATA[
+        import org.dropframework.mvc.commons.signals.simple.Signal;
+
+        public const mainButton_clicked:Signal = new Signal();
+        ]]>
+    </fx:Script>
+
+
+    <s:Label id="mainLabel" text="Please,"/>
+    <s:Button id="mainButton" label="Do Something"
+              click="mainButton_clicked.dispatch()"/>
+    <s:Label id="responseLabel" text=""/>
+
+</s:HGroup>

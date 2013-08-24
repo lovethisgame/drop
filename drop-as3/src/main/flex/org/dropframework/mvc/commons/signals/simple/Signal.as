@@ -1,5 +1,6 @@
-package org.dropframework.mvc.commons.signals
+package org.dropframework.mvc.commons.signals.simple
 {
+    import org.dropframework.mvc.commons.signals.*;
 	import flash.errors.IllegalOperationError;
 	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;

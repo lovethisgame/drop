@@ -1,9 +1,10 @@
-package org.dropframework.mvc.commons.signals
+package org.dropframework.mvc.commons.signals.deluxe
 {
+    import org.dropframework.mvc.commons.signals.*;
 	import flash.errors.IllegalOperationError;
 	
-	import org.dropframework.mvc.commons.signals.events.IBubbleEventHandler;
-	import org.dropframework.mvc.commons.signals.events.IEvent;
+	import org.dropframework.mvc.commons.signals.deluxe.IBubbleEventHandler;
+	import org.dropframework.mvc.commons.signals.deluxe.IEvent;
 
 	/** 
 	 * Allows the valueClasses to be set in MXML, e.g.

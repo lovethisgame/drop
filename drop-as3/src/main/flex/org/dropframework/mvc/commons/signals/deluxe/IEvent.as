@@ -1,4 +1,4 @@
-package org.dropframework.mvc.commons.signals.events
+package org.dropframework.mvc.commons.signals.deluxe
 {
 	import org.dropframework.mvc.commons.signals.IPrioritySignal;
 

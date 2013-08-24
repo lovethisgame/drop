@@ -1,4 +1,4 @@
-package org.dropframework.mvc.commons.signals.natives
+package org.dropframework.mvc.commons.signals.native
 {
 	import flash.errors.IllegalOperationError;
 	import flash.events.Event;

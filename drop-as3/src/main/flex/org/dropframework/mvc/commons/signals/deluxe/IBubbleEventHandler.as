@@ -1,6 +1,5 @@
-package org.dropframework.mvc.commons.signals.events
+package org.dropframework.mvc.commons.signals.deluxe
 {
-
 	public interface IBubbleEventHandler
 	{
 		/**

@@ -1,8 +1,5 @@
 package org.dropframework.mvc.commons.signals
 {
-	/**
-	 *
-	 */
 	public interface IDispatcher
 	{
 		/**

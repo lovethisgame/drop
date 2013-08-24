@@ -20,8 +20,6 @@ package org.dropframework.mvc.view
 
     import org.dropframework.core.contexts.IContext;
     import org.dropframework.core.actors.ContextAwareActor;
-    import org.dropframework.mvc.commons.adapter.IViewAdapter;
-    import org.dropframework.mvc.commons.adapter.ViewAdapter;
     import org.dropframework.mvc.commons.creation.CreationGuard;
     import org.dropframework.mvc.commons.creation.ICreationGuard;
 
@@ -30,7 +28,7 @@ package org.dropframework.mvc.view
      * Simple extension of the ContextAwareController class which requires the view object to be supplied as a
      * constructor argument, thus providing view layer management capabilities.
      *
-     * Referencing the view object is achievable through the protected 'adapter' field.
+     * Referencing the view object is achievable through the protected 'view' field.
      *
      * Designed for extension by subclasses.
      *
@@ -39,14 +37,14 @@ package org.dropframework.mvc.view
     public class Mediator
             extends ContextAwareActor
     {
-        private var _adapter : IViewAdapter;
-        private var _guard   : ICreationGuard;
+        private var _view  : DisplayObject;
+        private var _guard : ICreationGuard;
 
 
         /** Mediator's view adapter. Non null. */
-        protected function get adapter () : IViewAdapter
+        protected function get view () : DisplayObject
         {
-            return _adapter;
+            return _view;
         }
 
 
@@ -87,12 +85,7 @@ package org.dropframework.mvc.view
          */
         protected function mediate (view : DisplayObject) : void
         {
-            if (_adapter)
-            {
-                if (_adapter.view == view)
-                    return;
-                _adapter.view = view;
-            }
+            _view = view;
 
             if (_guard)
             {
@@ -100,11 +93,12 @@ package org.dropframework.mvc.view
                     return;
                 _guard.view = view;
             }
-
-            if (view)
+            else
             {
-                _adapter = new ViewAdapter(view);
-                _guard = new CreationGuard(view);
+                if (view)
+                {
+                    _guard = new CreationGuard(view);
+                }
             }
         }
     }

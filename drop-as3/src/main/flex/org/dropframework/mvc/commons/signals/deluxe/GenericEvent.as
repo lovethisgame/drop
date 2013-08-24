@@ -1,10 +1,9 @@
-package org.dropframework.mvc.commons.signals.events
+package org.dropframework.mvc.commons.signals.deluxe
 {
 	import org.dropframework.mvc.commons.signals.IPrioritySignal;
 
 	/**
-	 *
-	 * @see org.dropframework.mvc.commons.signals.events.IEvent
+	 * @see org.dropframework.mvc.commons.signals.deluxe.IEvent
 	 * Documentation for the event interface being maintained in IEvent to avoid duplication for now.
 	 */
 	public class GenericEvent implements IEvent

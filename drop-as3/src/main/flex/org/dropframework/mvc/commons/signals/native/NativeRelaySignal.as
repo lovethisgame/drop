@@ -1,6 +1,6 @@
-package org.dropframework.mvc.commons.signals.natives
+package org.dropframework.mvc.commons.signals.native
 {
-	import org.dropframework.mvc.commons.signals.DeluxeSignal;
+	import org.dropframework.mvc.commons.signals.deluxe.DeluxeSignal;
 
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
