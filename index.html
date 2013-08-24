@@ -31,7 +31,7 @@
         <h1>
 <a name="documentation" class="anchor" href="#documentation"><span class="octicon octicon-link"></span></a>Documentation</h1>
 
-<p><img src="https://raw.github.com/jdanilov/drop/master/docs/logo.png" align="right">
+<p><img src="../docs/logo.png" align="right">
 Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript on Apache Flex and AIR platforms.</p>
 
 <p>Drop derives from <strong>PureMVC</strong> in an attempt to minimize implementation approach discordance, forcing to write a strict, consistent and thus more safe code. Framework is designed to be brutally minimal and requires no boilerplate code to apply. Drop also introduces typed notification model and strong notion of <em>Separation of Concerns</em> concept.</p>
@@ -76,19 +76,19 @@ Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript on 
 
 <p>Typical application / library written on drop framework has the following structure:</p>
 
-<pre><code>org.dropframework.*    → included framework sources
-appname               → application root
- L actors               → root for internal communication interfaces (actors)
-    L singletones         → actor interfaces with single implementation: I&lt;...&gt;
-    L notifications       → actor interfaces with multiple implementation: IOn&lt;...&gt;
- L commons              → root for all shared generic classes
-    L components          → shared generic components
-    L utils               → shared generic utility classes
- L controller           → root for business logic controllers
- L model                → root for model classes
-    L services            → proxies, services, data access objects
-    L vos                 → value objects, entities, data transfer objects
- L view                 → root for views and mediators
+<pre><code>org.dropframework.*           → included framework sources
+appname                       → application root
+ └ actors                       → root for internal communication interfaces (actors)
+    └ singletones                 → actor interfaces with single implementation: I&lt;...&gt;
+    └ notifications               → actor interfaces with multiple implementation: IOn&lt;...&gt;
+ └ commons                      → root for all shared generic classes
+    └ components                  → shared generic components
+    └ utils                       → shared generic utility classes
+ └ controller                   → root for business logic controllers
+ └ model                        → root for model classes
+    └ services                    → proxies, services, data access objects
+    └ vos                         → value objects, entities, data transfer objects
+ └ view                         → root for views and mediators
 </code></pre>
 
 <p>As mentioned above, application consists of logic processing classes called Actors that control specific system aspects, domain and components, communicating with each other via well-defined Interfaces.</p>
@@ -96,7 +96,7 @@ appname               → application root
 <h3>
 <a name="the-appnameactors-directory" class="anchor" href="#the-appnameactors-directory"><span class="octicon octicon-link"></span></a>The appname/actors directory</h3>
 
-<p>The <b>appname/actors</b> directory contains at least one Context class, usually named as <b>GlobalContext</b> or <b>Context</b> which represents as a ServiceLocator for resolving Actors; and in subpackages the Actor communication interfaces themselves. Actor interfaces are split into two groups:</p>
+<p>The <strong>appname/actors</strong> directory contains at least one Context class, usually named as <strong>GlobalContext</strong> or <strong>Context</strong> which represents as a ServiceLocator for resolving Actors; and in subpackages the Actor communication interfaces themselves. Actor interfaces are split into two groups:</p>
 
 <ul>
 <li>
@@ -119,7 +119,7 @@ appname               → application root
 <span class="p">}</span>
 </pre></div>
 
-</ul><p>When created, Actor instances are bound to a single <code>Context</code> where they reside and can be resolved for communication.</p>
+<p>When created, Actor instances are bound to a single <code>Context</code> where they reside and can be resolved for communication.</p>
 
 <h4>
 <a name="actors-communication" class="anchor" href="#actors-communication"><span class="octicon octicon-link"></span></a>Actors communication</h4>
@@ -138,14 +138,13 @@ appname               → application root
 <li>
 <code>.instanceOf (type : Class) : IConcernedActor</code> - finds one and only one Actor instance of the specified interface, fails with Error if more than 1 Actors found. Singletone communication interface should be supplied as an argument.</li>
 <li>
-<code>.arrayOf (type : Class) : Array</code> - returns an array of Actors of specified type.</li>
-
+<code>.arrayOf (type : Class) : Array&lt;IConcernedActor&gt;</code> - returns an array of Actors of specified type.</li>
 </ul><p>Methods explained above are also available on Actors themselves, so you will normally never call a Context directly, but invoke code similar to:</p>
 
 <div class="highlight"><pre><span class="c1">// some code within an Actor...</span>
 <span class="nx">IPoolManager</span><span class="p">(</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">IPoolManager</span><span class="p">)).</span><span class="nx">managePool</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
 <span class="nx">call</span><span class="p">(</span><span class="nx">IOnSomethingHappened</span><span class="o">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">a</span> <span class="o">:</span> <span class="nx">IOnSomethingHappened</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
-        <span class="p">{</span> <span class="nx">a</span><span class="p">.</span><span class="nx">onSomethingHappened</span><span class="p">(</span><span class="s2">"Pool Manager now manages 3 items"</span><span class="p">);</span> <span class="p">});</span>                
+        <span class="p">{</span> <span class="nx">a</span><span class="p">.</span><span class="nx">onSomethingHappened</span><span class="p">(</span><span class="s2">"Pool Manager was asked to manage a pool of 3 items"</span><span class="p">);</span> <span class="p">});</span>                
 <span class="nx">call</span><span class="p">(</span><span class="nx">IOnPoolUpdated</span><span class="o">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">a</span> <span class="o">:</span> <span class="nx">IOnPoolUpdated</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
         <span class="p">{</span> <span class="nx">a</span><span class="p">.</span><span class="nx">onPoolUpdated</span><span class="p">();</span> <span class="p">});</span>                
 </pre></div>
@@ -153,14 +152,14 @@ appname               → application root
 <p>Given there is a single method per Notification interface, a shortcut syntax can be used:</p>
 
 <div class="highlight"><pre><span class="nx">IPoolManager</span><span class="p">(</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">IPoolManager</span><span class="p">)).</span><span class="nx">managePool</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
-<span class="nx">call</span><span class="p">(</span><span class="nx">IOnSomethingHappened</span><span class="o">,</span> <span class="p">[</span><span class="s2">"Pool Manager now manages 3 items"</span><span class="p">]);</span>                
+<span class="nx">call</span><span class="p">(</span><span class="nx">IOnSomethingHappened</span><span class="o">,</span> <span class="p">[</span><span class="s2">"Pool Manager was asked to manage a pool of 3 items"</span><span class="p">]);</span>                
 <span class="nx">call</span><span class="p">(</span><span class="nx">IOnPoolUpdated</span><span class="p">);</span>
 </pre></div>
 
 <h3>
 <a name="the-appnamecommons-directory" class="anchor" href="#the-appnamecommons-directory"><span class="octicon octicon-link"></span></a>The appname/commons directory</h3>
 
-<p>The <b>appname/commons</b> directory contains all components, abstractions, utilities and support modules that are:</p>
+<p>The <strong>appname/commons</strong> directory contains all components, abstractions, utilities and support modules that are:</p>
 
 <ul>
 <li>generic enough to be reused or means to be extended for the use;</li>
@@ -172,7 +171,7 @@ appname               → application root
 <h3>
 <a name="the-appnamecontroller-directory" class="anchor" href="#the-appnamecontroller-directory"><span class="octicon octicon-link"></span></a>The appname/controller directory</h3>
 
-<p>Controllers decouple the complex business logic and facade that behind Actor interfaces and may orchestrate other Actors such as Services and Mediators. Controllers are stored in <b>appname/controller</b> directory and can form executable commands triggered via singletone or notification interfaces, various system managers, complex execution sequences or aspect controllers.</p>
+<p>Controllers decouple the complex business logic and facade that behind Actor interfaces and may orchestrate other Actors such as Services and Mediators. Controllers are stored in <strong>appname/controller</strong> directory and can form executable commands triggered via singletone or notification interfaces, various system managers, complex execution sequences or aspect controllers.</p>
 
 <p>Here is a simple Controller carcass:</p>
 
@@ -194,13 +193,13 @@ appname               → application root
 <h3>
 <a name="the-appnamemodel-directory" class="anchor" href="#the-appnamemodel-directory"><span class="octicon octicon-link"></span></a>The appname/model directory</h3>
 
-<p>Model layer defines Domain Objects and Domain API and located within <b>appname/model</b> directory. Framework allows to follow various practices to define the Model, such as Domain Driven Development approach, but in core restricts model classes present on a system to two meta-types:</p>
+<p>Model layer defines Domain Objects and Domain API and located within <strong>appname/model</strong> directory. Framework allows to follow various practices to define the Model, such as Domain Driven Development approach, but in core restricts model classes present on a system to two meta-types:</p>
 
 <ul>
 <li>
-<strong>data access objects</strong> - found in <b>appname/model/services</b>, these are services, proxies, data stubs, endpoint invokers etc. that provide a data feed or means to control and modify the domain data. Drop provides <code>Service</code> and <code>Proxy</code> Actor supertypes to incorporate those.</li>
+<strong>data access objects</strong> - found in <strong>appname/model/services</strong>, these are services, proxies, data stubs, endpoint invokers etc. that provide a data feed or means to control and modify the domain data. Drop provides <code>Service</code> and <code>Proxy</code> Actor supertypes to incorporate those.</li>
 <li>
-<strong>data transfer objects</strong> - found in <b>appname/model/vos</b>, these are value objects and entities that represent the domain itself.</li>
+<strong>data transfer objects</strong> - found in <strong>appname/model/vos</strong>, these are value objects and entities that represent the domain itself.</li>
 </ul><p>Here is a simple Service carcass:</p>
 
 <div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nx">ServiceName</span>
@@ -223,7 +222,7 @@ appname               → application root
 <h3>
 <a name="the-appnameview-directory" class="anchor" href="#the-appnameview-directory"><span class="octicon octicon-link"></span></a>The appname/view directory</h3>
 
-<p>The <b>appname/view</b> directory is where the hierarchy of visual elements and containers defined. It may contain 3 following types of classes:</p>
+<p>The <strong>appname/view</strong> directory is where the hierarchy of visual elements and containers defined. It may contain 3 following types of classes:</p>
 
 <ul>
 <li>
@@ -258,9 +257,55 @@ appname               → application root
 
 <p>View also generates events converted into signals, such as on creation complete, mouse clicks, scroll position change, and so on. Framework uses as3-signals v0.8 library to handle signals.</p>
 
-<p>Refer to <a href="http://www.developria.com/2010/10/an-introduction-to-as3-signals.html">An Introduction to as3 signals</a> for more infomration.</p>
+<p>Here is an example of a HelloGroup View that defines <code>set message</code> method and a signal dispatched on Button click:</p>
 
+<div class="highlight"><pre><span class="o">&lt;</span><span class="nx">s</span><span class="o">:</span><span class="nx">VGroup</span> <span class="nx">xmlns</span><span class="o">:</span><span class="nx">fx</span><span class="o">=</span><span class="s2">"http://ns.adobe.com/mxml/2009"</span>
+          <span class="nx">xmlns</span><span class="o">:</span><span class="nx">s</span><span class="o">=</span><span class="s2">"library://ns.adobe.com/flex/spark"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">fx</span><span class="o">:</span><span class="nx">Script</span><span class="o">&gt;&lt;!</span><span class="p">[</span><span class="nx">CDATA</span><span class="p">[</span>
+        <span class="kd">import</span> <span class="nx">org</span><span class="p">.</span><span class="nx">dropframework</span><span class="p">.</span><span class="nx">mvc</span><span class="p">.</span><span class="nx">commons</span><span class="p">.</span><span class="nx">signals</span><span class="p">.</span><span class="nx">simple</span><span class="p">.</span><span class="nx">Signal</span><span class="o">;</span>
 
+        <span class="kd">public</span> <span class="kd">const</span> <span class="nx">sayHelloButton_clicked</span> <span class="o">:</span> <span class="nx">Signal</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Signal</span><span class="p">();</span>
+
+        <span class="kd">public</span> <span class="kd">function</span> <span class="kd">set</span> <span class="nx">message</span> <span class="p">(</span><span class="nx">value</span> <span class="o">:</span> <span class="nb">String</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
+        <span class="p">{</span>
+            <span class="nx">messageLabel</span><span class="p">.</span><span class="nx">text</span> <span class="o">=</span> <span class="nx">value</span><span class="o">;</span>
+        <span class="p">}</span>
+    <span class="p">]]</span><span class="o">&gt;&lt;/</span><span class="nx">fx</span><span class="o">:</span><span class="nx">Script</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">s</span><span class="o">:</span><span class="nx">Label</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"messageLabel"</span><span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="nx">s</span><span class="o">:</span><span class="nx">Button</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"sayHelloButton"</span> <span class="nx">label</span><span class="o">=</span><span class="s2">"Say Hello"</span>
+              <span class="nx">click</span><span class="o">=</span><span class="s2">"sayHelloButton_clicked.dispatch()"</span><span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="nx">s</span><span class="o">:</span><span class="nx">VGroup</span><span class="o">&gt;</span>
+</pre></div>
+
+<p>Below is a Mediator that manages HelloView:</p>
+
+<div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nx">HelloGroupMediator</span>
+        <span class="kd">extends</span> <span class="nx">Mediator</span>
+<span class="p">{</span>
+    <span class="kd">public</span> <span class="kd">function</span> <span class="nx">HelloGroupMediator</span><span class="p">(</span><span class="nx">view</span> <span class="o">:</span> <span class="nx">HelloGroup</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="kd">super</span><span class="p">(</span><span class="nx">GlobalContext</span><span class="p">.</span><span class="nx">instance</span><span class="o">,</span> <span class="nx">view</span><span class="p">);</span>
+        <span class="nx">view</span><span class="p">.</span><span class="nx">sayHelloButton_clicked</span><span class="p">.</span><span class="nx">add</span>
+                <span class="kd">function</span> <span class="p">()</span> <span class="o">:</span> <span class="nx">void</span>
+                <span class="p">{</span>
+                    <span class="nx">helloView</span><span class="p">.</span><span class="nx">message</span> <span class="o">=</span> <span class="s2">"Hello!"</span>
+                    <span class="nx">wakeUpController</span><span class="p">.</span><span class="nx">wakeUp</span><span class="p">();</span>
+                <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="kd">private</span> <span class="kd">function</span> <span class="kd">get</span> <span class="nx">wakeUpController</span><span class="p">()</span> <span class="o">:</span> <span class="nx">IWakeUpController</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">instanceOf</span><span class="p">(</span><span class="nx">IWakeUpController</span><span class="p">)</span> <span class="nx">as</span> <span class="nx">IWakeUpController</span><span class="o">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">private</span> <span class="kd">function</span> <span class="kd">get</span> <span class="nx">helloView</span><span class="p">()</span> <span class="o">:</span> <span class="nx">HelloView</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">adapter</span><span class="p">.</span><span class="nx">view</span> <span class="nx">as</span> <span class="nx">HelloView</span><span class="o">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Refer to <a href="http://www.developria.com/2010/10/an-introduction-to-as3-signals.html">http://www.developria.com/2010/10/an-introduction-to-as3-signals.html</a> for more infomration on signals.</p>
 
 <h2>
 <a name="app-initialization" class="anchor" href="#app-initialization"><span class="octicon octicon-link"></span></a>App Initialization</h2>
@@ -466,8 +511,7 @@ appname               → application root
 
 <p>There is no framework or technology that will ensure full code stability, maintainability and bug-safety. Thus it is important to dicuss, agree and stick with the choosen strict consistent approach and practices within the team on a particular project and follow it as much as possible.</p>
 
-<p>Regularly maintaining and sharing the responsibility for code readability, simplicity and safety is a strong requirement regardless of a framework choosen on a mid to long term projects.</p>
-      </section>
+<p>Regularly maintaining and sharing the responsibility for code readability, simplicity and safety is a strong requirement regardless of a framework choosen on a mid to long term projects.</p>      </section>
 
       <footer>
         <p>This project is maintained by <a href="https://github.com/jdanilov">jdanilov</a></p>
