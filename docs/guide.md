@@ -16,7 +16,7 @@ Core framework design aspects:
 * **Decoupling and Transparency** - framework improves code clarity, transparency and maintainability by exposing internal system API into a set of interfaces used to reduce modules coupling and keep the big picture in one place, easily and quickly accessible;
 * **Minute Setup Time** - speaks for itself.
 
-Free, Opensource, Apache license. All the code samples below are taken from the [drop-as3-example](../drop-as3-example/src/main/flex) module accessible within the GitHub repository.
+Free, Opensource, Apache license.
 
 ## Architecture
 
@@ -54,7 +54,7 @@ As mentioned above, application consists of logic processing classes called Acto
  
 ### The appname/actors directory
 
-The [appname/actors](../drop-as3-example/src/main/flex/example/actors) directory contains at least one Context class, usually named as [GlobalContext or <ApplicationName>Context](../drop-as3-example/src/main/flex/example/actors/GlobalContext.as) which represents as a ServiceLocator for resolving Actors; and in subpackages the Actor communication interfaces themselves. Actor interfaces are split into two groups:
+The **appname/actors** directory contains at least one Context class, usually named as **GlobalContext** or **<ApplicationName>Context** which represents as a ServiceLocator for resolving Actors; and in subpackages the Actor communication interfaces themselves. Actor interfaces are split into two groups:
 * **singletones** - interfaces that start with `I<...>` name prefix and define API for managers, commands, workers, services of which there is strictly a single implementation within the system.
 * **notifications** - interfaces that start with `IOn<...>` name prefix and defined API for actors that listen for specific events or actions happening within the system.
 
@@ -74,14 +74,6 @@ public class IOnSomethingHappened
 }
 ```
 
-Example of Singletone interfaces:
-* [ISheepHerdController.as](../drop-as3-example/src/main/flex/example/actors/singletones/ISheepHerdController.as) 
-* [IWeatherService.as](../drop-as3-example/src/main/flex/example/actors/singletones/IWeatherService.as) 
-
-And Notification interfaces:
-* [IOnSheepCountChanged.as](../drop-as3-example/src/main/flex/example/actors/notifications/IOnSheepCountChanged.as)
-* [IOnWeatherChanged.as](../drop-as3-example/src/main/flex/example/actors/notifications/IOnWeatherChanged.as)
-
 When created, Actor instances are bound to a single `Context` where they reside and can be resolved for communication.
 
 
@@ -91,9 +83,10 @@ Actors never communicate directly, *except for the single case explained below f
 
 This approach decoulpes Actors and facades implementation complexity behind the contracts defined by communication interfaces. Following `Context` methods can be used to resolve the Actors:
 * `.call (type : Class) : void` - executes every method on actors of a given type supplying no arguments.
-* `.call (type : Class, args : Array) : void` - executes every function found within every Actor of the specified interface with the specified arguments list.
+* `.call (type : Class, args : Array) : void` - executes every function of a given arguments size found within every Actor of the specified interface supplying the specified arguments.
 * `.call (type : Class, callback : Function) : void` - executes supplied callback function, consequently passing every Actor of the specified interface as an argument. 
 * `.instanceOf (type : Class) : IConcernedActor` - finds one and only one Actor instance of the specified interface, fails with Error if more than 1 Actors found. Singletone communication interface should be supplied as an argument.
+* `.arrayOf (type : Class) : Array<IConcernedActor>` - returns an array of Actors of specified type.
 
 Methods explained above are also available on Actors themselves, so you will normally never call a Context directly, but invoke code similar to:
 
@@ -117,7 +110,7 @@ call(IOnPoolUpdated);
  
 ### The appname/commons directory
 
-The [appname/commons](../drop-as3-example/src/main/flex/example/commons) directory contains all components, abstractions, utilities and support modules that are:
+The **appname/commons** directory contains all components, abstractions, utilities and support modules that are:
 * generic enough to be reused or means to be extended for the use;
 * do not handle any application business logic directly.
 
@@ -128,7 +121,7 @@ Drop framework does not bundle any 3rd party utilities and components library. F
 
 ### The appname/controller directory
 
-Controllers decouple the complex business logic and facade that behind Actor interfaces and may orchestrate other Actors such as Services and Mediators. Controllers are stored in [appname/controller](../drop-as3-example/src/main/flex/example/controller) directory and can form executable commands triggered via singletone or notification interfaces, various system managers, complex execution sequences or aspect controllers.
+Controllers decouple the complex business logic and facade that behind Actor interfaces and may orchestrate other Actors such as Services and Mediators. Controllers are stored in **appname/controller** directory and can form executable commands triggered via singletone or notification interfaces, various system managers, complex execution sequences or aspect controllers.
 
 Here is a simple Controller carcass:
 ```actionscript
@@ -147,14 +140,12 @@ public class ControllerName
 }
 ```
 
-See the [Shepherd.as](../drop-as3-example/src/main/flex/example/controller/Shepherd.as) as a controller example.
-
 
 ### The appname/model directory
 
-Model layer defines Domain Objects and Domain API and located within [appname/model](../drop-as3-example/src/main/flex/example/model) directory. Framework allows to follow various practices to define the Model, such as Domain Driven Development approach, but in core restricts model classes present on a system to two meta-types:
-* **data access objects** - found in [appname/model/services](../drop-as3-example/src/main/flex/example/model/services), these are services, proxies, data stubs, endpoint invokers etc. that provide a data feed or means to control and modify the domain data. Drop provides `Service` and `Proxy` Actor supertypes to incorporate those.
-* **data transfer objects** - found in [appname/model/vos](../drop-as3-example/src/main/flex/example/model/vos), these are value objects and entities that represent the domain itself.
+Model layer defines Domain Objects and Domain API and located within **appname/model** directory. Framework allows to follow various practices to define the Model, such as Domain Driven Development approach, but in core restricts model classes present on a system to two meta-types:
+* **data access objects** - found in **appname/model/services**, these are services, proxies, data stubs, endpoint invokers etc. that provide a data feed or means to control and modify the domain data. Drop provides `Service` and `Proxy` Actor supertypes to incorporate those.
+* **data transfer objects** - found in **appname/model/vos**, these are value objects and entities that represent the domain itself.
 
 Here is a simple Service carcass:
 ```actionscript
@@ -175,12 +166,10 @@ public class ServiceName
 
 No application business or presentation logic handled within the Model layer. Controllers and Mediators should be used instead. However it is allowed for model Actors to perform CRUD, data normalization, caching, call redirection operations and so on.
 
-See the [WeatherService.as](../drop-as3-example/src/main/flex/example/model/services/WeatherService.as) as a Service example, and [Weather.as](../drop-as3-example/src/main/flex/example/model/vos/Weather.as) as a Value Object.
-
 
 ### The appname/view directory
 
-The [appname/view](../drop-as3-example/src/main/flex/example/view) directory is where the hierarchy of visual elements and containers defined. It may contain 3 following types of classes:
+The **appname/view** directory is where the hierarchy of visual elements and containers defined. It may contain 3 following types of classes:
 * **Views** - all visual display objects, controls and custom ui components that shown on a screen. Coded in MXML in case of targetting Flex / AIR or AS3 for pure Flash. Naming example: `MessagePanel.mxml`.
 * **Skins** - Flex 4 skin classes used for applying layout and skinning parameters to the View components. Use `Skin` suffix, for instance `MessagePanelSkin.as`.
 * **Mediators** - Actors that listen to View Events dispatched by Views. Mediators control Views by modifying properties and data providers on them; communicate to other system Actors via Singletone or Notification interfaces. Use `Mediator` suffix: `MessagePanelMediator.as`.
@@ -261,8 +250,6 @@ public class HelloGroupMediator
 
 ViewEvent may also contain parameters associated with the parent event, additional parameters gathered by the View and the parent event itself. Factory `ViewEvent.of` and `ViewEvent.ofContent` methods may be usefull to create ViewEvents in that case. 
 
-View Event dispatching example can be seen in a [HerdPanel.mxml](../drop-as3-example/src/main/flex/example/view/herd/HerdPanel.mxml), and listening in a [HerdPanelMediator.mxml](../drop-as3-example/src/main/flex/example/view/herd/HerdPanelMediator.as).
-
 
 ## App Initialization
 
@@ -315,8 +302,6 @@ public class ExampleApplicationMediator
 ```
 
 Notice an `IOnApplicationReady` is dispatched at the end, notifying all concerned Actors that application framework is technically initialized, so every Actor can proceed with tweaking the views, stubs, domain it controls and call other Actors that created and available on Context.
-
-Example of application initialization can be found in [ApplicationView](../drop-as3-example/src/main/flex/example/view/ExampleApplication.mxml) and [ApplicationMediator](../drop-as3-example/src/main/flex/example/view/ExampleApplicationMediator.as).
 
 
 ## Framework Usage
@@ -424,7 +409,7 @@ public class IOnNetworkStatusChanged
 }
 ```
 
-Downside is invoking a concise `call(IOnNetworkStatusChanged)` syntax will fail as will execute every method on an Interface. Use full syntax instead:
+Use full call syntax here to specify which method to execute:
 
 ```actionscript
 call(IOnNetworkStatusChanged,
