@@ -76,19 +76,19 @@ Minimalistic, hybrid MVC / IoC micro-architecture framework for ActionScript on 
 
 <p>Typical application / library written on drop framework has the following structure:</p>
 
-<pre><code>org.dropframework.*           → included framework sources
-appname                       → application root
- └ actors                       → root for internal communication interfaces (actors)
-    └ singletones                 → actor interfaces with single implementation: I&lt;...&gt;
-    └ notifications               → actor interfaces with multiple implementation: IOn&lt;...&gt;
- └ commons                      → root for all shared generic classes
-    └ components                  → shared generic components
-    └ utils                       → shared generic utility classes
- └ controller                   → root for business logic controllers
- └ model                        → root for model classes
-    └ services                    → proxies, services, data access objects
-    └ vos                         → value objects, entities, data transfer objects
- └ view                         → root for views and mediators
+<pre><code>org.dropframework.*   → included framework sources
+appname               → application root
+ └ actors               → root for internal communication interfaces (actors)
+    └ singletones         → actor interfaces with single implementation: I&lt;...&gt;
+    └ notifications       → actor interfaces with multiple implementation: IOn&lt;...&gt;
+ └ commons              → root for all shared generic classes
+    └ components          → shared generic components
+    └ utils               → shared generic utility classes
+ └ controller           → root for business logic controllers
+ └ model                → root for model classes
+    └ services            → proxies, services, data access objects
+    └ vos                 → value objects, entities, data transfer objects
+ └ view                 → root for views and mediators
 </code></pre>
 
 <p>As mentioned above, application consists of logic processing classes called Actors that control specific system aspects, domain and components, communicating with each other via well-defined Interfaces.</p>
@@ -144,15 +144,15 @@ appname                       → application root
 <div class="highlight"><pre><span class="c1">// some code within an Actor...</span>
 <span class="nx">IPoolManager</span><span class="p">(</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">IPoolManager</span><span class="p">)).</span><span class="nx">managePool</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
 <span class="nx">call</span><span class="p">(</span><span class="nx">IOnSomethingHappened</span><span class="o">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">a</span> <span class="o">:</span> <span class="nx">IOnSomethingHappened</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
-        <span class="p">{</span> <span class="nx">a</span><span class="p">.</span><span class="nx">onSomethingHappened</span><span class="p">(</span><span class="s2">"Pool Manager was asked to manage a pool of 3 items"</span><span class="p">);</span> <span class="p">});</span>                
+        <span class="p">{</span> <span class="nx">a</span><span class="p">.</span><span class="nx">onSomethingHappened</span><span class="p">(</span><span class="s2">"Pool Manager was asked to manage a pool of 3 items"</span><span class="p">);</span> <span class="p">});</span>
 <span class="nx">call</span><span class="p">(</span><span class="nx">IOnPoolUpdated</span><span class="o">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">a</span> <span class="o">:</span> <span class="nx">IOnPoolUpdated</span><span class="p">)</span> <span class="o">:</span> <span class="nx">void</span>
-        <span class="p">{</span> <span class="nx">a</span><span class="p">.</span><span class="nx">onPoolUpdated</span><span class="p">();</span> <span class="p">});</span>                
+        <span class="p">{</span> <span class="nx">a</span><span class="p">.</span><span class="nx">onPoolUpdated</span><span class="p">();</span> <span class="p">});</span>
 </pre></div>
 
 <p>Given there is a single method per Notification interface, a shortcut syntax can be used:</p>
 
 <div class="highlight"><pre><span class="nx">IPoolManager</span><span class="p">(</span><span class="nx">instanceOf</span><span class="p">(</span><span class="nx">IPoolManager</span><span class="p">)).</span><span class="nx">managePool</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
-<span class="nx">call</span><span class="p">(</span><span class="nx">IOnSomethingHappened</span><span class="o">,</span> <span class="p">[</span><span class="s2">"Pool Manager was asked to manage a pool of 3 items"</span><span class="p">]);</span>                
+<span class="nx">call</span><span class="p">(</span><span class="nx">IOnSomethingHappened</span><span class="o">,</span> <span class="p">[</span><span class="s2">"Pool Manager was asked to manage a pool of 3 items"</span><span class="p">]);</span>
 <span class="nx">call</span><span class="p">(</span><span class="nx">IOnPoolUpdated</span><span class="p">);</span>
 </pre></div>
 
