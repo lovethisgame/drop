@@ -19,3 +19,6 @@ Core framework design aspects:
 * **Minute Setup Time** - speaks for itself.
 
 Free, Opensource, Apache license.
+
+
+Any questions, feedback, feature requests, etc. are welcome: jaroslav.danilov@gmail.com
